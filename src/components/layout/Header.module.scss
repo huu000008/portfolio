@@ -1,0 +1,14 @@
+.wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6rem 2rem;
+  border-bottom: 1px solid var(--text);
+  h1 {
+    font-size: 2rem;
+  }
+  .menu {
+    display: flex;
+    gap: 1.5rem;
+  }
+}

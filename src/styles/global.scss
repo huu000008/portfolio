@@ -1,0 +1,72 @@
+/* Pretendard 폰트 import */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Pretendard", sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  color: inherit;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+/* Root Variables */
+:root {
+  font-size: 62.5%; // 10px = 1rem 기준
+  --bg: #ffffff;
+  --text: #111111;
+}
+
+[data-theme="dark"] {
+  --bg: #111111;
+  --text: #ffffff;
+}
