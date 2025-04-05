@@ -2,6 +2,14 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * 프로젝트 삭제 API 라우트
+ *
+ * 프로젝트 삭제 요청을 처리합니다.
+ *
+ * @param req NextRequest
+ * @returns NextResponse
+ */
 export async function DELETE(req: NextRequest) {
   const { id } = await req.json();
   const cookieStore = await cookies();

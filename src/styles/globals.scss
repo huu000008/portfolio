@@ -1,8 +1,6 @@
-@import './abstracts/variables';
-@import './base/interaction';
-@import './base/theme';
-
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@use './abstracts/variables';
+@use './base/interaction';
+@use './base/theme';
 
 /* CSS Reset */
 *,
@@ -57,8 +55,15 @@ button {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   background-color: var(--color-accent);
-  color: white;
-
+  color: var(--color-text-primary);
+  font-family: 'Pretendard', sans-serif;
+  font-size: var(--font-size-md);
+  line-height: 1.75;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.1s ease;
   &:hover {
     background-color: var(--color-accent-hover);
   }

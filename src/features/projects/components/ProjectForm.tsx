@@ -4,25 +4,32 @@ import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckboxButtonGroup } from '@/components/ui/CheckboxButtonGroup/CheckboxButtonGroup';
-import styles from './ProjectForm.module.scss';
-import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
 import { useRouter } from 'next/navigation';
+
+import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
+import { CheckboxButtonGroup } from '@/components/ui/CheckboxButtonGroup/CheckboxButtonGroup';
 import { createProject } from '@/features/projects/api/createProject';
 import { updateProject } from '@/features/projects/api/updateProject';
 
+import styles from './ProjectForm.module.scss';
+
+const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
+
 const projectFormSchema = z.object({
-  title: z.string().min(1, { message: '제목을 입력해주세요.' }),
-  description: z.string().min(1, { message: '설명을 입력해주세요.' }),
-  projectPeriod: z
-    .string({ required_error: '프로젝트 기간을 선택해주세요.' })
-    .min(1, '프로젝트 기간을 선택해주세요.'),
-  team: z.string().nonempty('팀 구성을 입력해주세요.'),
-  roles: z.string().nonempty('맡은 역할을 입력해주세요.'),
-  techStack: z.array(z.string()).min(1, '기술 스택을 1개 이상 선택해주세요.'),
-  contributions: z.string().nonempty('주요 기여 내용을 입력해주세요.'),
-  achievements: z.string().nonempty('프로젝트 성과를 입력해주세요.'),
-  retrospective: z.string().nonempty('회고를 입력해주세요.'),
+  title: requiredText('제목을 입력해주세요.'),
+  description: requiredText('설명을 입력해주세요.'),
+  projectPeriod: requiredText('프로젝트 기간을 선택해주세요.'),
+  team: requiredText('팀 구성을 입력해주세요.'),
+  roles: requiredText('맡은 역할을 입력해주세요.'),
+  techStack: z
+    .array(z.string(), {
+      required_error: '기술 스택을 1개 이상 선택해주세요.',
+      invalid_type_error: '기술 스택을 1개 이상 선택해주세요.',
+    })
+    .min(1, { message: '기술 스택을 1개 이상 선택해주세요.' }),
+  contributions: requiredText('주요 기여 내용을 입력해주세요.'),
+  achievements: requiredText('프로젝트 성과를 입력해주세요.'),
+  retrospective: requiredText('회고를 입력해주세요.'),
 });
 
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -57,7 +64,6 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
     formState: { errors },
     reset,
   } = methods;
-
   const router = useRouter();
 
   useEffect(() => {
@@ -68,13 +74,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   }, [defaultValues, reset]);
 
   const onSubmit = async (data: ProjectFormValues) => {
-    let res;
-
-    if (isEditMode && defaultValues?.id) {
-      res = await updateProject({ id: defaultValues.id, ...data });
-    } else {
-      res = await createProject(data);
-    }
+    const res =
+      isEditMode && defaultValues?.id
+        ? await updateProject({ id: defaultValues.id, ...data })
+        : await createProject(data);
 
     if (res?.error) {
       alert('저장 실패: ' + res.error.message);
@@ -92,17 +95,18 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           <input type="text" {...register('title')} />
           {errors.title && <p className={styles.error}>{errors.title.message}</p>}
         </label>
+
         <label>
           설명
           <textarea {...register('description')} />
           {errors.description && <p className={styles.error}>{errors.description.message}</p>}
         </label>
 
-        <div className={styles.formField}>
-          <label htmlFor="projectPeriod">프로젝트 기간</label>
+        <label htmlFor="projectPeriod">
+          프로젝트 기간
           <DatePicker name="projectPeriod" />
           {errors.projectPeriod && <p className={styles.error}>{errors.projectPeriod.message}</p>}
-        </div>
+        </label>
 
         <label>
           팀 구성

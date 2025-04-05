@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getProjectById } from '@/features/projects/api/getProjectById';
 import { ProjectForm } from '@/features/projects/components/ProjectForm';
+import { ProjectHeader } from '@/features/projects/components/ProjectHeader';
 
 interface EditPageProps {
   params: Promise<{ id: string }>;
@@ -25,5 +26,10 @@ export default async function EditPage({ params }: EditPageProps) {
     retrospective: project.retrospective,
   };
 
-  return <ProjectForm defaultValues={formattedProject} isEditMode />;
+  return (
+    <>
+      <ProjectHeader id={id} />
+      <ProjectForm defaultValues={formattedProject} isEditMode />
+    </>
+  );
 }

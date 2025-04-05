@@ -19,12 +19,12 @@ export const deleteProject = async (id: string) => {
     );
 
     const { error } = await supabase.from('projects').delete().eq('id', id);
+
     if (error) throw error;
     return;
   }
 
-  // 클라이언트 fetch
-  const res = await fetch('/api/projects/delete', {
+  const res = await fetch(`/api/projects/delete`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id }),
