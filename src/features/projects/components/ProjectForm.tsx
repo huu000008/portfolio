@@ -104,7 +104,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
         <label htmlFor="projectPeriod">
           프로젝트 기간
-          <DatePicker name="projectPeriod" />
+          <DatePicker name="projectPeriod" id="projectPeriod" />
           {errors.projectPeriod && <p className={styles.error}>{errors.projectPeriod.message}</p>}
         </label>
 

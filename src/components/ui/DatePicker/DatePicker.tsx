@@ -6,17 +6,19 @@ import { format, parseISO, isValid } from 'date-fns';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import styles from './DatePicker.module.scss';
+import { Modal } from '../Modal/Modal';
 
 interface DatePickerProps {
   name: string;
+  id?: string;
   onBlur?: () => void;
 }
 
-export const DatePicker = ({ name, onBlur }: DatePickerProps) => {
+export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
   const { control, setValue, trigger } = useFormContext();
 
   const {
-    field: { value },
+    field: { value, ref },
   } = useController({ name, control });
 
   const initialRange = useMemo((): DateRange | undefined => {
@@ -31,7 +33,7 @@ export const DatePicker = ({ name, onBlur }: DatePickerProps) => {
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>(initialRange);
   const [tempRange, setTempRange] = useState<DateRange | undefined>(initialRange);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -51,32 +53,34 @@ export const DatePicker = ({ name, onBlur }: DatePickerProps) => {
     }
 
     await trigger(name);
-    setShowCalendar(false);
+    setOpen(false);
     onBlur?.();
   };
 
   return (
     <div className={styles.wrap}>
-      <button type="button" className={styles.trigger} onClick={() => setShowCalendar(true)}>
-        {triggerLabel}
-      </button>
+      <input type="hidden" name={name} value={value} ref={ref} />
 
-      {showCalendar && (
-        <div className={styles.overlay} onClick={() => setShowCalendar(false)}>
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            <DayPicker
-              mode="range"
-              numberOfMonths={2}
-              selected={tempRange}
-              onSelect={range => setTempRange(range as DateRange)}
-              showOutsideDays
-            />
-            <button type="button" className={styles.confirm} onClick={handleConfirm}>
-              적용
-            </button>
-          </div>
-        </div>
-      )}
+      <Modal
+        open={open}
+        onOpenChange={setOpen}
+        trigger={
+          <button type="button" id={id} className={styles.trigger} aria-label="날짜 범위 선택">
+            {triggerLabel}
+          </button>
+        }
+      >
+        <DayPicker
+          mode="range"
+          numberOfMonths={2}
+          selected={tempRange}
+          onSelect={range => setTempRange(range as DateRange)}
+          showOutsideDays={false}
+        />
+        <button type="button" className={styles.confirm} onClick={handleConfirm}>
+          적용
+        </button>
+      </Modal>
     </div>
   );
 };
