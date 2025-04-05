@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +9,7 @@ import styles from './ProjectForm.module.scss';
 import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
 import { useRouter } from 'next/navigation';
 import { createProject } from '@/features/projects/api/createProject';
+import { updateProject } from '@/features/projects/api/updateProject';
 
 const projectFormSchema = z.object({
   title: z.string().min(1, { message: '제목을 입력해주세요.' }),
@@ -35,28 +37,50 @@ const TECH_STACK_OPTIONS = [
   'React Query',
 ];
 
-export const ProjectForm = () => {
+interface ProjectFormProps {
+  defaultValues?: Partial<ProjectFormValues & { id: string }>;
+  isEditMode?: boolean;
+}
+
+export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormProps) => {
   const methods = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
-      techStack: [],
+      ...defaultValues,
+      techStack: Array.isArray(defaultValues?.techStack) ? defaultValues.techStack : [],
     },
   });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    reset,
   } = methods;
 
   const router = useRouter();
 
+  useEffect(() => {
+    reset({
+      ...defaultValues,
+      techStack: Array.isArray(defaultValues?.techStack) ? defaultValues.techStack : [],
+    });
+  }, [defaultValues, reset]);
+
   const onSubmit = async (data: ProjectFormValues) => {
-    const res = await createProject(data);
+    let res;
+
+    if (isEditMode && defaultValues?.id) {
+      res = await updateProject({ id: defaultValues.id, ...data });
+    } else {
+      res = await createProject(data);
+    }
+
     if (res?.error) {
       alert('저장 실패: ' + res.error.message);
       return;
     }
+
     router.push('/projects');
   };
 
@@ -65,7 +89,7 @@ export const ProjectForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className={styles.wrap}>
         <label>
           제목
-          <input type="text" {...register('title', { required: '제목을 입력해주세요.' })} />
+          <input type="text" {...register('title')} />
           {errors.title && <p className={styles.error}>{errors.title.message}</p>}
         </label>
         <label>
@@ -116,7 +140,7 @@ export const ProjectForm = () => {
           {errors.retrospective && <p className={styles.error}>{errors.retrospective.message}</p>}
         </label>
 
-        <button type="submit">제출하기</button>
+        <button type="submit">{isEditMode ? '수정하기' : '제출하기'}</button>
       </form>
     </FormProvider>
   );

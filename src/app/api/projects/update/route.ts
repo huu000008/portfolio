@@ -3,7 +3,19 @@ import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function PATCH(req: NextRequest) {
-  const { id, title, content } = await req.json();
+  const {
+    id,
+    title,
+    description,
+    projectPeriod,
+    team,
+    roles,
+    techStack,
+    contributions,
+    achievements,
+    retrospective,
+  } = await req.json();
+
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -18,7 +30,20 @@ export async function PATCH(req: NextRequest) {
     },
   );
 
-  const { error } = await supabase.from('projects').update({ title, content }).eq('id', id);
+  const { error } = await supabase
+    .from('projects')
+    .update({
+      title,
+      description,
+      project_period: projectPeriod,
+      team,
+      roles,
+      tech_stack: techStack,
+      contributions,
+      achievements,
+      retrospective,
+    })
+    .eq('id', id);
 
   if (error) return NextResponse.json({ error }, { status: 500 });
   return NextResponse.json({ success: true });

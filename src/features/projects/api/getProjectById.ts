@@ -1,6 +1,5 @@
 import { isServer } from '@/lib/utils/isServer';
 import { Project } from '@/types/project';
-
 export const getProjectById = async (id: string): Promise<Project | null> => {
   if (isServer()) {
     const { cookies } = await import('next/headers');
@@ -27,6 +26,6 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
   }
 
   const res = await fetch(`/api/projects/${id}`);
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error('프로젝트 조회 실패');
   return res.json();
 };
