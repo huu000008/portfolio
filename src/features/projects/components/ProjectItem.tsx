@@ -1,5 +1,6 @@
-import { Project } from "../types";
-import { SafeHtml } from "@/components/ui/SafeHtml";
+import { Project } from '../../../types/project';
+import styles from './ProjectItem.module.scss';
+import { TransitionLink } from '@/components/TransitionLink';
 
 type Props = {
   project: Project;
@@ -7,9 +8,8 @@ type Props = {
 
 export const ProjectItem = ({ project }: Props) => {
   return (
-    <div className="wrap">
+    <TransitionLink className={styles.wrap} href={`/projects/${project.id}`}>
       <div className="title">{project.title}</div>
-      <SafeHtml html={project.content} />
-    </div>
+    </TransitionLink>
   );
 };

@@ -1,0 +1,115 @@
+@import './abstracts/variables';
+@import './base/interaction';
+@import './base/theme';
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; // 10px = 1rem 기준
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Pretendard', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-body);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  padding: 1rem 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-accent);
+  color: white;
+
+  &:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: none;
+  }
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 1rem 1.6rem;
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.1s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background-color: var(--color-bg-body);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+/* View Transition Animation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 600ms;
+  animation-timing-function: ease-in-out;
+}

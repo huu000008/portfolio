@@ -1,15 +1,17 @@
-import { Project } from "../types";
-import { ProjectItem } from "./ProjectItem";
-import styles from "./ProjectList.module.scss";
+import { Project } from '@/types/project';
+import { ProjectItem } from './ProjectItem';
+import styles from './ProjectList.module.scss';
 
-type Props = {
+interface Props {
   projects: Project[];
-};
+}
 
 export const ProjectList = ({ projects }: Props) => {
+  if (!projects.length) return <div>프로젝트가 없습니다.</div>;
+
   return (
     <div className={styles.wrap}>
-      {projects.map((project) => (
+      {projects.map(project => (
         <ProjectItem key={project.id} project={project} />
       ))}
     </div>

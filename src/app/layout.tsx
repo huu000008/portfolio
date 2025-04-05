@@ -1,28 +1,23 @@
-import type { Metadata } from "next";
-import "@/styles/global.scss";
-import { ThemeProvider } from "@/contexts/ThemeProvider";
-import { ThemeScript } from "@/components/layout/ThemeScript";
-import { Header } from "@/components/layout/Header";
+import type { Metadata } from 'next';
+import '@/styles/globals.scss';
+import { ThemeScript } from '@/components/ThemeScript';
+import { Header } from '@/components/layout/Header';
+import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: "My App",
-  description: "Next.js 15 with custom theme system",
+  title: 'My App',
+  description: 'Next.js 15 with custom theme system',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <head />
-      <body>
+      <head>
         <ThemeScript />
-        <ThemeProvider>
-          <Header />
-          {children}
-        </ThemeProvider>
+      </head>
+      <body>
+        <Header />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

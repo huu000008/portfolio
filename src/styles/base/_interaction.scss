@@ -1,0 +1,14 @@
+/* 인터랙션 가능한 요소들에 공통 효과 */
+a,
+button,
+input[type='button'],
+input[type='submit'] {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.15s ease;
+
+  &:active {
+    transform: scale(0.96); // iOS 살짝 눌리는 효과
+  }
+}

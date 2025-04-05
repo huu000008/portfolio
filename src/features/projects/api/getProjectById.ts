@@ -1,32 +1,32 @@
 import { isServer } from '@/lib/utils/isServer';
+import { Project } from '@/types/project';
 
-export const getProjects = async () => {
+export const getProjectById = async (id: string): Promise<Project | null> => {
   if (isServer()) {
     const { cookies } = await import('next/headers');
     const { createServerClient } = await import('@supabase/ssr');
 
     const cookieStore = await cookies();
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           get: name => cookieStore.get(name)?.value ?? null,
-          set() {},
-          remove() {},
+          set: () => {},
+          remove: () => {},
         },
       },
     );
 
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error || !data) throw error;
+    const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
+
+    if (error || !data) return null;
     return data;
   }
 
-  const res = await fetch('/api/projects');
-  if (!res.ok) throw new Error('프로젝트 목록 조회 실패');
+  const res = await fetch(`/api/projects/${id}`);
+  if (!res.ok) return null;
   return res.json();
 };

@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import styles from "./Header.module.scss";
-import Link from "next/link";
+import styles from './Header.module.scss';
+import { TransitionLink } from '../TransitionLink';
+import { ThemeToggle } from '../ThemeToggle';
 
 export const Header = () => {
   return (
     <header className={styles.wrap}>
       <h1>JOHYUKRAE</h1>
       <div className={styles.menu}>
-        <Link href="/">Home</Link>
-        <Link href="/about">About</Link>
-        <Link href="/projects">Projects</Link>
+        <TransitionLink href="/">Home</TransitionLink>
+        <TransitionLink href="/about">About</TransitionLink>
+        <TransitionLink href="/projects">Projects</TransitionLink>
       </div>
       <ThemeToggle />
     </header>
