@@ -112,9 +112,39 @@ textarea::placeholder {
   opacity: 0.6;
 }
 
-/* View Transition Animation */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 600ms;
+  animation-duration: 400ms;
   animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+::view-transition-old(root) {
+  animation-name: slideOutDown;
+}
+
+::view-transition-new(root) {
+  animation-name: slideInDown;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(10%);
+    opacity: 0;
+  }
 }

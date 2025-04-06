@@ -1,15 +1,5 @@
-// src/app/page.tsx
-import { getProjects } from '@/features/projects/api/getProjects';
-import ProjectListServer from '@/features/projects/components/ProjectListServer';
+import HomeContainer from '@/features/home/components/HomeContainer';
 
 export default async function Home() {
-  const projects = await getProjects();
-
-  return (
-    <div>
-      <main>
-        <ProjectListServer projects={projects?.slice(0, 5) || []} />
-      </main>
-    </div>
-  );
+  return <HomeContainer />;
 }
