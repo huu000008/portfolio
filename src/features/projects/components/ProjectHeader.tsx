@@ -4,6 +4,7 @@ import { TransitionLink } from '@/components/TransitionLink';
 import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { deleteProject } from '@/features/projects/api/deleteProject';
+import { useToast } from '@/hooks/useToast';
 
 interface ProjectHeaderProps {
   id?: string;
@@ -12,6 +13,7 @@ interface ProjectHeaderProps {
 export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { success, error } = useToast();
 
   const isEditPage = pathname.startsWith('/projects/edit');
   const isListPage = pathname === '/projects';
@@ -21,16 +23,27 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 
     if (!id) {
-      alert('프로젝트 ID가 없습니다');
+      error('프로젝트 ID가 없습니다', {
+        title: '오류',
+        duration: 5000,
+      });
       return;
     }
 
     try {
       await deleteProject(id);
+      success('프로젝트가 성공적으로 삭제되었습니다', {
+        title: '삭제 완료',
+        duration: 3000,
+      });
       router.push('/projects');
-    } catch (error) {
-      alert(
-        '삭제 실패: ' + (error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다'),
+    } catch (err) {
+      error(
+        '삭제 실패: ' + (err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다'),
+        {
+          title: '오류',
+          duration: 5000,
+        },
       );
     }
   };

@@ -59,7 +59,7 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
 
   return (
     <div className={styles.wrap}>
-      <input type="hidden" name={name} value={value} ref={ref} />
+      <input type="hidden" name={name} value={value ?? ''} ref={ref} />
 
       <Modal
         open={open}

@@ -3,6 +3,7 @@ import '@/styles/globals.scss';
 import { ThemeScript } from '@/components/ThemeScript';
 import { Header } from '@/components/layout/Header';
 import Providers from './providers';
+import { ToastContainer } from '@/components/ui/Toast/Toast';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Header />
         <Providers>{children}</Providers>
+        <ToastContainer />
       </body>
     </html>
   );

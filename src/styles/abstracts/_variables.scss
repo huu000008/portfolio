@@ -1,42 +1,85 @@
 :root {
   font-size: 62.5%; // 1rem = 10px
 
-  // Backgrounds
-  --color-bg-body: #ffffff;
-  --color-bg-surface: #f9fafb;
-  --color-bg-elevated: #f3f4f6;
+  // 따뜻한 색상으로 변경된 배경
+  --color-bg-body: #fffaf5;
+  --color-bg-surface: #fdf6ed;
+  --color-bg-elevated: #f9f0e3;
 
-  // Text
-  --color-text-primary: #111827;
-  --color-text-secondary: #4b5563;
-  --color-text-muted: #9ca3af;
+  // 따뜻한 색상의 텍스트
+  --color-text-primary: #3d2c29;
+  --color-text-secondary: #5f4b45;
+  --color-text-muted: #9c8981;
 
-  // Border
-  --color-border: #e5e7eb;
+  // 따뜻한 테두리 색상
+  --color-border: #e9dfd5;
 
-  // Accent (Primary Brand Color)
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
+  // 따뜻한 액센트 색상
+  --color-accent: #e67e22;
+  --color-accent-hover: #d35400;
 
-  // Semantic Colors
-  --color-success: #22c55e;
-  --color-warning: #facc15;
-  --color-danger: #ef4444;
+  // 따뜻한 시맨틱 색상
+  --color-success: #27ae60;
+  --color-warning: #f39c12;
+  --color-danger: #e74c3c;
 
-  // Radius
+  // 기존 반경 유지
   --radius-sm: 0.4rem;
   --radius-md: 0.8rem;
   --radius-lg: 1.6rem;
 
-  // Font Sizes
+  // 기존 폰트 크기 유지
   --font-size-xs: 1.2rem;
   --font-size-sm: 1.4rem;
   --font-size-md: 1.6rem;
   --font-size-lg: 1.8rem;
   --font-size-xl: 2.4rem;
 
-  // Shadows
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 12px 20px rgba(0, 0, 0, 0.15);
+  // 따뜻한 그림자 (약간 갈색 톤)
+  --shadow-sm: 0 1px 2px rgba(79, 59, 39, 0.05);
+  --shadow-md: 0 4px 8px rgba(79, 59, 39, 0.08);
+  --shadow-lg: 0 12px 20px rgba(79, 59, 39, 0.12);
+
+  // 추가할 수 있는 색상 변수들
+  --color-accent-light: #f8c291;
+  --color-accent-dark: #b7561e;
+
+  // 따뜻한 중성 색상
+  --color-neutral-100: #faf5f0;
+  --color-neutral-200: #f0e5d8;
+  --color-neutral-300: #e6d5c1;
+  --color-neutral-400: #d7c0a6;
+  --color-neutral-500: #c4a98a;
+  --color-neutral-600: #a68c6e;
+  --color-neutral-700: #846f54;
+  --color-neutral-800: #5f4d39;
+  --color-neutral-900: #3d3121;
+
+  // HSLA 기반 색상 변수 (계산 용이)
+  --hue-primary: 28; // 따뜻한 주황색 계열
+  --saturation-primary: 80%;
+  --lightness-primary: 60%;
+  --color-primary-base: hsla(
+    var(--hue-primary),
+    var(--saturation-primary),
+    var(--lightness-primary),
+    1
+  );
+  --color-primary-light: hsla(
+    var(--hue-primary),
+    var(--saturation-primary),
+    calc(var(--lightness-primary) + 15%),
+    1
+  );
+  --color-primary-dark: hsla(
+    var(--hue-primary),
+    var(--saturation-primary),
+    calc(var(--lightness-primary) - 15%),
+    1
+  );
+
+  // 상호작용 상태를 위한 색상
+  --color-focus-ring: rgba(230, 126, 34, 0.4);
+  --color-hover-overlay: rgba(230, 126, 34, 0.08);
+  --color-active-overlay: rgba(230, 126, 34, 0.16);
 }

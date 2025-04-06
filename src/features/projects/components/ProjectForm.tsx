@@ -5,13 +5,12 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-
 import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
 import { CheckboxButtonGroup } from '@/components/ui/CheckboxButtonGroup/CheckboxButtonGroup';
 import { createProject } from '@/features/projects/api/createProject';
 import { updateProject } from '@/features/projects/api/updateProject';
-
 import styles from './ProjectForm.module.scss';
+import { useToast } from '@/hooks/useToast';
 
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
@@ -66,6 +65,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   } = methods;
   const router = useRouter();
 
+  const { success, error } = useToast();
+
   useEffect(() => {
     reset({
       ...defaultValues,
@@ -74,17 +75,32 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   }, [defaultValues, reset]);
 
   const onSubmit = async (data: ProjectFormValues) => {
-    const res =
-      isEditMode && defaultValues?.id
-        ? await updateProject({ id: defaultValues.id, ...data })
-        : await createProject(data);
+    try {
+      const res =
+        isEditMode && defaultValues?.id
+          ? await updateProject({ id: defaultValues.id, ...data })
+          : await createProject(data);
 
-    if (res?.error) {
-      alert('저장 실패: ' + res.error.message);
-      return;
+      if (res?.error) {
+        error(res.error.message, {
+          title: '저장 실패',
+          duration: 5000,
+        });
+        return;
+      }
+
+      success(`프로젝트가 성공적으로 ${isEditMode ? '수정' : '생성'}되었습니다.`, {
+        title: '저장 완료',
+        duration: 3000,
+      });
+
+      router.push('/projects');
+    } catch (err) {
+      error('예기치 않은 오류가 발생했습니다.', {
+        title: '오류',
+        duration: 5000,
+      });
     }
-
-    router.push('/projects');
   };
 
   return (
