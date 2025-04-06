@@ -2,12 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   padding: 1.6rem 2rem;
   border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-gradient);
 
   h1 {
     font-size: 2rem;

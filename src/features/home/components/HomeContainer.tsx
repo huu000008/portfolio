@@ -1,9 +1,29 @@
 'use client';
 
+import { Project } from '@/types/project';
 import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
+import { useEffect } from 'react';
+import { useProjectStore } from '@/stores/projectStore';
 
-export default function HomeContainer() {
+export default function HomeContainer({
+  initialProjects,
+  initialIsLoading,
+}: {
+  initialProjects: Project[];
+  initialIsLoading: boolean;
+}) {
+  const { projects, isLoading, setProjects, fetchProjects } = useProjectStore();
+
+  useEffect(() => {
+    if (initialProjects && !projects) {
+      setProjects(initialProjects);
+    }
+    if (!projects && !isLoading) {
+      fetchProjects();
+    }
+  }, [initialProjects, projects, isLoading, setProjects, fetchProjects]);
+
   return (
     <div className={styles.wrap}>
       <div className={styles.inner}>
@@ -29,7 +49,10 @@ export default function HomeContainer() {
               <button>Project</button>
             </div>
           </div>
-          <RecentProjects />
+          <RecentProjects
+            projects={projects || initialProjects}
+            isLoading={isLoading || initialIsLoading}
+          />
         </div>
       </div>
     </div>

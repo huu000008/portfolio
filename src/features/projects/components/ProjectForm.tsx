@@ -11,6 +11,7 @@ import { createProject } from '@/features/projects/api/createProject';
 import { updateProject } from '@/features/projects/api/updateProject';
 import styles from './ProjectForm.module.scss';
 import { useToast } from '@/hooks/useToast';
+import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
 
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
@@ -20,15 +21,11 @@ const projectFormSchema = z.object({
   projectPeriod: requiredText('프로젝트 기간을 선택해주세요.'),
   team: requiredText('팀 구성을 입력해주세요.'),
   roles: requiredText('맡은 역할을 입력해주세요.'),
-  techStack: z
-    .array(z.string(), {
-      required_error: '기술 스택을 1개 이상 선택해주세요.',
-      invalid_type_error: '기술 스택을 1개 이상 선택해주세요.',
-    })
-    .min(1, { message: '기술 스택을 1개 이상 선택해주세요.' }),
+  techStack: z.array(z.string()).min(1, { message: '기술 스택을 1개 이상 선택해주세요.' }),
   contributions: requiredText('주요 기여 내용을 입력해주세요.'),
   achievements: requiredText('프로젝트 성과를 입력해주세요.'),
   retrospective: requiredText('회고를 입력해주세요.'),
+  thumbnailUrl: z.string().optional(),
 });
 
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -116,6 +113,11 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           설명
           <textarea {...register('description')} />
           {errors.description && <p className={styles.error}>{errors.description.message}</p>}
+        </label>
+
+        <label>
+          썸네일 이미지
+          <ImageUploader name="thumbnailUrl" />
         </label>
 
         <label htmlFor="projectPeriod">

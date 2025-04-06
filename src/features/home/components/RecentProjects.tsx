@@ -1,29 +1,25 @@
 'use client';
 
-import { useProjectStore } from '@/stores/projectStore';
 import React from 'react';
 import styles from './RecentProjects.module.scss';
 import { TransitionLink } from '@/components/TransitionLink';
+import { Project } from '@/types/project';
 
 interface RecentProjectsProps {
   className?: string;
+  projects: Project[] | null;
+  isLoading: boolean;
 }
 
-export default function RecentProjects({ className }: RecentProjectsProps) {
-  const { projects, isLoading, fetchProjects } = useProjectStore();
-
-  React.useEffect(() => {
-    if (!projects && !isLoading) {
-      fetchProjects();
-    }
-  }, [fetchProjects, projects, isLoading]);
-
+export default function RecentProjects({ projects, isLoading }: RecentProjectsProps) {
   return (
     <div className={styles.wrap}>
       <div className={styles.title}>New Project</div>
       <div className={styles.list}>
         {isLoading ? (
           <div className={styles.loading}>Loading...</div>
+        ) : projects?.length === 0 ? (
+          <div className={styles.empty}>프로젝트가 없습니다.</div>
         ) : (
           projects?.slice(0, 5).map((project, index) => (
             <TransitionLink

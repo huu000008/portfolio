@@ -29,6 +29,13 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
       <div className={styles.date}>{formatDateKST(project.created_at)}</div>
 
       <div className={styles.info}>
+        <div className={styles.label}>썸네일 이미지</div>
+        <div className={styles.value}>
+          {project.thumbnail_url && <img src={project.thumbnail_url} alt="썸네일" />}
+        </div>
+      </div>
+
+      <div className={styles.info}>
         <div className={styles.label}>설명</div>
         <div className={styles.value}>{project.description}</div>
       </div>

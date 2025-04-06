@@ -26,6 +26,7 @@ export async function createProject(data: ProjectFormValues) {
     contributions: data.contributions,
     achievements: data.achievements,
     retrospective: data.retrospective,
+    thumbnail_url: data.thumbnailUrl,
   });
 
   return { error };

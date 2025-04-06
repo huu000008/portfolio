@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Header />
         <Providers>
-          <main id="page-wrapper">{children}</main>
+          <main>{children}</main>
         </Providers>
         <ToastContainer />
       </body>

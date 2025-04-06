@@ -112,6 +112,7 @@ textarea::placeholder {
   opacity: 0.6;
 }
 
+/* View Transition Animation */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 400ms;
@@ -119,11 +120,14 @@ textarea::placeholder {
   animation-fill-mode: both;
 }
 
-::view-transition-old(root) {
+/* Exclude header from view transitions */
+::view-transition-old(root):not(.header),
+::view-transition-new(root):not(.header) {
   animation-name: slideOutDown;
 }
 
-::view-transition-new(root) {
+::view-transition-new(root):not(.header),
+::view-transition-old(root):not(.header) {
   animation-name: slideInDown;
 }
 

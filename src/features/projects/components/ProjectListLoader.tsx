@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
-import ProjectListServer from './ProjectListServer';
+import { ProjectList } from './ProjectList';
 
 export const ProjectListLoader = () => {
   const { projects, fetchProjects } = useProjectStore();
@@ -13,5 +13,5 @@ export const ProjectListLoader = () => {
     }
   }, [projects, fetchProjects]);
 
-  return <ProjectListServer projects={projects || []} />;
+  return <ProjectList projects={projects || []} />;
 };

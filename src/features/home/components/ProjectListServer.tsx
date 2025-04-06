@@ -1,4 +1,4 @@
-import { ProjectItem } from './ProjectItem';
+import { ProjectItem } from '../../projects/components/ProjectItem';
 import { Project } from '@/types/project';
 import styles from './ProjectListServer.module.scss';
 

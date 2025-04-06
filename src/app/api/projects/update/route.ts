@@ -14,6 +14,7 @@ export async function PATCH(req: NextRequest) {
     contributions,
     achievements,
     retrospective,
+    thumbnailUrl,
   } = await req.json();
 
   const cookieStore = await cookies();
@@ -42,9 +43,11 @@ export async function PATCH(req: NextRequest) {
       contributions,
       achievements,
       retrospective,
+      thumbnail_url: thumbnailUrl,
     })
     .eq('id', id);
 
   if (error) return NextResponse.json({ error }, { status: 500 });
+
   return NextResponse.json({ success: true });
 }
