@@ -15,22 +15,25 @@
 }
 
 html {
-  font-size: 62.5%; // 10px = 1rem 기준
+  font-size: 10px; // 10px = 1rem 기준
 }
 
 html,
 body {
   height: 100%;
+}
+
+body {
   font-family: 'Pretendard', sans-serif;
+  font-size: 1.6rem;
   line-height: 1.75;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg-body);
   color: var(--color-text-primary);
-  font-size: var(--font-size-md);
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ul,
@@ -117,40 +120,37 @@ textarea::placeholder {
 /* View Transition Animation */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 400ms;
-  animation-timing-function: ease-in-out;
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); // 더 자연스럽게
   animation-fill-mode: both;
 }
 
-/* Exclude header from view transitions */
-::view-transition-old(root):not(.header),
-::view-transition-new(root):not(.header) {
-  animation-name: slideOutDown;
+::view-transition-old(root) {
+  animation-name: fadeSlideOut;
 }
 
-::view-transition-new(root):not(.header),
-::view-transition-old(root):not(.header) {
-  animation-name: slideInDown;
+::view-transition-new(root) {
+  animation-name: fadeSlideIn;
 }
 
-@keyframes slideInDown {
+@keyframes fadeSlideIn {
   from {
-    transform: translateY(-10%);
     opacity: 0;
+    transform: translateY(1.6rem); // 살짝 아래에서 위로
   }
   to {
-    transform: translateY(0%);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes slideOutDown {
+@keyframes fadeSlideOut {
   from {
-    transform: translateY(0%);
     opacity: 1;
+    transform: translateY(0);
   }
   to {
-    transform: translateY(10%);
     opacity: 0;
+    transform: translateY(-1.6rem); // 위로 사라지기
   }
 }

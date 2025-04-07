@@ -1,6 +1,4 @@
 :root {
-  font-size: 62.5%; // 1rem = 10px
-
   // 따뜻한 색상으로 변경된 배경
   --color-bg-body: #fffaf5;
   --color-bg-surface: #fdf6ed;
@@ -22,6 +20,14 @@
   --color-success: #27ae60;
   --color-warning: #f39c12;
   --color-danger: #e74c3c;
+
+  // 상호작용 상태를 위한 색상
+  --color-focus-ring: rgba(230, 126, 34, 0.4);
+
+  --color-gradient: rgba(0, 0, 0, 0.02);
+
+  --color-hover-overlay: rgba(230, 126, 34, 0.08);
+  --color-active-overlay: rgba(230, 126, 34, 0.16);
 
   // 기존 반경 유지
   --radius-sm: 0.4rem;
@@ -77,11 +83,4 @@
     calc(var(--lightness-primary) - 15%),
     1
   );
-
-  // 상호작용 상태를 위한 색상
-  --color-focus-ring: rgba(230, 126, 34, 0.4);
-  --color-hover-overlay: rgba(230, 126, 34, 0.08);
-  --color-active-overlay: rgba(230, 126, 34, 0.16);
-
-  --color-gradient: rgba(0, 0, 0, 0.02);
 }
