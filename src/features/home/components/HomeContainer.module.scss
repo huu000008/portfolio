@@ -6,10 +6,7 @@
   gap: 1rem;
   height: 100vh;
   padding: 5rem 2rem;
-  background-image: url('/main_bg.webp');
-  background-size: cover;
-  background-position: 75% bottom;
-  background-repeat: no-repeat;
+
   .inner {
     max-width: 120rem;
     width: 100%;
@@ -29,16 +26,31 @@
   .bottom {
     display: flex;
     justify-content: space-between;
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      padding-top: 4rem;
+      &::before {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5rem;
+        height: 1px;
+        content: '';
+        background: var(--color-text-muted);
+      }
+      .text {
+        font-size: var(--font-size-lg);
+      }
+      .action {
+        display: flex;
+        gap: 1rem;
+      }
+    }
   }
-}
-
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  color: var(--text-muted);
-  font-size: 1.2rem;
 }
 
 @include respond(md) {

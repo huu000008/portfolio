@@ -3,7 +3,7 @@
     "target": "ES2022", // 최신 브라우저 호환을 위한 타겟
     "lib": ["DOM", "DOM.Iterable", "ES2022"], // 최신 ES + 브라우저 API
     "module": "ESNext", // 모듈 시스템 최적화 (Next.js와 궁합 좋음)
-    "moduleResolution": "bundler", // Next.js 13+ App Router에서 권장
+    "moduleResolution": "node", // Next.js 13+ App Router에서 권장
     "allowJs": false, // JS 사용 금지 (TS 프로젝트로서 일관성 유지)
     "checkJs": false,
     "strict": true, // 타입 안정성 강화

@@ -4,6 +4,7 @@ import React from 'react';
 import styles from './RecentProjects.module.scss';
 import { TransitionLink } from '@/components/TransitionLink';
 import { Project } from '@/types/project';
+import { formatRelativeTime } from '@/utils/date';
 
 interface RecentProjectsProps {
   className?: string;
@@ -29,6 +30,7 @@ export default function RecentProjects({ projects, isLoading }: RecentProjectsPr
             >
               <div className={styles.title}>{project.title}</div>
               {index === 0 && <div className={styles.description}>{project.description}</div>}
+              <div className={styles.date}>{formatRelativeTime(project.created_at)}</div>
             </TransitionLink>
           ))
         )}

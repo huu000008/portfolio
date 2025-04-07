@@ -27,14 +27,14 @@ export default function HomeContainer({
   return (
     <div className={styles.wrap}>
       <div className={styles.inner}>
-        <div className={styles.visual}>
+        {/* <div className={styles.visual}>
           <span className={styles.text1}>FRONT END & Web Publisher</span>
           <span className={styles.text2}>
             PORTFOLI
             <br />
             WEB DEVELOPER
           </span>
-        </div>
+        </div> */}
         <div className={styles.bottom}>
           <div className={styles.left}>
             <div className={styles.text}>
@@ -44,7 +44,7 @@ export default function HomeContainer({
               <br />
               새로운 기술을 학습하며, 익숙해지는 것에 전념하고 있습니다.
             </div>
-            <div className={styles.buttonAction}>
+            <div className={styles.action}>
               <button>About Me</button>
               <button>Project</button>
             </div>
