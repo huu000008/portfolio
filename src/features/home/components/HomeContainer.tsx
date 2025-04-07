@@ -5,6 +5,7 @@ import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
 import { useEffect } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
+import { TransitionLink } from '@/components/TransitionLink';
 
 export default function HomeContainer({
   initialProjects,
@@ -45,8 +46,7 @@ export default function HomeContainer({
               새로운 기술을 학습하며, 익숙해지는 것에 전념하고 있습니다.
             </div>
             <div className={styles.action}>
-              <button>About Me</button>
-              <button>Project</button>
+              <TransitionLink href="/projects">Projects</TransitionLink>
             </div>
           </div>
           <RecentProjects

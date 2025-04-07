@@ -4,6 +4,8 @@ import { ThemeScript } from '@/components/ThemeScript';
 import { Header } from '@/components/layout/Header';
 import Providers from './providers';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
+import QuickAction from '@/components/layout/QuickAction';
+import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -23,8 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Header />
         <Providers>
-          <main>{children}</main>
+          <main className={styles.wrap}>{children}</main>
         </Providers>
+        <QuickAction />
+
         <ToastContainer />
       </body>
     </html>
