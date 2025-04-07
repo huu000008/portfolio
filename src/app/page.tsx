@@ -3,5 +3,5 @@ import { getProjects } from '@/features/projects/api/getProjects';
 
 export default async function Home() {
   const projects = await getProjects();
-  return <HomeContainer initialProjects={projects} initialIsLoading={false} />;
+  return <HomeContainer initialProjects={projects} />;
 }

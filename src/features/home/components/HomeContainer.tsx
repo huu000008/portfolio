@@ -3,25 +3,24 @@
 import { Project } from '@/types/project';
 import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import { TransitionLink } from '@/components/TransitionLink';
 
-export default function HomeContainer({
-  initialProjects,
-  initialIsLoading,
-}: {
-  initialProjects: Project[];
-  initialIsLoading: boolean;
-}) {
+export default function HomeContainer({ initialProjects }: { initialProjects: Project[] }) {
   const { projects, isLoading, setProjects, fetchProjects } = useProjectStore();
 
+  // ✅ 최초 1회만 초기 데이터를 세팅
+  const initialized = useRef(false);
+
   useEffect(() => {
-    if (initialProjects && !projects) {
-      setProjects(initialProjects);
+    if (!initialized.current) {
+      setProjects(initialProjects); // 바로 상태 세팅
+      initialized.current = true;
     }
+
     if (!projects && !isLoading) {
-      fetchProjects();
+      fetchProjects(); // 필요 시 refetch
     }
   }, [initialProjects, projects, isLoading, setProjects, fetchProjects]);
 
@@ -50,8 +49,8 @@ export default function HomeContainer({
             </div>
           </div>
           <RecentProjects
-            projects={projects || initialProjects}
-            isLoading={isLoading || initialIsLoading}
+            projects={projects ?? initialProjects}
+            isLoading={isLoading && !projects}
           />
         </div>
       </div>
