@@ -2,11 +2,11 @@ import { ProjectItem } from '../../projects/components/ProjectItem';
 import { Project } from '@/types/project';
 import styles from './ProjectListServer.module.scss';
 
-interface ProjectListProps {
+interface Props {
   projects: Project[];
 }
 
-export default function ProjectListServer({ projects }: ProjectListProps) {
+export default function ProjectListServer({ projects }: Props) {
   return (
     <div className={styles.wrap}>
       {projects?.length ? (

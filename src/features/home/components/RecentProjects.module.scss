@@ -1,7 +1,10 @@
+@use '@/styles/abstracts/mixins' as *;
+
 .wrap {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  width: 40%;
   .title {
     font-size: var(--font-size-lg);
   }
@@ -17,6 +20,19 @@
     background: var(--color-gradient);
     &:first-child {
       grid-column: span 2;
+    }
+  }
+}
+
+@include respond(md) {
+  .wrap {
+    width: 100%;
+    .list {
+      grid-template-columns: 1fr;
+    }
+
+    .item:first-child {
+      grid-column: span 1;
     }
   }
 }

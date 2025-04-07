@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,13 +11,16 @@ import { updateProject } from '@/features/projects/api/updateProject';
 import styles from './ProjectForm.module.scss';
 import { useToast } from '@/hooks/useToast';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
+import { useProjectStore } from '@/stores/projectStore';
+import { parseISO, isValid } from 'date-fns';
+import { useEffect } from 'react';
 
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
 const projectFormSchema = z.object({
   title: requiredText('제목을 입력해주세요.'),
   description: requiredText('설명을 입력해주세요.'),
-  projectPeriod: requiredText('프로젝트 기간을 선택해주세요.'),
+  projectPeriod: z.string().min(1, { message: '프로젝트 기간을 선택해주세요.' }),
   team: requiredText('팀 구성을 입력해주세요.'),
   roles: requiredText('맡은 역할을 입력해주세요.'),
   techStack: z.array(z.string()).min(1, { message: '기술 스택을 1개 이상 선택해주세요.' }),
@@ -48,10 +50,7 @@ interface ProjectFormProps {
 export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormProps) => {
   const methods = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
-    defaultValues: {
-      ...defaultValues,
-      techStack: Array.isArray(defaultValues?.techStack) ? defaultValues.techStack : [],
-    },
+    defaultValues,
   });
 
   const {
@@ -64,12 +63,32 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
   const { success, error } = useToast();
 
+  const formattedPeriod = (() => {
+    let period = '';
+    const raw = defaultValues?.projectPeriod;
+
+    if (typeof raw === 'string' && raw.includes('~')) {
+      const [fromStr, toStr] = raw.split('~').map(s => s.trim());
+      const from = parseISO(fromStr);
+      const to = parseISO(toStr);
+      if (isValid(from) && isValid(to)) {
+        period = `${from.toISOString()} ~ ${to.toISOString()}`;
+      }
+    }
+    return period || '';
+  })();
+
   useEffect(() => {
     reset({
       ...defaultValues,
-      techStack: Array.isArray(defaultValues?.techStack) ? defaultValues.techStack : [],
+      projectPeriod: formattedPeriod,
+      techStack: Array.isArray(defaultValues?.techStack)
+        ? defaultValues.techStack
+        : defaultValues?.techStack === undefined
+          ? []
+          : undefined,
     });
-  }, [defaultValues, reset]);
+  }, [defaultValues, formattedPeriod, reset]);
 
   const onSubmit = async (data: ProjectFormValues) => {
     try {
@@ -91,14 +110,19 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
         duration: 3000,
       });
 
+      const { fetchProjects } = useProjectStore.getState();
+      await fetchProjects();
       router.push('/projects');
     } catch (err) {
-      error('예기치 않은 오류가 발생했습니다.', {
+      const errorMessage = err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
+      error(errorMessage, {
         title: '오류',
         duration: 5000,
       });
     }
   };
+
+  const buttonLabel = isEditMode ? '수정하기' : '제출하기';
 
   return (
     <FormProvider {...methods}>
@@ -111,7 +135,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
         <label>
           설명
-          <textarea {...register('description')} />
+          <textarea {...register('description')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.description && <p className={styles.error}>{errors.description.message}</p>}
         </label>
 
@@ -128,13 +152,13 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
         <label>
           팀 구성
-          <textarea {...register('team')} />
+          <textarea {...register('team')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.team && <p className={styles.error}>{errors.team.message}</p>}
         </label>
 
         <label>
           맡은 역할
-          <textarea {...register('roles')} />
+          <textarea {...register('roles')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.roles && <p className={styles.error}>{errors.roles.message}</p>}
         </label>
 
@@ -146,23 +170,23 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
         <label>
           주요 기여
-          <textarea {...register('contributions')} />
+          <textarea {...register('contributions')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.contributions && <p className={styles.error}>{errors.contributions.message}</p>}
         </label>
 
         <label>
           프로젝트 성과
-          <textarea {...register('achievements')} />
+          <textarea {...register('achievements')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.achievements && <p className={styles.error}>{errors.achievements.message}</p>}
         </label>
 
         <label>
           회고 & 느낀 점
-          <textarea {...register('retrospective')} />
+          <textarea {...register('retrospective')} style={{ whiteSpace: 'pre-wrap' }} />
           {errors.retrospective && <p className={styles.error}>{errors.retrospective.message}</p>}
         </label>
 
-        <button type="submit">{isEditMode ? '수정하기' : '제출하기'}</button>
+        <button type="submit">{buttonLabel}</button>
       </form>
     </FormProvider>
   );

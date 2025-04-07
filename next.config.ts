@@ -1,7 +1,12 @@
-import type { NextConfig } from "next";
+import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
 
-const nextConfig: NextConfig = {
+const withVanillaExtract = createVanillaExtractPlugin();
+
+const nextConfig = {
   /* config options here */
+  images: {
+    domains: ['mpivilzknwtgopfeqmkb.supabase.co'],
+  },
 };
 
-export default nextConfig;
+export default withVanillaExtract(nextConfig);

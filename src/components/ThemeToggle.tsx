@@ -1,11 +1,19 @@
 'use client';
 
-import { useThemeStore } from '@/stores/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { useEffect, useState } from 'react';
 
 export const ThemeToggle = () => {
-  const { theme, toggleTheme } = useThemeStore();
+  const { theme, toggleTheme } = useTheme();
+  const [label, setLabel] = useState('☀️'); // placeholder 렌더
 
-  return (
-    <button onClick={toggleTheme}>{theme === 'dark' ? '🌙 다크 모드' : '☀️ 라이트 모드'}</button>
-  );
+  useEffect(() => {
+    if (theme === 'dark') {
+      setLabel('🌙');
+    } else if (theme === 'light') {
+      setLabel('☀️');
+    }
+  }, [theme]);
+
+  return <button onClick={toggleTheme}>{label}</button>;
 };

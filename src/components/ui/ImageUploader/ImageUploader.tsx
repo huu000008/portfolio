@@ -1,9 +1,10 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { supabase } from '@/lib/supabase/client';
 import styles from './ImageUploader.module.scss';
+import Image from 'next/image';
 
 interface Props {
   name: string;
@@ -16,9 +17,20 @@ const sanitizeFileName = (filename: string) =>
     .replace(/[^a-zA-Z0-9._-]/g, '_');
 
 export const ImageUploader = ({ name }: Props) => {
-  const { setValue, watch } = useFormContext();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(watch(name) || null);
+  const { setValue, watch, getValues } = useFormContext();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 초기값 제거
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    const watchedUrl = watch(name);
+    const fallback = getValues(name); // <- 초기 값
+
+    if (watchedUrl) {
+      setPreviewUrl(watchedUrl);
+    } else if (fallback) {
+      setPreviewUrl(fallback);
+    }
+  }, [name, watch, getValues]);
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,7 +70,9 @@ export const ImageUploader = ({ name }: Props) => {
       <input type="file" accept="image/*" onChange={handleChange} />
       {uploading && <p>업로드 중...</p>}
       {previewUrl && (
-        <img src={previewUrl} alt="업로드된 이미지 미리보기" className={styles.preview} />
+        <>
+          <Image src={previewUrl} alt="업로드된 이미지 미리보기" width={300} height={200} />
+        </>
       )}
     </div>
   );

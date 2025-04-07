@@ -24,6 +24,7 @@ export default async function EditPage({ params }: EditPageProps) {
     contributions: project.contributions,
     achievements: project.achievements,
     retrospective: project.retrospective,
+    thumbnailUrl: project.thumbnail_url ?? undefined,
   };
 
   return (

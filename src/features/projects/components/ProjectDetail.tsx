@@ -1,10 +1,10 @@
 'use client';
 
 import { Project } from '@/types/project';
-import { SafeHtml } from '@/components/ui/SafeHtml';
 import styles from './ProjectDetail.module.scss';
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import Image from 'next/image';
 
 interface ProjectDetailProps {
   project: Project;
@@ -19,8 +19,10 @@ const formatDateKST = (dateStr: string) => {
 export const ProjectDetail = ({ project }: ProjectDetailProps) => {
   const formatPeriod = (period: string) => {
     if (!period.includes('~')) return period;
-    const [from, to] = period.split('~').map(d => d.trim());
-    return `${formatDateKST(from)} ~ ${formatDateKST(to)}`;
+    const [fromStr, toStr] = period.split('~').map(d => d.trim());
+    const from = new Date(fromStr);
+    const to = new Date(toStr);
+    return `${formatDateKST(from.toISOString())} ~ ${formatDateKST(to.toISOString())}`;
   };
 
   return (
@@ -31,13 +33,17 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
       <div className={styles.info}>
         <div className={styles.label}>썸네일 이미지</div>
         <div className={styles.value}>
-          {project.thumbnail_url && <img src={project.thumbnail_url} alt="썸네일" />}
+          {project.thumbnail_url && (
+            <Image src={project.thumbnail_url} alt="썸네일" width={800} height={600} />
+          )}
         </div>
       </div>
 
       <div className={styles.info}>
         <div className={styles.label}>설명</div>
-        <div className={styles.value}>{project.description}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.description}
+        </div>
       </div>
 
       <div className={styles.info}>
@@ -47,12 +53,16 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
       <div className={styles.info}>
         <div className={styles.label}>👥 팀 구성</div>
-        <div className={styles.value}>{project.team}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.team}
+        </div>
       </div>
 
       <div className={styles.info}>
         <div className={styles.label}>🧩 맡은 역할</div>
-        <div className={styles.value}>{project.roles}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.roles}
+        </div>
       </div>
 
       <div className={styles.info}>
@@ -64,17 +74,23 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
       <div className={styles.info}>
         <div className={styles.label}>🌟 주요 기여</div>
-        <div className={styles.value}>{project.contributions}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.contributions}
+        </div>
       </div>
 
       <div className={styles.info}>
         <div className={styles.label}>🏆 프로젝트 성과</div>
-        <div className={styles.value}>{project.achievements}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.achievements}
+        </div>
       </div>
 
       <div className={styles.info}>
         <div className={styles.label}>💡 회고 & 느낀 점</div>
-        <div className={styles.value}>{project.retrospective}</div>
+        <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
+          {project.retrospective}
+        </div>
       </div>
     </div>
   );
