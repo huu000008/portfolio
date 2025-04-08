@@ -1,9 +1,10 @@
+// components/ProjectHeader.tsx
 'use client';
 
 import { TransitionLink } from '@/components/TransitionLink';
 import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
-import { deleteProject } from '@/features/projects/api/deleteProject';
+import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
 
 interface ProjectHeaderProps {
@@ -13,39 +14,42 @@ interface ProjectHeaderProps {
 export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { success, error } = useToast();
+  const { success, error: showError } = useToast();
+  const { mutate: deleteProject, isPending } = useDeleteProject();
 
   const isEditPage = pathname.startsWith('/projects/edit');
   const isListPage = pathname === '/projects';
   const isDetailPage = pathname.startsWith('/projects/') && !isEditPage;
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 
     if (!id) {
-      error('프로젝트 ID가 없습니다', {
+      showError('프로젝트 ID가 없습니다', {
         title: '오류',
         duration: 5000,
       });
       return;
     }
 
-    try {
-      await deleteProject(id);
-      success('프로젝트가 성공적으로 삭제되었습니다', {
-        title: '삭제 완료',
-        duration: 3000,
-      });
-      router.push('/projects');
-    } catch (err) {
-      error(
-        '삭제 실패: ' + (err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다'),
-        {
-          title: '오류',
-          duration: 5000,
-        },
-      );
-    }
+    deleteProject(id, {
+      onSuccess: () => {
+        success('프로젝트가 성공적으로 삭제되었습니다', {
+          title: '삭제 완료',
+          duration: 3000,
+        });
+        router.push('/projects');
+      },
+      onError: err => {
+        showError(
+          '삭제 실패: ' + (err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다'),
+          {
+            title: '오류',
+            duration: 5000,
+          },
+        );
+      },
+    });
   };
 
   return (
@@ -59,11 +63,25 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
         {isDetailPage && id && (
           <>
             <TransitionLink href={`/projects/edit/${id}`}>수정</TransitionLink>
-            <button onClick={handleDelete}>삭제</button>
+            <button
+              onClick={handleDelete}
+              disabled={isPending}
+              className={isPending ? styles.loading : ''}
+            >
+              {isPending ? '삭제 중...' : '삭제'}
+            </button>
           </>
         )}
 
-        {isEditPage && id && <button onClick={handleDelete}>삭제</button>}
+        {isEditPage && id && (
+          <button
+            onClick={handleDelete}
+            disabled={isPending}
+            className={isPending ? styles.loading : ''}
+          >
+            {isPending ? '삭제 중...' : '삭제'}
+          </button>
+        )}
       </div>
     </div>
   );

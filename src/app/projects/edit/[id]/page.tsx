@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getProjectById } from '@/features/projects/api/getProjectById';
+import { getProjectByIdServer } from '@/lib/api/projects';
 import { ProjectForm } from '@/features/projects/components/ProjectForm';
 import { ProjectHeader } from '@/features/projects/components/ProjectHeader';
 
@@ -9,7 +9,7 @@ interface EditPageProps {
 
 export default async function EditPage({ params }: EditPageProps) {
   const { id } = await params;
-  const project = await getProjectById(id);
+  const project = await getProjectByIdServer(id);
 
   if (!project) return notFound();
 

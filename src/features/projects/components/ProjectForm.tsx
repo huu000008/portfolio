@@ -6,16 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
 import { CheckboxButtonGroup } from '@/components/ui/CheckboxButtonGroup/CheckboxButtonGroup';
-import { createProject } from '@/features/projects/api/createProject';
-import { updateProject } from '@/features/projects/api/updateProject';
+import { useCreateProject, useUpdateProject } from '@/hooks/useProjects';
 import styles from './ProjectForm.module.scss';
 import { useToast } from '@/hooks/useToast';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
 
 import { parseISO, isValid } from 'date-fns';
 import { useEffect } from 'react';
-import { useProjectStore } from '@/stores/projectStore';
 
+// 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
 const projectFormSchema = z.object({
@@ -49,21 +48,6 @@ interface ProjectFormProps {
 }
 
 export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormProps) => {
-  const methods = useForm<ProjectFormValues>({
-    resolver: zodResolver(projectFormSchema),
-    defaultValues,
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = methods;
-  const router = useRouter();
-  const { fetchProjects } = useProjectStore();
-  const { success, error } = useToast();
-
   const formattedPeriod = (() => {
     let period = '';
     const raw = defaultValues?.projectPeriod;
@@ -78,51 +62,119 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
     }
     return period || '';
   })();
+  const methods = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectFormSchema),
+    defaultValues: {
+      // ✅ 초기값 객체 생성
+      title: defaultValues?.title || '',
+      description: defaultValues?.description || '',
+      projectPeriod: formattedPeriod,
+      team: defaultValues?.team || '',
+      roles: defaultValues?.roles || '',
+      techStack: Array.isArray(defaultValues?.techStack)
+        ? defaultValues?.techStack
+        : defaultValues?.techStack === undefined
+          ? [] // Zod 스키마에 따라 최소 1개 요구
+          : undefined,
+      contributions: defaultValues?.contributions || '',
+      achievements: defaultValues?.achievements || '',
+      retrospective: defaultValues?.retrospective || '',
+      thumbnailUrl: defaultValues?.thumbnailUrl || undefined,
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = methods;
+
+  const router = useRouter();
+  const { success, error: showError } = useToast();
+
+  // 새로운 커스텀 훅 사용
+  const { mutate: createProject, isPending: isCreating } = useCreateProject();
+  const { mutate: updateProject, isPending: isUpdating } = useUpdateProject();
+
+  const isPending = isCreating || isUpdating;
 
   useEffect(() => {
     reset({
-      ...defaultValues,
+      ...defaultValues, // undefined일 경우 빈 객체로 대체
       projectPeriod: formattedPeriod,
       techStack: Array.isArray(defaultValues?.techStack)
-        ? defaultValues.techStack
+        ? defaultValues?.techStack
         : defaultValues?.techStack === undefined
           ? []
           : undefined,
     });
   }, [defaultValues, formattedPeriod, reset]);
 
-  const onSubmit = async (data: ProjectFormValues) => {
-    try {
-      const res =
-        isEditMode && defaultValues?.id
-          ? await updateProject({ id: defaultValues.id, ...data })
-          : await createProject(data);
+  const onSubmit = (data: ProjectFormValues) => {
+    if (isPending) return; // 이미 제출 중이면 더 이상 진행하지 않음
 
-      if (res?.error) {
-        error(res.error.message, {
-          title: '저장 실패',
-          duration: 5000,
-        });
-        return;
-      }
-
-      success(`프로젝트가 성공적으로 ${isEditMode ? '수정' : '생성'}되었습니다.`, {
-        title: '저장 완료',
-        duration: 3000,
-      });
-
-      await fetchProjects();
-      router.push('/projects');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
-      error(errorMessage, {
-        title: '오류',
-        duration: 5000,
+    if (isEditMode && defaultValues?.id) {
+      // 수정 모드일 때
+      updateProject(
+        { id: defaultValues.id, ...data },
+        {
+          onSuccess: result => {
+            if (result.data) {
+              success(`프로젝트가 성공적으로 수정되었습니다.`, {
+                title: '저장 완료',
+                duration: 3000,
+              });
+              router.push('/projects');
+            } else if (result.error) {
+              showError(result.error.message, {
+                title: '저장 실패',
+                duration: 5000,
+              });
+            }
+          },
+          onError: err => {
+            const errorMessage =
+              err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
+            showError(errorMessage, {
+              title: '오류',
+              duration: 5000,
+            });
+          },
+        },
+      );
+    } else {
+      // 생성 모드일 때
+      createProject(data, {
+        onSuccess: result => {
+          if (result.data) {
+            success(`프로젝트가 성공적으로 생성되었습니다.`, {
+              title: '저장 완료',
+              duration: 3000,
+            });
+            router.push('/projects');
+          } else if (result.error) {
+            showError(result.error.message, {
+              title: '저장 실패',
+              duration: 5000,
+            });
+          }
+        },
+        onError: err => {
+          const errorMessage =
+            err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
+          showError(errorMessage, {
+            title: '오류',
+            duration: 5000,
+          });
+        },
       });
     }
   };
 
   const buttonLabel = isEditMode ? '수정하기' : '제출하기';
+
+  console.log('isPending', isPending);
 
   return (
     <FormProvider {...methods}>
@@ -280,8 +332,9 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           )}
         </div>
 
-        <button type="submit" className={styles.submitButton}>
-          {buttonLabel}
+        {/* 제출 버튼에 로딩 상태 추가 */}
+        <button type="submit" className={styles.submitButton} disabled={isPending}>
+          {isPending ? (isEditMode ? '수정 중...' : '제출 중...') : buttonLabel}
         </button>
       </form>
     </FormProvider>

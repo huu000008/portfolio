@@ -17,7 +17,7 @@ export default function RecentProjects({ projects, isLoading }: RecentProjectsPr
     <div className={styles.wrap}>
       <div className={styles.title}>Recent Projects</div>
       <div className={styles.list}>
-        {isLoading ? (
+        {isLoading && projects === null ? (
           <div className={styles.loading}>Loading...</div>
         ) : projects?.length === 0 ? (
           <div className={styles.empty}>프로젝트가 없습니다.</div>

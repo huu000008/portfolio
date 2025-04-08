@@ -3,6 +3,7 @@
  */
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { Project } from '@/types/project';
+import { notFound } from 'next/navigation';
 
 /**
  * 모든 프로젝트 목록을 가져오는 함수 (서버 컴포넌트용)
@@ -27,6 +28,8 @@ export async function getProjectByIdServer(id: string): Promise<Project | null> 
 
   const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
 
-  if (error) return null;
+  if (error) throw new Error(`프로젝트 조회 실패: ${error.message}`);
+  if (!data || data.length === 0) notFound();
+
   return data;
 }

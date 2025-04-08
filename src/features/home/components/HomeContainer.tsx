@@ -14,13 +14,13 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
   const initialized = useRef(false);
 
   useEffect(() => {
-    if (!initialized.current) {
-      setProjects(initialProjects); // 바로 상태 세팅
+    if (initialProjects && !initialized.current) {
+      setProjects(initialProjects);
       initialized.current = true;
     }
 
     if (!projects && !isLoading) {
-      fetchProjects(); // 필요 시 refetch
+      fetchProjects();
     }
   }, [initialProjects, projects, isLoading, setProjects, fetchProjects]);
 
@@ -49,8 +49,8 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
             </div>
           </div>
           <RecentProjects
-            projects={projects ?? initialProjects}
-            isLoading={isLoading && !projects}
+            projects={initialProjects || projects}
+            isLoading={projects ? false : isLoading}
           />
         </div>
       </div>

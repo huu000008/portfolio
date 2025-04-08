@@ -1,3 +1,4 @@
+// lib/supabase/server.ts
 /**
  * Supabase 서버 클라이언트 모듈
  * 서버 컴포넌트에서만 사용할 수 있는 Supabase 클라이언트 생성 함수
