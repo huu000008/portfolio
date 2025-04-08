@@ -11,9 +11,10 @@ import { updateProject } from '@/features/projects/api/updateProject';
 import styles from './ProjectForm.module.scss';
 import { useToast } from '@/hooks/useToast';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
-import { useProjectStore } from '@/stores/projectStore';
+
 import { parseISO, isValid } from 'date-fns';
 import { useEffect } from 'react';
+import { useProjectStore } from '@/stores/projectStore';
 
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
@@ -60,7 +61,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
     reset,
   } = methods;
   const router = useRouter();
-
+  const { fetchProjects } = useProjectStore();
   const { success, error } = useToast();
 
   const formattedPeriod = (() => {
@@ -110,7 +111,6 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
         duration: 3000,
       });
 
-      const { fetchProjects } = useProjectStore.getState();
       await fetchProjects();
       router.push('/projects');
     } catch (err) {
@@ -126,67 +126,163 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.wrap}>
-        <label>
-          제목
-          <input type="text" {...register('title')} />
-          {errors.title && <p className={styles.error}>{errors.title.message}</p>}
-        </label>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={styles.wrap}
+        aria-label="프로젝트 정보 입력 폼"
+      >
+        <div className={styles.formGroup}>
+          <label htmlFor="title" className={styles.label}>
+            제목
+          </label>
+          <input
+            type="text"
+            id="title"
+            {...register('title')}
+            className={styles.input}
+            aria-invalid={errors.title ? 'true' : 'false'}
+          />
+          {errors.title && (
+            <p className={styles.error} role="alert">
+              {errors.title.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          설명
-          <textarea {...register('description')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.description && <p className={styles.error}>{errors.description.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="description" className={styles.label}>
+            설명
+          </label>
+          <textarea
+            id="description"
+            {...register('description')}
+            className={styles.textarea}
+            aria-invalid={errors.description ? 'true' : 'false'}
+          />
+          {errors.description && (
+            <p className={styles.error} role="alert">
+              {errors.description.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          썸네일 이미지
-          <ImageUploader name="thumbnailUrl" />
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="thumbnailUrl" className={styles.label}>
+            썸네일 이미지
+          </label>
+          <ImageUploader name="thumbnailUrl" id="thumbnailUrl" />
+        </div>
 
-        <label htmlFor="projectPeriod">
-          프로젝트 기간
+        <div className={styles.formGroup}>
+          <label htmlFor="projectPeriod" className={styles.label}>
+            프로젝트 기간
+          </label>
           <DatePicker name="projectPeriod" id="projectPeriod" />
-          {errors.projectPeriod && <p className={styles.error}>{errors.projectPeriod.message}</p>}
-        </label>
+          {errors.projectPeriod && (
+            <p className={styles.error} role="alert">
+              {errors.projectPeriod.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          팀 구성
-          <textarea {...register('team')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.team && <p className={styles.error}>{errors.team.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="team" className={styles.label}>
+            팀 구성
+          </label>
+          <textarea
+            id="team"
+            {...register('team')}
+            className={styles.textarea}
+            aria-invalid={errors.team ? 'true' : 'false'}
+          />
+          {errors.team && (
+            <p className={styles.error} role="alert">
+              {errors.team.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          맡은 역할
-          <textarea {...register('roles')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.roles && <p className={styles.error}>{errors.roles.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="roles" className={styles.label}>
+            맡은 역할
+          </label>
+          <textarea
+            id="roles"
+            {...register('roles')}
+            className={styles.textarea}
+            aria-invalid={errors.roles ? 'true' : 'false'}
+          />
+          {errors.roles && (
+            <p className={styles.error} role="alert">
+              {errors.roles.message}
+            </p>
+          )}
+        </div>
 
-        <fieldset>
-          <legend>🛠️ 사용 기술 스택</legend>
+        <fieldset className={styles.formGroup}>
+          <legend className={styles.label}>🛠️ 사용 기술 스택</legend>
           <CheckboxButtonGroup name="techStack" options={TECH_STACK_OPTIONS} />
-          {errors.techStack && <p className={styles.error}>{errors.techStack.message}</p>}
+          {errors.techStack && (
+            <p className={styles.error} role="alert">
+              {errors.techStack.message}
+            </p>
+          )}
         </fieldset>
 
-        <label>
-          주요 기여
-          <textarea {...register('contributions')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.contributions && <p className={styles.error}>{errors.contributions.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="contributions" className={styles.label}>
+            주요 기여
+          </label>
+          <textarea
+            id="contributions"
+            {...register('contributions')}
+            className={styles.textarea}
+            aria-invalid={errors.contributions ? 'true' : 'false'}
+          />
+          {errors.contributions && (
+            <p className={styles.error} role="alert">
+              {errors.contributions.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          프로젝트 성과
-          <textarea {...register('achievements')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.achievements && <p className={styles.error}>{errors.achievements.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="achievements" className={styles.label}>
+            프로젝트 성과
+          </label>
+          <textarea
+            id="achievements"
+            {...register('achievements')}
+            className={styles.textarea}
+            aria-invalid={errors.achievements ? 'true' : 'false'}
+          />
+          {errors.achievements && (
+            <p className={styles.error} role="alert">
+              {errors.achievements.message}
+            </p>
+          )}
+        </div>
 
-        <label>
-          회고 & 느낀 점
-          <textarea {...register('retrospective')} style={{ whiteSpace: 'pre-wrap' }} />
-          {errors.retrospective && <p className={styles.error}>{errors.retrospective.message}</p>}
-        </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="retrospective" className={styles.label}>
+            회고 & 느낀 점
+          </label>
+          <textarea
+            id="retrospective"
+            {...register('retrospective')}
+            className={styles.textarea}
+            aria-invalid={errors.retrospective ? 'true' : 'false'}
+          />
+          {errors.retrospective && (
+            <p className={styles.error} role="alert">
+              {errors.retrospective.message}
+            </p>
+          )}
+        </div>
 
-        <button type="submit">{buttonLabel}</button>
+        <button type="submit" className={styles.submitButton}>
+          {buttonLabel}
+        </button>
       </form>
     </FormProvider>
   );

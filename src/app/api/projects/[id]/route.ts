@@ -1,24 +1,21 @@
-import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
+import { getProjectByIdServer } from '@/lib/api/projects';
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const cookieStore = await cookies();
+/**
+ * 특정 ID의 프로젝트를 조회하는 API 엔드포인트
+ */
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const { id } = await params;
+    const project = await getProjectByIdServer(id);
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: name => cookieStore.get(name)?.value ?? null,
-        set: () => {},
-        remove: () => {},
-      },
-    },
-  );
+    if (!project) {
+      return NextResponse.json({ error: '프로젝트를 찾을 수 없습니다.' }, { status: 404 });
+    }
 
-  const { data, error } = await supabase.from('projects').select('*').eq('id', params.id).single();
-
-  if (error) return NextResponse.json({ error }, { status: 500 });
-  return NextResponse.json(data);
+    return NextResponse.json(project);
+  } catch (error) {
+    console.error('프로젝트 조회 중 오류 발생:', error);
+    return NextResponse.json({ error: '프로젝트 조회 중 오류가 발생했습니다.' }, { status: 500 });
+  }
 }

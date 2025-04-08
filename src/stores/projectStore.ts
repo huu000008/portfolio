@@ -1,77 +1,38 @@
-// src/stores/projectStore.ts
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { Project } from '@/types/project';
-import { getProjects } from '@/features/projects/api/getProjects';
+import { supabaseClient } from '@/lib/supabase/client';
 
-interface ProjectStore {
-  projects: Project[] | null;
-  hasFetchedOnce: boolean;
+interface ProjectState {
+  projects: Project[];
   isLoading: boolean;
+  error: Error | null;
   fetchProjects: () => Promise<void>;
-  setProjects: (data: Project[]) => void;
-  clearProjects: () => void;
-  deleteProjectById: (id: string) => Promise<void>;
-  updateProject: (id: string, data: Partial<Project>) => Promise<void>;
+  setProjects: (projects: Project[]) => void;
 }
 
-export const useProjectStore = create<ProjectStore>()(
-  persist(
-    (set, get) => ({
-      projects: null,
-      hasFetchedOnce: false,
-      isLoading: false,
+/**
+ * 프로젝트 상태를 관리하는 스토어
+ * Zustand를 사용하여 전역 상태로 프로젝트 목록을 관리합니다.
+ */
+export const useProjectStore = create<ProjectState>(set => ({
+  projects: [],
+  isLoading: false,
+  error: null,
+  setProjects: projects => set({ projects }),
+  fetchProjects: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data, error } = await supabaseClient
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      fetchProjects: async () => {
-        set({ isLoading: true });
-        try {
-          const data = await getProjects();
-          set({ projects: data, hasFetchedOnce: true });
-        } catch (error) {
-          console.error('프로젝트 목록 로딩 실패:', error);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      setProjects: data => set({ projects: data, hasFetchedOnce: true }),
-
-      clearProjects: () => set({ projects: null, hasFetchedOnce: false }),
-
-      deleteProjectById: async id => {
-        set({ isLoading: true });
-        try {
-          const updated = get().projects?.filter(project => project.id !== id) || [];
-          set({ projects: updated });
-        } catch (error) {
-          console.error('프로젝트 삭제 실패:', error);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      updateProject: async (id, data) => {
-        set({ isLoading: true });
-        try {
-          const projects = get().projects || [];
-          const updatedProjects = projects.map(project =>
-            project.id === id ? { ...project, ...data } : project,
-          );
-          set({ projects: updatedProjects });
-        } catch (error) {
-          console.error('프로젝트 업데이트 실패:', error);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-    }),
-    {
-      name: 'project-storage',
-      onRehydrateStorage: () => state => {
-        state?.setProjects([]);
-      },
-    },
-  ),
-);
+      if (error) throw error;
+      set({ projects: data || [], isLoading: false });
+    } catch (error) {
+      set({ error: error as Error, isLoading: false });
+    }
+  },
+}));

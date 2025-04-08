@@ -1,11 +1,17 @@
 @use 'sass:map';
 @use 'breakpoints';
 
-@mixin respond($breakpoint) {
+@mixin respond($breakpoint, $direction: 'max') {
   $value: map.get(breakpoints.$breakpoints, $breakpoint);
   @if $value {
-    @media (max-width: $value) {
-      @content;
+    @if $direction == 'min' {
+      @media (min-width: $value) {
+        @content;
+      }
+    } @else {
+      @media (max-width: $value) {
+        @content;
+      }
     }
   } @else {
     @error "No value found for #{$breakpoint} in \$breakpoints map.";

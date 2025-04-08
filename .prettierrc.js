@@ -3,8 +3,8 @@ module.exports = {
   semi: true,
   singleQuote: true,
   tabWidth: 2,
-  trailingComma: "all",
+  trailingComma: 'all',
   printWidth: 100,
-  arrowParens: "avoid",
-  endOfLine: "auto",
+  arrowParens: 'avoid',
+  endOfLine: 'auto',
 };

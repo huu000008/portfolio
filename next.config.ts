@@ -4,3 +4,5 @@ const nextConfig = {
     domains: ['mpivilzknwtgopfeqmkb.supabase.co'],
   },
 };
+
+export default nextConfig;

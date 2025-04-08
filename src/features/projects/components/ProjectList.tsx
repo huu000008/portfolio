@@ -1,19 +1,14 @@
 import { Project } from '@/types/project';
-import { ProjectItem } from './ProjectItem';
-import styles from './ProjectList.module.scss';
+import { ProjectGrid } from './ProjectGrid';
 
 interface Props {
   projects: Project[];
 }
 
+/**
+ * 프로젝트 목록을 표시하는 컴포넌트
+ * 내부적으로 ProjectGrid 컴포넌트를 사용하여 리스트 형태로 표시
+ */
 export const ProjectList = ({ projects }: Props) => {
-  if (!projects.length) return <div>프로젝트가 없습니다.</div>;
-
-  return (
-    <div className={styles.wrap}>
-      {projects.map(project => (
-        <ProjectItem key={project.id} project={project} />
-      ))}
-    </div>
-  );
+  return <ProjectGrid projects={projects} variant="list" />;
 };
