@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import classNames from 'classnames'; 
+import styles from './TransitionLink.module.scss';
 
 type Props = {
   href: string;
@@ -26,7 +28,11 @@ export const TransitionLink = ({ href, children, className }: Props) => {
   };
 
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a
+      href={href}
+      onClick={handleClick}
+      className={classNames(styles.wrap, className)}
+    >
       {children}
     </a>
   );

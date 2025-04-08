@@ -5,7 +5,7 @@ import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
 import { useEffect, useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
-import { TransitionLink } from '@/components/TransitionLink';
+import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 
 export default function HomeContainer({ initialProjects }: { initialProjects: Project[] }) {
   const { projects, isLoading, setProjects, fetchProjects } = useProjectStore();

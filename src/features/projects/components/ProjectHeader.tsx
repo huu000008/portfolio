@@ -1,7 +1,7 @@
 // components/ProjectHeader.tsx
 'use client';
 
-import { TransitionLink } from '@/components/TransitionLink';
+import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';

@@ -12,9 +12,9 @@
   // 테두리 색상
   --color-border: #343e52;
 
-  // 토스 블루 액센트 색상
-  --color-accent: #0064ff; // 토스 블루 색상
-  --color-accent-hover: #4d8fff;
+  // 트렌디한 블랙 테마 액센트 색상
+  --color-accent: #1a1a1a; // 블랙 액센트 색상
+  --color-accent-hover: #333333; // 블랙 액센트 호버 색상
 
   // 시맨틱 색상
   --color-success: #4ade80;
@@ -22,7 +22,7 @@
   --color-danger: #f87171;
 
   // 포커스 링
-  --color-focus-ring: rgba(0, 100, 255, 0.4);
+  --color-focus-ring: rgba(26, 26, 26, 0.4); // 블랙 포커스 링
 
   --color-gradient: rgba(255, 255, 255, 0.02);
 }

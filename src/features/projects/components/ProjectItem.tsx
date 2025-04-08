@@ -1,6 +1,6 @@
 import { Project } from '../../../types/project';
 import styles from './ProjectItem.module.scss';
-import { TransitionLink } from '@/components/TransitionLink';
+import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import Image from 'next/image';
 
 type Props = {
