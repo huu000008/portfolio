@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/useToast';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
 
 import { parseISO, isValid } from 'date-fns';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
@@ -97,6 +97,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   const { mutate: createProject, isPending: isCreating } = useCreateProject();
   const { mutate: updateProject, isPending: isUpdating } = useUpdateProject();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const isPending = isCreating || isUpdating;
 
   useEffect(() => {
@@ -104,7 +106,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
       ...defaultValues, // undefined일 경우 빈 객체로 대체
       projectPeriod: formattedPeriod,
       techStack: Array.isArray(defaultValues?.techStack)
-        ? defaultValues?.techStack
+        ? defaultValues.techStack
         : defaultValues?.techStack === undefined
           ? []
           : undefined,
@@ -112,8 +114,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   }, [defaultValues, formattedPeriod, reset]);
 
   const onSubmit = (data: ProjectFormValues) => {
-    if (isPending) return; // 이미 제출 중이면 더 이상 진행하지 않음
-
+    if (isSubmitting) return;// 이미 제출 중이면 더 이상 진행하지 않음
+    setIsSubmitting(true);
     if (isEditMode && defaultValues?.id) {
       // 수정 모드일 때
       updateProject(
@@ -332,9 +334,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           )}
         </div>
 
-        {/* 제출 버튼에 로딩 상태 추가 */}
-        <button type="submit" className={styles.submitButton} disabled={isPending}>
-          {isPending ? (isEditMode ? '수정 중...' : '제출 중...') : buttonLabel}
+        <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+          {isSubmitting ? (isEditMode ? '수정 중...' : '제출 중...') : buttonLabel}
         </button>
       </form>
     </FormProvider>
