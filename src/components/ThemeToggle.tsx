@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/hooks/useTheme';
 import { useEffect, useState } from 'react';
+import Button from './ui/Button/Button';
 
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -15,5 +16,7 @@ export const ThemeToggle = () => {
     }
   }, [theme]);
 
-  return <button onClick={toggleTheme}>{label}</button>;
+  return <Button onClick={toggleTheme}>{label}</Button>;
 };
+
+export default ThemeToggle;

@@ -6,6 +6,7 @@ import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
+import Button from '@/components/ui/Button/Button';
 
 interface ProjectHeaderProps {
   id?: string;
@@ -63,24 +64,24 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
         {isDetailPage && id && (
           <>
             <TransitionLink href={`/projects/edit/${id}`}>수정</TransitionLink>
-            <button
+            <Button
               onClick={handleDelete}
               disabled={isPending}
               className={isPending ? styles.loading : ''}
             >
               {isPending ? '삭제 중...' : '삭제'}
-            </button>
+            </Button>
           </>
         )}
 
         {isEditPage && id && (
-          <button
+          <Button
             onClick={handleDelete}
             disabled={isPending}
             className={isPending ? styles.loading : ''}
           >
             {isPending ? '삭제 중...' : '삭제'}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -7,6 +7,7 @@ import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import styles from './DatePicker.module.scss';
 import { Modal } from '../Modal/Modal';
+import Button from '../Button/Button';
 
 interface DatePickerProps {
   name: string;
@@ -65,9 +66,9 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
         open={open}
         onOpenChange={setOpen}
         trigger={
-          <button type="button" id={id} className={styles.trigger} aria-label="날짜 범위 선택">
+          <Button type="button" id={id} className={styles.trigger} aria-label="날짜 범위 선택">
             {triggerLabel}
-          </button>
+          </Button>
         }
       >
         <DayPicker
@@ -77,9 +78,9 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
           onSelect={range => setTempRange(range as DateRange)}
           showOutsideDays={false}
         />
-        <button type="button" className={styles.confirm} onClick={handleConfirm}>
+        <Button type="button" className={styles.confirm} onClick={handleConfirm}>
           적용
-        </button>
+        </Button>
       </Modal>
     </div>
   );
