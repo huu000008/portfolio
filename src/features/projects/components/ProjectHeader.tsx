@@ -7,7 +7,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
 import Button from '@/components/ui/Button/Button';
-import classNames from 'classnames';
 
 interface ProjectHeaderProps {
   id?: string;

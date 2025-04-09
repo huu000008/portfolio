@@ -95,12 +95,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   const { success, error: showError } = useToast();
 
   // 새로운 커스텀 훅 사용
-  const { mutate: createProject, isPending: isCreating } = useCreateProject();
-  const { mutate: updateProject, isPending: isUpdating } = useUpdateProject();
+  const { mutate: createProject } = useCreateProject();
+  const { mutate: updateProject } = useUpdateProject();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isPending = isCreating || isUpdating;
 
   useEffect(() => {
     reset({
