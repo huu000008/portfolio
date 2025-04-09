@@ -1,23 +1,25 @@
-.wrap{
-  padding: 1rem 2rem;
-  border-radius: var(--radius-md);
-  background-color: var(--color-accent);
-  color: var(--color-text-primary);
-  border: none;
-  box-shadow: none;
+.wrap {
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
     transform 0.1s ease;
-  &:hover {
-    background-color: var(--color-accent-hover);
-  }
-  &:disabled {
-    background-color: var(--color-neutral-300);
-    cursor: not-allowed;
-  }
-  .button:active {
-    background-color: var(--color-neutral-400);
-    transform: scale(0.98);
+  &.button {
+    padding: 1rem 2rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-accent);
+    color: var(--color-text-primary);
+    border: none;
+    box-shadow: none;
+    &:hover {
+      background-color: var(--color-accent-hover);
+    }
+    &:disabled {
+      background-color: var(--color-neutral-300);
+      cursor: not-allowed;
+    }
+    .button:active {
+      background-color: var(--color-neutral-400);
+      transform: scale(0.98);
+    }
   }
 }
