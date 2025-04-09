@@ -15,7 +15,6 @@ import { parseISO, isValid } from 'date-fns';
 import { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button/Button';
 
-
 // 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
 
@@ -116,7 +115,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   }, [defaultValues, formattedPeriod, reset]);
 
   const onSubmit = (data: ProjectFormValues) => {
-    if (isSubmitting) return;// 이미 제출 중이면 더 이상 진행하지 않음
+    if (isSubmitting) return; // 이미 제출 중이면 더 이상 진행하지 않음
     setIsSubmitting(true);
     if (isEditMode && defaultValues?.id) {
       // 수정 모드일 때
@@ -177,8 +176,6 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   };
 
   const buttonLabel = isEditMode ? '수정하기' : '제출하기';
-
-  console.log('isPending', isPending);
 
   return (
     <FormProvider {...methods}>
