@@ -1,24 +1,27 @@
 .wrap {
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.1s ease;
+  transition: all 0.2s ease;
+  &:hover {
+    transform: scale(1.02);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
   &.button {
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
-    background-color: var(--color-accent);
+    background-color: var(--color-neutral-400);
     color: var(--color-text-primary);
     border: none;
     box-shadow: none;
     &:hover {
-      background-color: var(--color-accent-hover);
+      background-color: var(--color-neutral-500);
     }
     &:disabled {
-      background-color: var(--color-neutral-300);
+      background-color: var(--color-neutral-100);
       cursor: not-allowed;
     }
-    .button:active {
-      background-color: var(--color-neutral-400);
+    &:active {
+      background-color: var(--color-neutral-600);
       transform: scale(0.98);
     }
   }

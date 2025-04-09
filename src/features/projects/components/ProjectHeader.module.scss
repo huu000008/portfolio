@@ -6,9 +6,16 @@
   max-width: 120rem;
   width: 100%;
   margin: 0 auto;
+  padding: 5rem 2rem;
+  h2 {
+    font-size: 10rem;
+  }
   .actions {
     display: flex;
     align-items: center;
     gap: 1rem;
+    .button {
+      display: flex;
+    }
   }
 }

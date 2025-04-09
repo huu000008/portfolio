@@ -18,7 +18,10 @@
     padding: 2rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
-    background: var(--color-gradient);
+    background-color: var(--color-neutral-200);
+    &:hover {
+      background-color: var(--color-neutral-300);
+    }
     &:first-child {
       grid-column: span 2;
       .title {

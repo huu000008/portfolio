@@ -25,4 +25,15 @@
   --color-focus-ring: rgba(26, 26, 26, 0.4); // 블랙 포커스 링
 
   --color-gradient: rgba(255, 255, 255, 0.02);
+
+  // 다크 모드용 중성 색상
+  --color-neutral-100: #343e52; // 가장 어두운 배경에 사용할 밝은 색상
+  --color-neutral-200: #3a4559;
+  --color-neutral-300: #424d62;
+  --color-neutral-400: #4a566c;
+  --color-neutral-500: #5a6577;
+  --color-neutral-600: #6e7a8c;
+  --color-neutral-700: #8490a0;
+  --color-neutral-800: #a8b0bd;
+  --color-neutral-900: #d0d5dd; // 가장 밝은 텍스트에 사용할 색상
 }

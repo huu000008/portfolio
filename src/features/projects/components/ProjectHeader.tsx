@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
 import Button from '@/components/ui/Button/Button';
+import classNames from 'classnames';
 
 interface ProjectHeaderProps {
   id?: string;
@@ -57,13 +58,23 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
     <div className={styles.wrap}>
       <h2>Projects</h2>
       <div className={styles.actions}>
-        {!isListPage && <TransitionLink href="/projects">목록</TransitionLink>}
+        {!isListPage && (
+          <TransitionLink href="/projects" isButton>
+            목록
+          </TransitionLink>
+        )}
 
-        {isListPage && <TransitionLink href="/projects/write">작성</TransitionLink>}
+        {isListPage && (
+          <TransitionLink href="/projects/write" isButton>
+            작성
+          </TransitionLink>
+        )}
 
         {isDetailPage && id && (
           <>
-            <TransitionLink href={`/projects/edit/${id}`}>수정</TransitionLink>
+            <TransitionLink href={`/projects/edit/${id}`} isButton>
+              수정
+            </TransitionLink>
             <Button
               onClick={handleDelete}
               disabled={isPending}
