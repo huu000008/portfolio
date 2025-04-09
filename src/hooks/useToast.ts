@@ -1,5 +1,5 @@
 import { useToastStore } from '@/stores/toastStore';
-import { toast } from '@/lib/utils/toast';
+import { toast } from '@/utils/toast';
 
 export function useToast() {
   const toasts = useToastStore(state => state.toasts);

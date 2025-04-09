@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Project } from '@/types/project';
 import {
   fetchProjectsAction,
+  fetchProjectByIdAction,
   deleteProjectAction,
   createProjectAction,
   updateProjectAction,
@@ -100,7 +101,7 @@ export const useProjects = () => {
 export const useProject = (id: string) => {
   return useQuery<Project, Error>({
     queryKey: [PROJECTS_QUERY_KEY, id],
-    queryFn: () => fetchProjectsAction(id) as Promise<Project>,
+    queryFn: () => fetchProjectByIdAction(id),
     enabled: !!id,
   });
 };
