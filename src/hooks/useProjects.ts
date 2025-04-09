@@ -92,6 +92,9 @@ export const useProjects = () => {
   return useQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY],
     queryFn: () => fetchProjectsAction() as Promise<Project[]>,
+    staleTime: 1000 * 60 * 5, // 5분 동안 데이터가 신선하다고 간주
+    gcTime: 1000 * 60 * 10, // 10분 동안 캐시 유지 (이전의 cacheTime)
+    refetchOnWindowFocus: false, // 창 포커스 시 자동 리페치 비활성화
   });
 };
 
@@ -103,6 +106,9 @@ export const useProject = (id: string) => {
     queryKey: [PROJECTS_QUERY_KEY, id],
     queryFn: () => fetchProjectByIdAction(id),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5, // 5분 동안 데이터가 신선하다고 간주
+    gcTime: 1000 * 60 * 10, // 10분 동안 캐시 유지 (이전의 cacheTime)
+    refetchOnWindowFocus: false, // 창 포커스 시 자동 리페치 비활성화
   });
 };
 

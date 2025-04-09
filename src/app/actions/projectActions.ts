@@ -14,14 +14,19 @@ import { notFound } from 'next/navigation';
 export async function fetchProjectsAction(): Promise<Project[]> {
   const supabase = await createServerSupabaseClient();
 
-  const { data, error } = await supabase
-    .from('projects')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) throw new Error(`프로젝트 목록 조회 실패: ${error.message}`);
+    if (error) throw new Error(`프로젝트 목록 조회 실패: ${error.message}`);
 
-  return data || [];
+    return data || [];
+  } catch (error) {
+    console.error('프로젝트 목록 조회 중 오류 발생:', error);
+    throw error;
+  }
 }
 
 /**
@@ -32,12 +37,17 @@ export async function fetchProjectsAction(): Promise<Project[]> {
 export async function fetchProjectByIdAction(id: string): Promise<Project> {
   const supabase = await createServerSupabaseClient();
 
-  const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
+  try {
+    const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
 
-  if (error) throw new Error(`프로젝트 조회 실패: ${error.message}`);
-  if (!data) notFound();
+    if (error) throw new Error(`프로젝트 조회 실패: ${error.message}`);
+    if (!data) notFound();
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error(`프로젝트 ID ${id} 조회 중 오류 발생:`, error);
+    throw error;
+  }
 }
 
 /**

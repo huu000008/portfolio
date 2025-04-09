@@ -6,6 +6,7 @@ import RecentProjects from './RecentProjects';
 import { useEffect, useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
+import { TextShimmerWave } from '@/components/ui/TextShimmerWavw/TextShimmerWave';
 
 export default function HomeContainer({ initialProjects }: { initialProjects: Project[] }) {
   const { projects, isLoading, setProjects, fetchProjects } = useProjectStore();
@@ -35,6 +36,16 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
             WEB DEVELOPER
           </span>
         </div> */}
+        <TextShimmerWave
+          className="[--base-color:#0D74CE] [--base-gradient-color:#5EB1EF]"
+          duration={1}
+          spread={1}
+          zDistance={1}
+          scaleDistance={1.1}
+          rotateYDistance={20}
+        >
+          Creating the perfect dish...
+        </TextShimmerWave>
         <div className={styles.bottom}>
           <div className={styles.left}>
             <div className={styles.text}>
