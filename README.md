@@ -1,60 +1,140 @@
-# 🚀 프로젝트 이름 (Project Name)
+# 📂 포트폴리오 프로젝트
 
-모던 웹 기술 스택을 기반으로 한 고성능 웹 애플리케이션입니다. Next.js 15를 중심으로 구축되었으며, 뛰어난 사용자 경험(UX)과 접근성, SEO 최적화를 동시에 고려한 구조로 설계되었습니다.
+![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-2.x-3FCF8E?style=flat-square&logo=supabase)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.71-FF4154?style=flat-square&logo=react-query)
+![Zod](https://img.shields.io/badge/Zod-3.24-3068B7?style=flat-square)
 
-## 🛠 기술 스택
+> **현대적인 웹 개발 기술을 활용한 포트폴리오 프로젝트입니다. App Router 기반의 Next.js 15와 React 19를 중심으로, 타입 안전성과 사용자 경험을 최우선으로 설계되었습니다.**
 
-- **Framework**: [Next.js 15](https://nextjs.org/docs) (App Router)
-- **Language**: TypeScript
-- **UI**: Radix UI, SCSS, CSS Modules
-- **Database & Auth**: Supabase
-- **스타일 기준**
-  - rem 단위 사용 (root font-size: 10px)
-  - 최신 디자인 트렌드 반영 (세련된 UI & 섬세한 인터랙션)
-- **기타**
-  - 컴포넌트 기반 아키텍처
-  - 비즈니스 로직은 별도 파일로 분리
-  - 유지보수와 확장성 고려한 폴더 구조
+## 🌟 주요 특징
 
-## 📦 설치 및 실행 방법
+- **Server Components & SSR**: Next.js 15의 App Router를 활용한 강력한 서버 사이드 렌더링
+- **타입 안전성**: TypeScript와 Zod를 활용한 엄격한 타입 유효성 검증
+- **반응형 디자인**: 모든 디바이스에 최적화된 사용자 경험 제공
+- **데이터 관리**: React Query + Server Actions를 활용한 효율적인 상태 관리
+- **데이터베이스 & 인증**: Supabase를 활용한 백엔드 기능 구현
+- **최신 React 패턴**: React 19 기능과 React Hooks를 활용한 컴포넌트 설계
+
+## ⚙️ 기술 스택
+
+### 프론트엔드
+
+- **프레임워크**: Next.js 15 (App Router)
+- **UI 라이브러리**: Radix UI 컴포넌트 + 커스텀 UI
+- **스타일링**: SCSS + CSS Modules
+- **상태 관리**:
+  - Zustand (클라이언트 상태)
+  - TanStack Query v5 (서버 상태)
+- **폼 & 유효성 검증**: React Hook Form + Zod
+
+### 백엔드
+
+- **데이터베이스 & 인증**: Supabase
+- **서버 로직**: Next.js Server Actions
+
+### 개발 도구
+
+- **언어**: TypeScript
+- **코드 포맷팅**: ESLint + Prettier
+- **패키지 관리**: pnpm
+
+## 🚀 시작하기
 
 ```bash
-# 1. 의존성 설치
-npm install
+# 저장소 복제
+git clone <repository-url>
+cd <repository-name>
 
-# 2. 개발 서버 실행
-npm run dev
+# 환경 변수 설정
+cp .env.example .env.local
+# .env.local 파일을 열고 Supabase 연결 정보 입력
 
-# 3. 프로덕션 빌드
-npm run build
+# 패키지 설치
+pnpm install
+
+# 개발 서버 실행
+pnpm dev
 ```
 
-## 🌳 폴더 구조 예시
+## 📁 프로젝트 구조
 
-```bash
+```
 /src
-  ├── components      # UI 컴포넌트
-  ├── features        # 도메인 단위 비즈니스 로직
-  ├── app             # App Router 기반 페이지
-  ├── styles          # SCSS 및 전역 스타일
-  ├── lib             # 유틸, API 통신, Supabase 등
-  └── types           # 전역 타입 정의
+ ├── app/             # Next.js App Router 구조
+ │   ├── actions/     # Server Actions
+ │   ├── projects/    # 프로젝트 관련 페이지
+ │   └── page.tsx     # 메인 페이지
+ │
+ ├── components/      # 재사용 가능한 UI 컴포넌트
+ ├── features/        # 도메인별 기능 컴포넌트
+ ├── hooks/           # 커스텀 React Hooks
+ ├── lib/             # 유틸리티 및 서비스
+ │   ├── api/         # API 클라이언트 및 메서드
+ │   └── supabase/    # Supabase 클라이언트 설정
+ │
+ ├── providers/       # React Context Providers
+ ├── stores/          # Zustand 상태 저장소
+ ├── styles/          # 전역 스타일 및 변수
+ ├── types/           # TypeScript 타입 정의
+ └── utils/           # 헬퍼 함수 및 유틸리티
 ```
 
-## 🌐 배포
+### 📂 경로 별칭 (Path Aliases)
 
-배포 주소: [https://your-deployment-url.com](https://your-deployment-url.com) <!-- 수정 필요 -->
+tsconfig.json에 경로 별칭이 구성되어 있어 가독성 높은 임포트가 가능합니다:
 
-## 📎 접근성 및 SEO
+```typescript
+// 기존 상대 경로 방식
+import Button from '../../../components/ui/Button';
 
-- 웹 접근성 표준을 준수하여 모든 사용자가 문제없이 이용 가능
-- 검색 엔진 최적화를 고려한 Head 메타 구성 및 동적 페이지 처리
+// 별칭을 사용한 방식
+import Button from '@/components/ui/Button';
+```
 
-## 🤝 기여
+주요 별칭:
 
-1. 이슈를 먼저 등록해주세요.
-2. PR 생성 전 `npm run lint` 및 `npm run build`로 체크해주세요.
+- `@/components/*` - 공통 UI 컴포넌트
+- `@/features/*` - 도메인별 비즈니스 로직
+- `@/hooks/*` - 커스텀 훅
+- `@/lib/*` - 유틸리티 및 서비스
+- `@/styles/*` - 스타일 관련 파일
+- `@/types/*` - 타입 정의
+
+## 🌐 성능 최적화
+
+- **이미지 최적화**: Next.js Image 컴포넌트 활용
+- **코드 분할**: 동적 임포트와 React.lazy 활용
+- **서버 컴포넌트**: 클라이언트로 전송되는 JavaScript 최소화
+- **데이터 프리페칭**: 사용자 경험 향상을 위한 데이터 사전 로딩
+- **캐싱 전략**: TanStack Query 캐싱으로 불필요한 네트워크 요청 방지
+
+## 🧪 개발 경험 개선
+
+- **타입 안전성**: TypeScript + Zod로 런타임 오류 최소화
+- **API 추상화**: 일관된 API 클라이언트로 데이터 액세스 단순화
+- **자동 완성**: VSCode와의 통합으로 개발 생산성 향상
+- **경로 별칭**: `@/components`, `@/features` 등의 별칭으로 가독성 있는 임포트 제공
+- **유지보수성**: 모듈화된 코드 구조와 명확한 책임 분리
+
+## 🤝 기여하기
+
+기여는 항상 환영합니다!
+
+1. 이 저장소를 포크하고 로컬 시스템에 복제합니다.
+2. 새 브랜치를 만듭니다: `git checkout -b feature/amazing-feature`
+3. 변경 사항을 커밋합니다: `git commit -m 'Add amazing feature'`
+4. 브랜치를 푸시합니다: `git push origin feature/amazing-feature`
+5. Pull Request를 제출합니다.
 
 ## 📝 라이선스
 
 [MIT](./LICENSE)
+
+---
+
+**🔗 배포 링크**: 배포 예정
+
+_이 프로젝트는 지속적으로 개선되고 있습니다. 제안이나 피드백이 있으시면 이슈를 생성해 주세요!_
