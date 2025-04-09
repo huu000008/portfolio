@@ -5,6 +5,7 @@ import styles from './RecentProjects.module.scss';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { Project } from '@/types/project';
 import { getPeriodEnd, formatRelativeTimeOrInProgress } from '@/utils/date';
+import { InViewMotion } from '@/components/ui/InViewMotion';
 
 interface RecentProjectsProps {
   className?: string;
@@ -15,7 +16,7 @@ interface RecentProjectsProps {
 export default function RecentProjects({ projects, isLoading }: RecentProjectsProps) {
   return (
     <div className={styles.wrap}>
-      <div className={styles.title}>Recent Projects</div>
+      <InViewMotion className={styles.title}>Recent Projects</InViewMotion>
       <div className={styles.list}>
         {isLoading && projects === null ? (
           <div className={styles.loading}>Loading...</div>
@@ -27,16 +28,16 @@ export default function RecentProjects({ projects, isLoading }: RecentProjectsPr
             const periodRelative = formatRelativeTimeOrInProgress(endDate);
 
             return (
-              <TransitionLink
-                href={`projects/${project.id}`}
-                key={project.id}
-                className={styles.item}
-              >
-                <div className={styles.title}>{project.title}</div>
-                {index === 0 && <div className={styles.description}>{project.description}</div>}
+              <>
+                <InViewMotion className={styles.item} key={project.id}>
+                  <TransitionLink href={`projects/${project.id}`}>
+                    <div className={styles.title}>{project.title}</div>
+                    {index === 0 && <div className={styles.description}>{project.description}</div>}
 
-                <div className={styles.period}>{periodRelative}</div>
-              </TransitionLink>
+                    <div className={styles.period}>{periodRelative}</div>
+                  </TransitionLink>
+                </InViewMotion>
+              </>
             );
           })
         )}

@@ -181,6 +181,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
         onSubmit={handleSubmit(onSubmit)}
         className={styles.wrap}
         aria-label="프로젝트 정보 입력 폼"
+        inert={isSubmitting}
       >
         <div className={styles.formGroup}>
           <label htmlFor="title" className={styles.label}>

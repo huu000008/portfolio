@@ -2,31 +2,15 @@ import { Project } from '../../../types/project';
 import styles from './ProjectItem.module.scss';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { InViewMotion } from '@/components/ui/InViewMotion';
 
 type Props = {
   project: Project;
 };
 
 export const ProjectItem = ({ project }: Props) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
-  const variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      variants={variants}
-      transition={{ duration: 0.5 }}
-    >
+    <InViewMotion>
       <TransitionLink className={styles.wrap} href={`/projects/${project.id}`}>
         <div className={styles.thumbnail}>
           <Image
@@ -52,6 +36,6 @@ export const ProjectItem = ({ project }: Props) => {
           )}
         </div>
       </TransitionLink>
-    </motion.div>
+    </InViewMotion>
   );
 };

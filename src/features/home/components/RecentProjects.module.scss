@@ -15,10 +15,13 @@
     gap: 1rem;
   }
   .item {
-    padding: 2rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     background-color: var(--color-neutral-200);
+    a {
+      height: 100%;
+      padding: 2rem;
+    }
     &:hover {
       background-color: var(--color-neutral-300);
     }
