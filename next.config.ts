@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: 'mpivilzknwtgopfeqmkb.supabase.co',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'dummyimage.com',
+        pathname: '**',
+      },
     ],
   },
 };
