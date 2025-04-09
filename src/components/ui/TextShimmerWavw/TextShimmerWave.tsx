@@ -31,49 +31,67 @@ export function TextShimmerWave({
   transition,
 }: TextShimmerWave) {
   const MotionComponent = motion.create(Component as keyof JSX.IntrinsicElements);
+  // 텍스트를 단어로 분할하고 원래 공백을 보존
+  const textParts = children.split(/(\s+)/).filter(Boolean);
+  // 전체 글자 수 계산
+  const totalChars = children.length;
 
   return (
     <MotionComponent
       className={classNames(
-        'relative inline-block [perspective:500px]',
+        'relative inline-flex flex-wrap [perspective:500px]',
         '[--base-color:#a1a1aa] [--base-gradient-color:#000]',
         'dark:[--base-color:#71717a] dark:[--base-gradient-color:#ffffff]',
         className,
       )}
       style={{ color: 'var(--base-color)' }}
     >
-      {children.split('').map((char, i) => {
-        const delay = (i * duration * (1 / spread)) / children.length;
+      {textParts.map((part, partIndex) => {
+        // 각 부분(단어 또는 공백)의 위치 계산
+        let charOffset = 0;
+        for (let i = 0; i < partIndex; i++) {
+          charOffset += textParts[i].length;
+        }
 
         return (
-          <motion.span
-            key={i}
-            className={classNames('inline-block whitespace-pre [transform-style:preserve-3d]')}
-            initial={{
-              translateZ: 0,
-              scale: 1,
-              rotateY: 0,
-              color: 'var(--base-color)',
-            }}
-            animate={{
-              translateZ: [0, zDistance, 0],
-              translateX: [0, xDistance, 0],
-              translateY: [0, yDistance, 0],
-              scale: [1, scaleDistance, 1],
-              rotateY: [0, rotateYDistance, 0],
-              color: ['var(--base-color)', 'var(--base-gradient-color)', 'var(--base-color)'],
-            }}
-            transition={{
-              duration: duration,
-              repeat: Infinity,
-              repeatDelay: (children.length * 0.05) / spread,
-              delay,
-              ease: 'easeInOut',
-              ...transition,
-            }}
-          >
-            {char}
-          </motion.span>
+          // 단어는 하나의 단위로 처리
+          <span key={partIndex} className="inline-block whitespace-pre">
+            {part.split('').map((char, charIndex) => {
+              const globalCharIndex = charOffset + charIndex;
+              const delay = (globalCharIndex * duration * (1 / spread)) / totalChars;
+
+              return (
+                <motion.span
+                  key={`${partIndex}-${charIndex}`}
+                  className="inline-block [transform-style:preserve-3d]"
+                  initial={{
+                    translateZ: 0,
+                    scale: 1,
+                    rotateY: 0,
+                    color: 'var(--base-color)',
+                  }}
+                  animate={{
+                    translateZ: [0, zDistance, 0],
+                    translateX: [0, xDistance, 0],
+                    translateY: [0, yDistance, 0],
+                    scale: [1, scaleDistance, 1],
+                    rotateY: [0, rotateYDistance, 0],
+                    color: ['var(--base-color)', 'var(--base-gradient-color)', 'var(--base-color)'],
+                  }}
+                  transition={{
+                    duration: duration,
+                    repeat: Infinity,
+                    repeatDelay: (totalChars * 0.05) / spread,
+                    delay,
+                    ease: 'easeInOut',
+                    ...transition,
+                  }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              );
+            })}
+          </span>
         );
       })}
     </MotionComponent>
