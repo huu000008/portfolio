@@ -1,0 +1,28 @@
+.wrap {
+  transition: all 0.2s ease;
+  &:hover {
+    transform: scale(1.02);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+  &.button {
+    padding: 1rem 2rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-neutral-400);
+    color: var(--color-text-primary);
+    border: none;
+    box-shadow: none;
+    &:hover {
+      background-color: var(--color-hover);
+    }
+    &:disabled {
+      background-color: var(--color-disabled);
+      cursor: not-allowed;
+    }
+    &:active {
+      background-color: var(--color-active);
+      transform: scale(0.98);
+    }
+  }
+}

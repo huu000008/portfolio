@@ -1,4 +1,8 @@
 [data-theme='dark'] {
+  --color-active: #6e7a8c;
+  --color-disabled: #343e52;
+  --color-hover: #5a6577;
+
   // 토스 브랜드 색상 기반 배경
   --color-bg-body: #202632; // 토스 그레이 색상
   --color-bg-surface: #2a3241;
@@ -12,9 +16,9 @@
   // 테두리 색상
   --color-border: #343e52;
 
-  // 토스 블루 액센트 색상
-  --color-accent: #0064ff; // 토스 블루 색상
-  --color-accent-hover: #4d8fff;
+  // 트렌디한 블랙 테마 액센트 색상
+  --color-accent: #1a1a1a; // 블랙 액센트 색상
+  --color-accent-hover: #333333; // 블랙 액센트 호버 색상
 
   // 시맨틱 색상
   --color-success: #4ade80;
@@ -22,7 +26,18 @@
   --color-danger: #f87171;
 
   // 포커스 링
-  --color-focus-ring: rgba(0, 100, 255, 0.4);
+  --color-focus-ring: rgba(26, 26, 26, 0.4); // 블랙 포커스 링
 
   --color-gradient: rgba(255, 255, 255, 0.02);
+
+  // 다크 모드용 중성 색상
+  --color-neutral-100: #343e52; // 가장 어두운 배경에 사용할 밝은 색상
+  --color-neutral-200: #3a4559;
+  --color-neutral-300: #424d62;
+  --color-neutral-400: #4a566c;
+  --color-neutral-500: #5a6577;
+  --color-neutral-600: #6e7a8c;
+  --color-neutral-700: #8490a0;
+  --color-neutral-800: #a8b0bd;
+  --color-neutral-900: #d0d5dd; // 가장 밝은 텍스트에 사용할 색상
 }

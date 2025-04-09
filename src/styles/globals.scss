@@ -34,6 +34,20 @@ body {
     color 0.2s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  word-break: keep-all;
+  &::before {
+    position: absolute;
+    inset: 0% auto auto 0%;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    content: '';
+    pointer-events: none;
+    mix-blend-mode: exclusion;
+    background-image: url('/texture_background.webp');
+    background-position: 0px 0px;
+    opacity: 0.05;
+  }
 }
 
 ul,
@@ -56,27 +70,10 @@ a {
 }
 
 button {
-  padding: 1rem 2rem;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  background-color: var(--color-accent);
-  color: var(--color-text-primary);
   font-family: 'Pretendard', sans-serif;
   font-size: var(--font-size-md);
   line-height: 1.75;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.1s ease;
-  &:hover {
-    background-color: var(--color-accent-hover);
-  }
-
-  &:active {
-    transform: scale(0.96);
-    box-shadow: none;
-  }
 }
 
 input,
@@ -85,14 +82,12 @@ textarea {
   padding: 1rem 1.6rem;
   font-family: inherit;
   font-size: var(--font-size-md);
+  line-height: 1.75;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background-color: var(--color-bg-surface);
   color: var(--color-text-primary);
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: all 0.2s ease;
 
   &:focus {
     outline: none;
@@ -108,6 +103,25 @@ textarea {
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+textarea {
+  min-height: 12rem;
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  border: 0.1rem solid var(--color-border);
+  background-color: var(--color-bg-body);
+  white-space: pre-wrap;
+  resize: vertical;
+  &:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
+    outline: none;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
   }
 }
 

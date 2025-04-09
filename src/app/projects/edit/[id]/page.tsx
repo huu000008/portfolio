@@ -1,7 +1,6 @@
-import { notFound } from 'next/navigation';
-import { getProjectByIdServer } from '@/lib/api/projects';
 import { ProjectForm } from '@/features/projects/components/ProjectForm';
 import { ProjectHeader } from '@/features/projects/components/ProjectHeader';
+import { fetchProjectByIdAction } from '@/app/actions/projectActions';
 
 interface EditPageProps {
   params: Promise<{ id: string }>;
@@ -9,9 +8,7 @@ interface EditPageProps {
 
 export default async function EditPage({ params }: EditPageProps) {
   const { id } = await params;
-  const project = await getProjectByIdServer(id);
-
-  if (!project) return notFound();
+  const project = await fetchProjectByIdAction(id);
 
   const formattedProject = {
     id: project.id,

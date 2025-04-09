@@ -5,24 +5,49 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { Project } from '@/types/project';
 import { revalidatePath } from 'next/cache';
 import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
+import { notFound } from 'next/navigation';
 
 /**
- * 프로젝트 목록/상세 조회 서버 액션
+ * 프로젝트 목록 조회 서버 액션
+ * @returns 프로젝트 배열
  */
-export async function fetchProjectsAction(id?: string): Promise<Project[] | Project | null> {
+export async function fetchProjectsAction(): Promise<Project[]> {
   const supabase = await createServerSupabaseClient();
 
-  const query = supabase.from('projects').select('*');
-  if (id) {
-    query.eq('id', id).single();
-  } else {
-    query.order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(`프로젝트 목록 조회 실패: ${error.message}`);
+
+    return data || [];
+  } catch (error) {
+    console.error('프로젝트 목록 조회 중 오류 발생:', error);
+    throw error;
   }
+}
 
-  const { data, error } = await query;
-  if (error) throw new Error(error.message);
+/**
+ * 특정 ID의 프로젝트 조회 서버 액션
+ * @param id 프로젝트 ID
+ * @returns 프로젝트 객체 또는 null
+ */
+export async function fetchProjectByIdAction(id: string): Promise<Project> {
+  const supabase = await createServerSupabaseClient();
 
-  return data || (id ? null : []);
+  try {
+    const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
+
+    if (error) throw new Error(`프로젝트 조회 실패: ${error.message}`);
+    if (!data) notFound();
+
+    return data;
+  } catch (error) {
+    console.error(`프로젝트 ID ${id} 조회 중 오류 발생:`, error);
+    throw error;
+  }
 }
 
 /**

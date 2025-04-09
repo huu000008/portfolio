@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './RecentProjects.module.scss';
-import { TransitionLink } from '@/components/TransitionLink';
+import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { Project } from '@/types/project';
 import { getPeriodEnd, formatRelativeTimeOrInProgress } from '@/utils/date';
 

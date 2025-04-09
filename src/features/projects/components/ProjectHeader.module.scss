@@ -6,31 +6,16 @@
   max-width: 120rem;
   width: 100%;
   margin: 0 auto;
+  padding: 5rem 2rem;
+  h2 {
+    font-size: 10rem;
+  }
   .actions {
     display: flex;
     align-items: center;
     gap: 1rem;
-    & > * {
-      padding: 1rem 2rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
-      background-color: var(--color-accent);
-      color: var(--color-text-primary);
-      font-family: 'Pretendard', sans-serif;
-      font-size: var(--font-size-md);
-      line-height: 1.75;
-      transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.1s ease;
-      &:hover {
-        background-color: var(--color-accent-hover);
-      }
-
-      &:active {
-        transform: scale(0.96);
-        box-shadow: none;
-      }
+    .button {
+      display: flex;
     }
   }
 }

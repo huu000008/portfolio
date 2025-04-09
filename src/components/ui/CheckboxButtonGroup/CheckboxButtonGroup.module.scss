@@ -14,26 +14,19 @@
     justify-content: center;
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    background-color: var(--color-accent);
-    color: var(--color-text-primary);
+    background-color: var(--color-neutral-200);
+    color: var(--color-text-muted);
     line-height: 1.75;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      transform 0.1s ease;
-    &:hover {
-      background-color: var(--color-accent-hover);
-    }
+    transition: all 0.2s ease;
+    cursor: pointer;
 
     &:active {
+      background-color: var(--color-neutral-400);
       transform: scale(0.96);
-      box-shadow: none;
     }
 
     &.checked {
-      background-color: var(--color-success);
-      border-color: var(--color-success);
+      background-color: var(--color-neutral-600);
       color: var(--color-text-primary);
     }
   }

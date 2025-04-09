@@ -1,7 +1,18 @@
 const nextConfig = {
   /* config options here */
   images: {
-    domains: ['mpivilzknwtgopfeqmkb.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'mpivilzknwtgopfeqmkb.supabase.co',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dummyimage.com',
+        pathname: '**',
+      },
+    ],
   },
 };
 

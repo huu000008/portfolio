@@ -1,7 +1,7 @@
 import HomeContainer from '@/features/home/components/HomeContainer';
-import { getProjectsServer } from '@/lib/api/projects';
+import { fetchProjectsAction } from '@/app/actions/projectActions';
 
 export default async function Home() {
-  const projects = await getProjectsServer();
+  const projects = await fetchProjectsAction();
   return <HomeContainer initialProjects={projects} />;
 }
