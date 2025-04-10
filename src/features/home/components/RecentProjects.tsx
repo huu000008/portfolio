@@ -28,16 +28,14 @@ export default function RecentProjects({ projects, isLoading }: RecentProjectsPr
             const periodRelative = formatRelativeTimeOrInProgress(endDate);
 
             return (
-              <>
-                <InViewMotion className={styles.item} key={project.id}>
-                  <TransitionLink href={`projects/${project.id}`}>
-                    <div className={styles.title}>{project.title}</div>
-                    {index === 0 && <div className={styles.description}>{project.description}</div>}
+              <InViewMotion className={styles.item} key={project.id}>
+                <TransitionLink href={`projects/${project.id}`}>
+                  <div className={styles.title}>{project.title}</div>
+                  {index === 0 && <div className={styles.description}>{project.description}</div>}
 
-                    <div className={styles.period}>{periodRelative}</div>
-                  </TransitionLink>
-                </InViewMotion>
-              </>
+                  <div className={styles.period}>{periodRelative}</div>
+                </TransitionLink>
+              </InViewMotion>
             );
           })
         )}

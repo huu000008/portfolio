@@ -31,7 +31,7 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
       <div className={styles.inner}>
         <InViewMotion>
           <TextShimmerWave
-            className="[--base-color:color-contrast(#FFFFFF vs #0D74CE #5EB1EF)] [--base-gradient-color:color-contrast(#FFFFFF vs #5EB1EF #0D74CE)] text-[5rem] font-[800]"
+            className="text-[5rem] font-[800]"
             duration={1}
             spread={1}
             zDistance={1}

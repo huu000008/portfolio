@@ -40,8 +40,7 @@ export function TextShimmerWave({
     <MotionComponent
       className={classNames(
         'relative inline-flex flex-wrap [perspective:500px]',
-        '[--base-color:#a1a1aa] [--base-gradient-color:#000]',
-        'dark:[--base-color:#71717a] dark:[--base-gradient-color:#ffffff]',
+        '[--base-color:#000] [--base-gradient-color:#fff]',
         className,
       )}
       style={{ color: 'var(--base-color)' }}
