@@ -28,7 +28,7 @@ export function TextShimmerWave({
   spread = 1,
   scaleDistance = 1.1,
   rotateYDistance = 10,
-  transition,
+  transition, 
 }: TextShimmerWave) {
   const { theme } = useTheme();
   const textParts = children.split(/(\s+)/).filter(Boolean);
