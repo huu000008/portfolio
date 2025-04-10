@@ -12,6 +12,7 @@ export type Project = {
   created_at: string;
   updated_at: string | null;
   thumbnail_url: string | null;
+  user_id: string;
 };
 
 export type ProjectInsert = Omit<Project, 'id' | 'created_at' | 'updated_at'>;
