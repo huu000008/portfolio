@@ -5,15 +5,16 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
 ![Supabase](https://img.shields.io/badge/Supabase-2.x-3FCF8E?style=flat-square&logo=supabase)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.71-FF4154?style=flat-square&logo=react-query)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?style=flat-square&logo=tailwindcss)
 ![Zod](https://img.shields.io/badge/Zod-3.24-3068B7?style=flat-square)
 
-> **현대적인 웹 개발 기술을 활용한 포트폴리오 프로젝트입니다. App Router 기반의 Next.js 15와 React 19를 중심으로, Supabase 인증 시스템 및 타입 안전성을 최우선으로 설계되었습니다.**
+> **현대적인 웹 개발 기술을 활용한 포트폴리오 프로젝트입니다. App Router 기반의 Next.js 15와 React 19를 중심으로, Tailwind CSS v4.1의 최신 UI 기능, Supabase 인증 시스템 및 타입 안전성을 최우선으로 설계되었습니다.**
 
 ## 🌟 주요 특징
 
 - **Server Components & SSR**: Next.js 15의 App Router를 활용한 강력한 서버 사이드 렌더링
 - **타입 안전성**: TypeScript와 Zod를 활용한 엄격한 타입 유효성 검증
-- **반응형 디자인**: 모든 디바이스에 최적화된 사용자 경험
+- **반응형 디자인**: Tailwind CSS v4.1을 활용한 모든 디바이스에 최적화된 사용자 경험
 - **데이터 관리**: React Query + Server Actions를 활용한 효율적인 상태 관리
 - **인증 & 권한 제어**: Supabase Auth를 활용한 포괄적인 인증 시스템 구현
 - **최신 React 패턴**: React 19 기능과 React Hooks를 활용한 컴포넌트 설계
@@ -24,7 +25,7 @@
 
 - **프레임워크**: Next.js 15 (App Router)
 - **UI 라이브러리**: Radix UI 컴포넌트 + 커스텀 UI
-- **스타일링**: SCSS + CSS Modules
+- **스타일링**: Tailwind CSS v4.1 + SCSS
 - **상태 관리**:
   - Zustand (클라이언트 상태)
   - TanStack Query v5 (서버 상태)
@@ -98,12 +99,44 @@ pnpm dev
  ├── stores/                 # Zustand 상태 저장소
  │
  ├── styles/                 # 전역 스타일 및 변수
+ │   ├── tailwind.css        # Tailwind CSS 임포트
  │   └── globals.scss        # 전역 SCSS 스타일
  │
  ├── types/                  # TypeScript 타입 정의
  │   └── project.ts          # 프로젝트 관련 타입
  │
  └── utils/                  # 순수 유틸리티 함수
+```
+
+## 📝 Tailwind CSS v4.1 설정
+
+이 프로젝트는 최신 Tailwind CSS v4.1을 사용하며, 이전 버전과 완전히 다른 설정 방식을 적용합니다:
+
+1. **패키지 설치**:
+```bash
+pnpm add tailwindcss @tailwindcss/postcss postcss
+```
+
+2. **PostCSS 설정** (postcss.config.mjs):
+```javascript
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+export default config;
+```
+
+3. **CSS 설정** (src/styles/tailwind.css):
+```css
+@import "tailwindcss";
+```
+> 주의: v4에서는 @tailwind 지시문 대신 @import를 사용합니다.
+
+4. **레이아웃에서 스타일 임포트** (src/app/layout.tsx):
+```javascript
+import '@/styles/tailwind.css';
+import '@/styles/globals.scss';
 ```
 
 ## 🔒 인증 시스템
@@ -144,6 +177,12 @@ Supabase Auth를 활용한 인증 시스템의 주요 기능:
 - 로컬 개발 시 `/auth/signup`으로 계정 생성
 - 개발 모드에서 인증 디버깅은 `/debug` 페이지 활용
 - Supabase 대시보드에서 사용자 계정 관리 가능
+
+### Tailwind CSS v4 사용 팁
+
+- 스타일 적용 시 직접 클래스 사용: `className="text-3xl font-bold"`
+- v4에서 변경된 새로운 문법과 기능 활용
+- 브라우저 요소 검사 도구로 적용된 스타일 확인
 
 ## 🤝 기여하기
 
