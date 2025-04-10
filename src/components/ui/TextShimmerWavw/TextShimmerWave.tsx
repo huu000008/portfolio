@@ -23,7 +23,7 @@ export function TextShimmerWave({
   className = '',
   duration = 1,
   zDistance = 10,
-  xDistance = 2,
+  xDistance = 2,  
   yDistance = -2,
   spread = 1,
   scaleDistance = 1.1,
