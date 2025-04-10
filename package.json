@@ -44,6 +44,8 @@
     "open-cli": "^8.0.0",
     "prettier": "^3.5.3",
     "sass": "^1.86.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4"
   }
 }
