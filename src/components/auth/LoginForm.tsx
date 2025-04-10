@@ -46,7 +46,7 @@ export default function LoginForm() {
         router.push('/');
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError('로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -55,17 +55,17 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {error && <div className="bg-red-50 p-3 rounded-md text-red-600 text-sm">{error}</div>}
+      {error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
           이메일
         </label>
         <input
           id="email"
           type="email"
           {...register('email')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
           placeholder="이메일 주소"
           disabled={isLoading}
         />
@@ -73,14 +73,14 @@ export default function LoginForm() {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
           비밀번호
         </label>
         <input
           id="password"
           type="password"
           {...register('password')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
           placeholder="비밀번호"
           disabled={isLoading}
         />
@@ -91,7 +91,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? '로그인 중...' : '로그인'}
         </button>

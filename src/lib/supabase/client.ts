@@ -18,29 +18,34 @@ export const createBrowserSupabaseClient = () => {
   return createBrowserClient(supabaseUrl, supabaseKey, {
     cookies: {
       get(name) {
-        return document.cookie
-          .split('; ')
-          .find(row => row.startsWith(`${name}=`))
-          ?.split('=')[1];
+        if (typeof document !== 'undefined') {
+          return document.cookie
+            .split('; ')
+            .find(row => row.startsWith(`${name}=`))
+            ?.split('=')[1];
+        }
+        return null;
       },
       set(name, value, options) {
-        let cookie = `${name}=${value}`;
-        if (options?.expires) {
-          cookie += `; expires=${options.expires.toUTCString()}`;
+        if (typeof document !== 'undefined') {
+          let cookie = `${name}=${value}`;
+          if (options?.expires) {
+            cookie += `; expires=${options.expires.toUTCString()}`;
+          }
+          if (options?.path) {
+            cookie += `; path=${options.path}`;
+          }
+          if (options?.domain) {
+            cookie += `; domain=${options.domain}`;
+          }
+          if (options?.secure) {
+            cookie += '; secure';
+          }
+          if (options?.sameSite) {
+            cookie += `; samesite=${options.sameSite}`;
+          }
+          document.cookie = cookie;
         }
-        if (options?.path) {
-          cookie += `; path=${options.path}`;
-        }
-        if (options?.domain) {
-          cookie += `; domain=${options.domain}`;
-        }
-        if (options?.secure) {
-          cookie += '; secure';
-        }
-        if (options?.sameSite) {
-          cookie += `; samesite=${options.sameSite}`;
-        }
-        document.cookie = cookie;
       },
       remove(name, options) {
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${options?.path || '/'}`;

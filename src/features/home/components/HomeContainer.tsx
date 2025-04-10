@@ -31,7 +31,6 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
       <div className={styles.inner}>
         <InViewMotion>
           <TextShimmerWave
-            className="text-[5rem] font-[800]"
             duration={1}
             spread={1}
             zDistance={1}
@@ -44,7 +43,11 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
         <div className={styles.bottom}>
           <div className={styles.left}>
             <InViewMotion className={styles.text}>
-              기술을 배우고, 경험으로 익히는 프론트엔드 개발자입니다.
+              기술을 배우고,
+              <br />
+              경험으로 익히는
+              <br />
+              프론트엔드 개발자입니다.
             </InViewMotion>
           </div>
           <RecentProjects

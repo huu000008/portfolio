@@ -1,0 +1,10 @@
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 5rem;
+  font-weight: 800;
+  .char {
+    display: inline-block;
+    transform-style: preserve-3d;
+  }
+}

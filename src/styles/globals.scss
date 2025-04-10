@@ -4,6 +4,7 @@
 @use './base/interaction';
 @use './base/theme';
 
+
 /* CSS Reset */
 *,
 *::before,
@@ -20,6 +21,7 @@ html {
 
 body {
   position: relative;
+  min-height: 100vh;
   font-family: 'Pretendard', sans-serif;
   font-size: 1.6rem;
   line-height: 1.75;

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
 import { ThemeScript } from '@/components/ThemeScript';
 import Header from '@/components/layout/Header';

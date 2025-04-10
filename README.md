@@ -7,15 +7,15 @@
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.71-FF4154?style=flat-square&logo=react-query)
 ![Zod](https://img.shields.io/badge/Zod-3.24-3068B7?style=flat-square)
 
-> **현대적인 웹 개발 기술을 활용한 포트폴리오 프로젝트입니다. App Router 기반의 Next.js 15와 React 19를 중심으로, 타입 안전성과 사용자 경험을 최우선으로 설계되었습니다.**
+> **현대적인 웹 개발 기술을 활용한 포트폴리오 프로젝트입니다. App Router 기반의 Next.js 15와 React 19를 중심으로, Supabase 인증 시스템 및 타입 안전성을 최우선으로 설계되었습니다.**
 
 ## 🌟 주요 특징
 
 - **Server Components & SSR**: Next.js 15의 App Router를 활용한 강력한 서버 사이드 렌더링
 - **타입 안전성**: TypeScript와 Zod를 활용한 엄격한 타입 유효성 검증
-- **반응형 디자인**: 모든 디바이스에 최적화된 사용자 경험 제공
+- **반응형 디자인**: 모든 디바이스에 최적화된 사용자 경험
 - **데이터 관리**: React Query + Server Actions를 활용한 효율적인 상태 관리
-- **데이터베이스 & 인증**: Supabase를 활용한 백엔드 기능 구현
+- **인증 & 권한 제어**: Supabase Auth를 활용한 포괄적인 인증 시스템 구현
 - **최신 React 패턴**: React 19 기능과 React Hooks를 활용한 컴포넌트 설계
 
 ## ⚙️ 기술 스택
@@ -34,6 +34,8 @@
 
 - **데이터베이스 & 인증**: Supabase
 - **서버 로직**: Next.js Server Actions
+- **API 통신**: Server Components + TanStack Query
+- **배포**: Vercel
 
 ### 개발 도구
 
@@ -50,7 +52,10 @@ cd <repository-name>
 
 # 환경 변수 설정
 cp .env.example .env.local
-# .env.local 파일을 열고 Supabase 연결 정보 입력
+# .env.local 파일에 다음 항목을 추가하세요:
+# NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+# NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 # 패키지 설치
 pnpm install
@@ -63,79 +68,82 @@ pnpm dev
 
 ```
 /src
- ├── app/             # Next.js App Router 구조
- │   ├── actions/     # Server Actions
- │   ├── projects/    # 프로젝트 관련 페이지
- │   └── page.tsx     # 메인 페이지
+ ├── app/                    # Next.js App Router 구조
+ │   ├── actions/            # Server Actions (인증, 프로젝트 CRUD)
+ │   ├── auth/               # 인증 관련 페이지 (로그인, 회원가입, 콜백)
+ │   ├── projects/           # 프로젝트 관련 페이지 (목록, 상세, 수정, 작성)
+ │   ├── debug/              # 디버깅 페이지 (인증 상태 확인용)
+ │   ├── layout.tsx          # 루트 레이아웃
+ │   └── page.tsx            # 메인 페이지
  │
- ├── components/      # 재사용 가능한 UI 컴포넌트
- ├── features/        # 도메인별 기능 컴포넌트
- ├── hooks/           # 커스텀 React Hooks
- ├── lib/             # 외부 서비스 통합 및 클라이언트
- │   ├── api/         # API 클라이언트 및 통신 로직
- │   └── supabase/    # Supabase 클라이언트 설정
+ ├── components/             # 재사용 가능한 UI 컴포넌트
+ │   ├── auth/               # 인증 관련 컴포넌트 (로그인 폼, 회원가입 폼)
+ │   ├── layout/             # 레이아웃 컴포넌트 (헤더, 푸터)
+ │   └── ui/                 # 재사용 가능한 UI 컴포넌트 (버튼, 카드 등)
  │
- ├── providers/       # React Context Providers
- ├── stores/          # Zustand 상태 저장소
- ├── styles/          # 전역 스타일 및 변수
- ├── types/           # TypeScript 타입 정의
- └── utils/           # 순수 유틸리티 함수 (포맷터, 헬퍼 등)
+ ├── contexts/               # React Context (인증 컨텍스트 등)
+ │
+ ├── features/               # 도메인별 기능 컴포넌트
+ │   └── projects/           # 프로젝트 관련 컴포넌트 (목록, 상세, 폼)
+ │
+ ├── hooks/                  # 커스텀 React Hooks
+ │   ├── useAuth.ts          # 인증 관련 훅
+ │   └── useProjects.ts      # 프로젝트 관련 훅
+ │
+ ├── lib/                    # 외부 서비스 통합 및 클라이언트
+ │   └── supabase/           # Supabase 클라이언트 설정 (서버, 클라이언트)
+ │
+ ├── providers/              # React Context Providers
+ │
+ ├── stores/                 # Zustand 상태 저장소
+ │
+ ├── styles/                 # 전역 스타일 및 변수
+ │   └── globals.scss        # 전역 SCSS 스타일
+ │
+ ├── types/                  # TypeScript 타입 정의
+ │   └── project.ts          # 프로젝트 관련 타입
+ │
+ └── utils/                  # 순수 유틸리티 함수
 ```
 
-### 📂 디렉토리 역할 구분
+## 🔒 인증 시스템
 
-중복과 혼동을 방지하기 위해 유사한 디렉토리의 역할을 명확히 구분합니다:
+Supabase Auth를 활용한 인증 시스템의 주요 기능:
 
-- **lib/**: 외부 서비스와의 통합 로직을 담당합니다.
+### 사용자 인증
 
-  - 예: Supabase, Firebase, Axios 등 외부 서비스 클라이언트
-  - API 통신 로직 및 서비스 래퍼
-  - `@/lib/api`, `@/lib/supabase` 등으로 임포트
+- 이메일/비밀번호 회원가입 및 로그인
+- 인증 상태 전역 관리 (AuthContext)
+- 로그인 상태 UI 표시 (헤더 컴포넌트)
 
-- **utils/**: 순수 유틸리티 함수를 포함합니다.
-  - 문자열 포맷팅, 날짜 변환 등의 헬퍼 함수
-  - 비즈니스 로직과 무관한 순수 함수
-  - 범용적으로 재사용 가능한 유틸리티
-  - `@/utils/date`, `@/utils/format` 등으로 임포트
+### 권한 제어
 
-> **주의**: `@/lib/utils`와 같은 중첩 경로는 사용하지 않습니다. 유틸리티 함수는 항상 루트 레벨의 `@/utils` 경로에만 위치시킵니다.
+- Server Actions에서 인증 검증
+- 인증된 사용자만 프로젝트 생성, 수정, 삭제 가능
+- 프로젝트 소유자(user_id)만 본인의 프로젝트 수정/삭제 가능
+- UI 레벨에서 권한에 따른 버튼 노출 제어
 
-### 📂 경로 별칭 (Path Aliases)
+### 구현 방식
 
-tsconfig.json에 경로 별칭이 구성되어 있어 가독성 높은 임포트가 가능합니다:
-
-```typescript
-// 기존 상대 경로 방식
-import Button from '../../../components/ui/Button';
-
-// 별칭을 사용한 방식
-import Button from '@/components/ui/Button';
-```
-
-주요 별칭:
-
-- `@/components/*` - 공통 UI 컴포넌트
-- `@/features/*` - 도메인별 비즈니스 로직
-- `@/hooks/*` - 커스텀 훅
-- `@/lib/*` - 유틸리티 및 서비스
-- `@/styles/*` - 스타일 관련 파일
-- `@/types/*` - 타입 정의
+- 클라이언트: AuthContext + useAuth 훅
+- 서버: Server Actions + 미들웨어 패턴의 requireAuth 함수
 
 ## 🌐 성능 최적화
 
+- **서버 컴포넌트**: 클라이언트로 전송되는 JavaScript 최소화
 - **이미지 최적화**: Next.js Image 컴포넌트 활용
 - **코드 분할**: 동적 임포트와 React.lazy 활용
-- **서버 컴포넌트**: 클라이언트로 전송되는 JavaScript 최소화
 - **데이터 프리페칭**: 사용자 경험 향상을 위한 데이터 사전 로딩
 - **캐싱 전략**: TanStack Query 캐싱으로 불필요한 네트워크 요청 방지
+- **Vercel 배포**: Edge Network를 활용한 글로벌 CDN 배포
 
-## 🧪 개발 경험 개선
+## 💻 개발 팁
 
-- **타입 안전성**: TypeScript + Zod로 런타임 오류 최소화
-- **API 추상화**: 일관된 API 클라이언트로 데이터 액세스 단순화
-- **자동 완성**: VSCode와의 통합으로 개발 생산성 향상
-- **경로 별칭**: `@/components`, `@/features` 등의 별칭으로 가독성 있는 임포트 제공
-- **유지보수성**: 모듈화된 코드 구조와 명확한 책임 분리
+### 인증 기능 활용
+
+- 로컬 개발 시 `/auth/signup`으로 계정 생성
+- 개발 모드에서 인증 디버깅은 `/debug` 페이지 활용
+- Supabase 대시보드에서 사용자 계정 관리 가능
 
 ## 🤝 기여하기
 
@@ -153,6 +161,6 @@ import Button from '@/components/ui/Button';
 
 ---
 
-**🔗 배포 링크**: 배포 예정
+**🔗 배포 링크**: [포트폴리오 프로젝트 (Vercel)](https://my-project-vercel-url.vercel.app)
 
 _이 프로젝트는 지속적으로 개선되고 있습니다. 제안이나 피드백이 있으시면 이슈를 생성해 주세요!_

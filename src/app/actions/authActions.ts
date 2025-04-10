@@ -50,14 +50,12 @@ export async function login(formData: LoginFormData) {
     }
 
     return { success: true };
-  } catch (error) {
+  } catch {
     return { error: '로그인 중 오류가 발생했습니다.' };
   }
 }
 
-/**
- * 회원가입 서버 액션
- */
+// 회원가입 서버 액션
 export async function signup(formData: SignupFormData) {
   // 유효성 검사
   const validationResult = signupSchema.safeParse(formData);
@@ -82,23 +80,19 @@ export async function signup(formData: SignupFormData) {
     }
 
     return { success: true, message: '이메일 확인을 위한 링크가 발송되었습니다.' };
-  } catch (error) {
+  } catch {
     return { error: '회원가입 중 오류가 발생했습니다.' };
   }
 }
 
-/**
- * 로그아웃 서버 액션
- */
+// 로그아웃 서버 액션
 export async function logout() {
   const supabase = await createServerSupabaseClient();
   await supabase.auth.signOut();
   redirect('/');
 }
 
-/**
- * 현재 로그인한 사용자 정보 가져오기
- */
+// 현재 로그인한 사용자 정보 가져오기
 export async function getCurrentUser() {
   const supabase = await createServerSupabaseClient();
   const {
@@ -107,10 +101,8 @@ export async function getCurrentUser() {
   return user;
 }
 
-/**
- * 사용자 인증 여부 확인
- * 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
- */
+// 사용자 인증 여부 확인
+// 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) {
