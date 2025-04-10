@@ -10,6 +10,7 @@ type AuthContextType = {
   session: Session | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  fetchSession: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,44 +21,66 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    // 현재 세션 정보 가져오기
-    const fetchSession = async () => {
+  // 세션 정보를 가져오는 함수
+  const fetchSession = async () => {
+    try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+      console.log('Fetched session:', session);
+      // 상태 업데이트를 동기적으로 처리
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
-    };
+    } catch (error) {
+      console.error('Error fetching session:', error);
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    // 초기 세션 로드
     fetchSession();
 
     // 인증 상태 변경 구독
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session);
+
+      // 상태 변경 시 즉시 업데이트
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
 
-      // 페이지 새로고침으로 최신 상태 반영
-      router.refresh();
+      // 로그인/로그아웃 이벤트 처리
+      if (event === 'SIGNED_IN') {
+        console.log('SIGNED_IN event detected, updating state');
+        await fetchSession();
+      } else if (event === 'SIGNED_OUT') {
+        console.log('SIGNED_OUT event detected, clearing state');
+        setSession(null);
+        setUser(null);
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [router]);
+  }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
+    try {
+      await supabase.auth.signOut();
+      // 상태 업데이트는 onAuthStateChange 리스너가 처리하고 router.refresh()도 호출합니다.
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signOut, fetchSession }}>
       {children}
     </AuthContext.Provider>
   );
