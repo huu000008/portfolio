@@ -9,6 +9,7 @@ export default function DebugPage() {
   const { user, session, isLoading } = useAuth();
   const [browserSession, setBrowserSession] = useState<Session | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cookies, setCookies] = useState<string>('쿠키 정보를 가져오는 중...');
 
   // 직접 supabase 클라이언트를 사용해 세션 조회
   useEffect(() => {
@@ -27,6 +28,9 @@ export default function DebugPage() {
     }
 
     getSession();
+    
+    // 브라우저에서만 쿠키에 접근
+    setCookies(document.cookie || '쿠키 없음');
   }, []);
 
   return (
@@ -56,7 +60,7 @@ export default function DebugPage() {
 
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">쿠키 정보</h2>
-        <pre className="bg-gray-100 p-4 rounded">{document.cookie || '쿠키 없음'}</pre>
+        <pre className="bg-gray-100 p-4 rounded">{cookies}</pre>
       </div>
 
       <div className="mt-8">
