@@ -2,6 +2,7 @@
 import { type JSX } from 'react';
 import { motion, Transition } from 'framer-motion';
 import classNames from 'classnames';
+import { useTheme } from '@/hooks/useTheme';
 
 type TextShimmerWave = {
   children: string;
@@ -31,29 +32,27 @@ export function TextShimmerWave({
   transition,
 }: TextShimmerWave) {
   const MotionComponent = motion.create(Component as keyof JSX.IntrinsicElements);
-  // 텍스트를 단어로 분할하고 원래 공백을 보존
+  const { theme } = useTheme();
   const textParts = children.split(/(\s+)/).filter(Boolean);
-  // 전체 글자 수 계산
   const totalChars = children.length;
+
+  // 테마에 따른 색상 직접 지정 (CSS 변수 사용하지 않음)
+  const baseColor = theme === 'dark' ? '#d0d5dd' : '#3d3121';
+  const gradientColor = theme === 'dark' ? '#e67e22' : '#e67e22';
 
   return (
     <MotionComponent
-      className={classNames(
-        'relative inline-flex flex-wrap [perspective:500px]',
-        '[--base-color:#000] [--base-gradient-color:#fff]',
-        className,
-      )}
-      style={{ color: 'var(--base-color)' }}
+      key={theme}
+      className={classNames('relative inline-flex flex-wrap [perspective:500px]', className)}
+      style={{ color: baseColor }}
     >
       {textParts.map((part, partIndex) => {
-        // 각 부분(단어 또는 공백)의 위치 계산
         let charOffset = 0;
         for (let i = 0; i < partIndex; i++) {
           charOffset += textParts[i].length;
         }
 
         return (
-          // 단어는 하나의 단위로 처리
           <span key={partIndex} className="inline-block whitespace-pre">
             {part.split('').map((char, charIndex) => {
               const globalCharIndex = charOffset + charIndex;
@@ -67,7 +66,7 @@ export function TextShimmerWave({
                     translateZ: 0,
                     scale: 1,
                     rotateY: 0,
-                    color: 'var(--base-color)',
+                    color: baseColor,
                   }}
                   animate={{
                     translateZ: [0, zDistance, 0],
@@ -75,7 +74,7 @@ export function TextShimmerWave({
                     translateY: [0, yDistance, 0],
                     scale: [1, scaleDistance, 1],
                     rotateY: [0, rotateYDistance, 0],
-                    color: ['var(--base-color)', 'var(--base-gradient-color)', 'var(--base-color)'],
+                    color: [baseColor, gradientColor, baseColor],
                   }}
                   transition={{
                     duration: duration,

@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
 import Button from '@/components/ui/Button/Button';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ProjectHeaderProps {
   id?: string;
@@ -17,6 +18,7 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
   const pathname = usePathname();
   const { success, error: showError } = useToast();
   const { mutate: deleteProject, isPending } = useDeleteProject();
+  const { user } = useAuth();
 
   const isEditPage = pathname.startsWith('/projects/edit');
   const isListPage = pathname === '/projects';
@@ -63,13 +65,13 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
           </TransitionLink>
         )}
 
-        {isListPage && (
+        {isListPage && user && (
           <TransitionLink href="/projects/write" isButton>
             작성
           </TransitionLink>
         )}
 
-        {isDetailPage && id && (
+        {isDetailPage && id && user && (
           <>
             <TransitionLink href={`/projects/edit/${id}`} isButton>
               수정
@@ -84,7 +86,7 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
           </>
         )}
 
-        {isEditPage && id && (
+        {isEditPage && id && user && (
           <Button
             onClick={handleDelete}
             disabled={isPending}

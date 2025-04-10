@@ -19,9 +19,26 @@ export const createServerSupabaseClient = async () => {
 
   return createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
-      get: name => cookieStore.get(name)?.value ?? null,
-      set: () => {},
-      remove: () => {},
+      get: name => cookieStore.get(name)?.value ?? '',
+      set: (name, value, options) => {
+        try {
+          cookieStore.set(name, value, {
+            path: '/',
+            ...options,
+          });
+        } catch (error) {
+          // Next.js의 ReadonlyRequestCookies에서는 set이 동작하지 않을 수 있음
+          console.warn('쿠키 설정 에러:', error);
+        }
+      },
+      remove: name => {
+        try {
+          cookieStore.set(name, '', { maxAge: 0 });
+        } catch (error) {
+          // Next.js의 ReadonlyRequestCookies에서는 set이 동작하지 않을 수 있음
+          console.warn('쿠키 삭제 에러:', error);
+        }
+      },
     },
   });
 };

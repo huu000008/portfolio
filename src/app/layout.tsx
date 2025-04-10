@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
 import { ThemeScript } from '@/components/ThemeScript';
-import { Header } from '@/components/layout/Header';
+import Header from '@/components/layout/Header';
 import Providers from './providers';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import QuickAction from '@/components/layout/QuickAction';
@@ -24,8 +24,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Header />
         <Providers>
+          <Header />
           <main className={styles.wrap}>{children}</main>
         </Providers>
         <QuickAction />

@@ -2,9 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 /**
- * 애플리케이션 전체에 React Query 프로바이더를 제공하는 컴포넌트
+ * 애플리케이션 전체에 React Query 및 인증 프로바이더를 제공하는 컴포넌트
  */
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => {
@@ -23,5 +24,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     });
   });
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>{children}</AuthProvider>
+    </QueryClientProvider>
+  );
 }
