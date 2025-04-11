@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 세션 갱신 함수
   const refreshSession = async () => {
     try {
-      const { data, error } = await supabase.auth.refreshSession();
+      const { error } = await supabase.auth.refreshSession();
       if (error) {
         console.error('세션 갱신 실패:', error);
         return false;
@@ -63,14 +63,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   // 세션 만료 감지 함수
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session && user) {
       // 세션이 만료됨
       toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
       router.push('/auth/login');
     }
-  };
+  }, [user, router]);
+
+  // 로그아웃 함수
+  const signOut = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      // 상태 업데이트는 onAuthStateChange 리스너가 처리하고 router.refresh()도 호출합니다.
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  }, [router]);
 
   useEffect(() => {
     // 초기 세션 로드
@@ -122,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearInterval(refreshInterval);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [user]);
+  }, [user, checkSession]);
 
   // 자동 로그아웃 타이머
   useEffect(() => {
@@ -153,17 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener('scroll', resetTimer);
       window.removeEventListener('click', resetTimer);
     };
-  }, [user]);
-
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      // 상태 업데이트는 onAuthStateChange 리스너가 처리하고 router.refresh()도 호출합니다.
-      router.push('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+  }, [user, signOut]);
 
   // 관리자 여부 확인 함수
   const isAdmin = useCallback(() => {

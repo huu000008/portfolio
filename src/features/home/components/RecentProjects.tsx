@@ -17,7 +17,7 @@ interface RecentProjectsProps {
  * 최근 프로젝트 목록 컴포넌트
  * React 19 최적화가 적용된 컴포넌트
  */
-export default function RecentProjects({ projects, isLoading }: RecentProjectsProps) {
+export default function RecentProjects({ projects }: RecentProjectsProps) {
   // 프로젝트 목록 메모이제이션 - 불필요한 리렌더링 방지
   const projectItems = useMemo(() => {
     if (!projects?.length) return null;
