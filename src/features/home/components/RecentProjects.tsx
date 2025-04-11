@@ -39,21 +39,15 @@ export default function RecentProjects({ projects, isLoading }: RecentProjectsPr
     });
   }, [projects]);
 
-  // 로딩 상태 UI - 간결한 로딩 표시
-  const loadingState = (
-    <div className={styles.loading}>
-      <div className={styles.loadingBar}></div>
-    </div>
-  );
-
-  // 빈 상태 UI
-  const emptyState = <div className={styles.empty}>프로젝트가 없습니다.</div>;
-
   return (
     <div className={styles.wrap}>
       <InViewMotion className={styles.title}>Recent Projects</InViewMotion>
       <div className={styles.list}>
-        {isLoading && !projectItems ? loadingState : !projectItems ? emptyState : projectItems}
+        {!projects?.length ? (
+          <div className={styles.empty}>프로젝트가 없습니다.</div>
+        ) : (
+          projectItems
+        )}
       </div>
     </div>
   );
