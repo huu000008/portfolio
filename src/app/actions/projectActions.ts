@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
 import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from './authActions';
+import { User } from '@/types/user';
 
 // 관리자 이메일 목록
 const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
@@ -14,7 +15,7 @@ const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변�
 /**
  * 현재 사용자가 관리자인지 확인하는 함수
  */
-async function isAdmin(user: any) {
+async function isAdmin(user: User | null) {
   if (!user || !user.email) return false;
   return ADMIN_EMAILS.includes(user.email);
 }
@@ -79,14 +80,6 @@ export async function fetchProjectByIdAction(id: string): Promise<Project> {
     // 결과가 없으면 상세 로그 후 404 페이지로
     if (!data || data.length === 0) {
       // console.log(`[DEBUG] 프로젝트를 찾을 수 없음: ID=${id}`);
-
-      // 존재하는 프로젝트 ID 목록을 확인하기 위한 추가 쿼리
-      const { data: allProjects } = await supabase.from('projects').select('id').limit(10);
-
-      // console.log(
-      //   `[DEBUG] 데이터베이스의 프로젝트 ID 목록(최대 10개):`,
-      //   allProjects?.map(p => p.id) || '없음',
-      // );
 
       notFound();
     }

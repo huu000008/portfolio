@@ -31,9 +31,6 @@ export const ProjectHeader = ({ id, userId }: ProjectHeaderProps) => {
   // 작성자이거나 관리자인 경우 수정/삭제 권한 부여
   const hasEditPermission = isAuthor || isAdmin();
 
-  // 관리자인 경우 알림 표시
-  const isAdminUser = isAdmin();
-
   const handleDelete = () => {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 

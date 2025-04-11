@@ -17,8 +17,7 @@ import { InViewMotion } from '@/components/ui/InViewMotion';
  */
 export default function HomeContainer({ initialProjects }: { initialProjects: Project[] }) {
   // 최적화된 스토어 사용
-  const { projects, isLoading, setProjects, fetchProjectsFromServer, refreshProjects } =
-    useProjectStore();
+  const { projects, isLoading, setProjects, fetchProjectsFromServer } = useProjectStore();
 
   // React 19 Concurrent Mode 최적화
   const [isPending, startTransition] = useTransition();
@@ -46,13 +45,6 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
       });
     }
   }, [initialProjects, projects, isLoading, setProjects, fetchProjectsFromServer]);
-
-  // 데이터 새로고침 핸들러 (필요시 컴포넌트에서 호출)
-  const handleRefresh = () => {
-    startTransition(() => {
-      refreshProjects();
-    });
-  };
 
   return (
     <div className={styles.wrap}>
