@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
 import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from './authActions';
-import { User } from '@/types/user';
+import { User } from '@supabase/supabase-js'; // Supabase User 타입 사용
 
 // 관리자 이메일 목록
 const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
