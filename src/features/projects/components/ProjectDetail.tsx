@@ -34,7 +34,14 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
         <div className={styles.label}>썸네일 이미지</div>
         <div className={styles.value}>
           {project.thumbnail_url && (
-            <Image src={project.thumbnail_url} alt="썸네일" width={800} height={600} />
+            <Image
+              src={project.thumbnail_url}
+              alt="썸네일"
+              width={800}
+              height={600}
+              style={{ width: '100%', height: 'auto' }}
+              priority
+            />
           )}
         </div>
       </div>
