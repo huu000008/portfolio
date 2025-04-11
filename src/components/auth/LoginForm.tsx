@@ -20,8 +20,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const router = useRouter();
   const { fetchSession } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -29,10 +29,6 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -40,41 +36,40 @@ export default function LoginForm() {
     setError(null);
 
     try {
-      const result = await login(data);
+      const { data: userData, error: loginError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // 로그인 성공 시 즉시 세션 확인
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session) {
-          console.log('Login successful, session:', session);
-          // 상태 업데이트 후 페이지 이동
-          await fetchSession();
-          router.push('/');
-        } else {
-          setError('로그인 세션을 가져오는데 실패했습니다.');
-        }
+      if (loginError) {
+        throw new Error(loginError.message || '로그인에 실패했습니다.');
+      }
+
+      if (userData?.user) {
+        // 세션 정보 업데이트
+        await fetchSession();
+
+        // 홈 페이지로 리다이렉트
+        router.push('/');
+        router.refresh();
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('로그인 중 오류가 발생했습니다.');
+      console.error('로그인 오류:', err);
+      setError(err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
+    <div className="w-full max-w-md rounded-lg border border-[#e9dfd5] bg-[#fdf6ed] p-8 shadow-md">
       <div className="text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">로그인</h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <h2 className="text-3xl font-bold tracking-tight text-[#3d2c29]">로그인</h2>
+        <p className="mt-2 text-sm text-[#5f4b45]">
           계정이 없으신가요?{' '}
           <a
             href="/auth/signup"
-            className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            className="font-medium text-[#e67e22] hover:text-[#d35400] transition-colors"
           >
             회원가입
           </a>
@@ -82,18 +77,11 @@ export default function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-        {error && (
-          <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-            {error}
-          </div>
-        )}
+        {error && <div className="rounded-md bg-red-50 p-4 text-sm text-[#e74c3c]">{error}</div>}
 
         <div className="space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-[#3d2c29]">
               이메일
             </label>
             <div className="mt-1">
@@ -101,23 +89,18 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 {...register('email')}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400 sm:text-sm"
+                className="block w-full rounded-[0.8rem] border border-[#e9dfd5] bg-[#fffaf5] px-4 py-2 text-[#3d2c29] shadow-sm transition-all focus:border-[#e67e22] focus:outline-none focus:ring-2 focus:ring-[rgba(230,126,34,0.4)]"
                 placeholder="이메일 주소"
                 disabled={isLoading}
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errors.email.message}
-                </p>
+                <p className="mt-1 text-sm text-[#e74c3c]">{errors.email.message}</p>
               )}
             </div>
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-[#3d2c29]">
               비밀번호
             </label>
             <div className="mt-1">
@@ -125,14 +108,12 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 {...register('password')}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400 sm:text-sm"
+                className="block w-full rounded-[0.8rem] border border-[#e9dfd5] bg-[#fffaf5] px-4 py-2 text-[#3d2c29] shadow-sm transition-all focus:border-[#e67e22] focus:outline-none focus:ring-2 focus:ring-[rgba(230,126,34,0.4)]"
                 placeholder="비밀번호"
                 disabled={isLoading}
               />
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errors.password.message}
-                </p>
+                <p className="mt-1 text-sm text-[#e74c3c]">{errors.password.message}</p>
               )}
             </div>
           </div>
@@ -142,12 +123,12 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400"
+            className="group relative flex w-full justify-center rounded-[0.8rem] border border-transparent bg-[#e67e22] px-4 py-3 text-[1.6rem] font-medium text-white transition-all hover:bg-[#d35400] focus:outline-none focus:ring-2 focus:ring-[rgba(230,126,34,0.4)] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? (
               <span className="flex items-center">
                 <svg
-                  className="mr-2 h-4 w-4 animate-spin"
+                  className="mr-2 h-5 w-5 animate-spin"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
