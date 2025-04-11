@@ -8,6 +8,17 @@ import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
 import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from './authActions';
 
+// 관리자 이메일 목록
+const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
+
+/**
+ * 현재 사용자가 관리자인지 확인하는 함수
+ */
+async function isAdmin(user: any) {
+  if (!user || !user.email) return false;
+  return ADMIN_EMAILS.includes(user.email);
+}
+
 /**
  * 프로젝트 목록 조회 서버 액션
  * @returns 프로젝트 배열
@@ -38,13 +49,52 @@ export async function fetchProjectsAction(): Promise<Project[]> {
 export async function fetchProjectByIdAction(id: string): Promise<Project> {
   const supabase = await createServerSupabaseClient();
 
+  // console.log(`[DEBUG] 프로젝트 조회 시작: ID=${id}, 타입=${typeof id}`);
+
   try {
-    const { data, error } = await supabase.from('projects').select('*').eq('id', id).single();
+    // ID가 UUID 형식인지 확인
+    if (id.includes('-')) {
+      // UUID 형식이면 그대로 사용
+      // console.log(`[DEBUG] UUID 형식 ID 사용: ${id}`);
+    } else {
+      // 숫자 ID면 로그 기록
+      // console.log(`[DEBUG] 숫자 ID 사용: ${id}`);
+    }
+
+    // 쿼리 실행 전 로깅
+    // console.log(`[DEBUG] Supabase 쿼리 실행: .from('projects').select('*').eq('id', ${id})`);
+
+    // .single() 대신 배열로 받아서 처리
+    const { data, error } = await supabase.from('projects').select('*').eq('id', id);
+
+    // 쿼리 결과 로깅
+    // console.log(`[DEBUG] 쿼리 결과:`, {
+    //   dataExists: !!data,
+    //   dataLength: data?.length,
+    //   error: error ? `${error.code}: ${error.message}` : null,
+    // });
 
     if (error) throw new Error(`프로젝트 조회 실패: ${error.message}`);
-    if (!data) notFound();
 
-    return data;
+    // 결과가 없으면 상세 로그 후 404 페이지로
+    if (!data || data.length === 0) {
+      // console.log(`[DEBUG] 프로젝트를 찾을 수 없음: ID=${id}`);
+
+      // 존재하는 프로젝트 ID 목록을 확인하기 위한 추가 쿼리
+      const { data: allProjects } = await supabase.from('projects').select('id').limit(10);
+
+      // console.log(
+      //   `[DEBUG] 데이터베이스의 프로젝트 ID 목록(최대 10개):`,
+      //   allProjects?.map(p => p.id) || '없음',
+      // );
+
+      notFound();
+    }
+
+    // console.log(`[DEBUG] 프로젝트 찾음:`, data[0].id);
+
+    // 첫 번째 항목만 반환 (여러 항목이 있어도 첫 번째만 사용)
+    return data[0];
   } catch (error) {
     console.error(`프로젝트 ID ${id} 조회 중 오류 발생:`, error);
     throw error;
@@ -84,18 +134,19 @@ export async function createProjectAction(
       user_id: user.id, // 현재 사용자 ID 저장
     };
 
-    const { data, error } = await supabase
-      .from('projects')
-      .insert(projectData)
-      .select('*')
-      .single();
+    // .single() 대신 배열로 받아서 처리
+    const { data, error } = await supabase.from('projects').insert(projectData).select('*');
 
     if (error) throw new Error(error.message);
+
+    if (!data || data.length === 0) {
+      throw new Error('프로젝트가 생성되었지만 데이터를 가져오지 못했습니다.');
+    }
 
     // 캐시 무효화
     revalidatePath('/projects');
 
-    return { data, error: null };
+    return { data: data[0], error: null };
   } catch (error) {
     console.error('프로젝트 생성 실패:', error);
     return {
@@ -121,22 +172,30 @@ export async function updateProjectAction(
 
     const supabase = await createServerSupabaseClient();
 
-    // 프로젝트 소유자 확인
-    const { data: project, error: fetchError } = await supabase
+    // 프로젝트 소유자 확인 - .single() 제거
+    const { data: projectData, error: fetchError } = await supabase
       .from('projects')
       .select('user_id')
-      .eq('id', data.id)
-      .single();
+      .eq('id', data.id);
 
     if (fetchError) throw new Error(fetchError.message);
 
-    // 프로젝트가 존재하고 현재 사용자가 작성자인지 확인
-    if (project && project.user_id !== user.id) {
+    // 프로젝트가 존재하는지 확인
+    if (!projectData || projectData.length === 0) {
+      throw new Error('프로젝트를 찾을 수 없습니다.');
+    }
+
+    // 관리자 확인
+    const userIsAdmin = await isAdmin(user);
+
+    // 프로젝트 소유자 확인
+    const project = projectData[0];
+    if (project.user_id !== user.id && !userIsAdmin) {
       throw new Error('이 프로젝트를 수정할 권한이 없습니다.');
     }
 
     // 폼 데이터를 DB 스키마에 맞게 변환
-    const projectData = {
+    const projectUpdateData = {
       title: data.title,
       description: data.description,
       project_period: data.projectPeriod,
@@ -150,20 +209,24 @@ export async function updateProjectAction(
       updated_at: new Date().toISOString(),
     };
 
+    // .single() 제거
     const { data: result, error } = await supabase
       .from('projects')
-      .update(projectData)
+      .update(projectUpdateData)
       .eq('id', data.id)
-      .select('*')
-      .single();
+      .select('*');
 
     if (error) throw new Error(error.message);
+
+    if (!result || result.length === 0) {
+      throw new Error('프로젝트가 업데이트되었지만 데이터를 가져오지 못했습니다.');
+    }
 
     // 캐시 무효화
     revalidatePath('/projects');
     revalidatePath(`/projects/${data.id}`);
 
-    return { data: result, error: null };
+    return { data: result[0], error: null };
   } catch (error) {
     console.error('프로젝트 수정 실패:', error);
     return {
@@ -176,6 +239,7 @@ export async function updateProjectAction(
 /**
  * 프로젝트 삭제 서버 액션
  * 인증된 사용자만 접근 가능
+ * 삭제 성공 시 프로젝트 목록 페이지로 자동 리다이렉트
  */
 export async function deleteProjectAction(id: string): Promise<{ success: boolean }> {
   try {
@@ -187,17 +251,25 @@ export async function deleteProjectAction(id: string): Promise<{ success: boolea
 
     const supabase = await createServerSupabaseClient();
 
-    // 프로젝트 소유자 확인
-    const { data: project, error: fetchError } = await supabase
+    // 프로젝트 소유자 확인 - .single() 제거
+    const { data: projectData, error: fetchError } = await supabase
       .from('projects')
       .select('user_id')
-      .eq('id', id)
-      .single();
+      .eq('id', id);
 
     if (fetchError) throw new Error(fetchError.message);
 
-    // 프로젝트가 존재하고 현재 사용자가 작성자인지 확인
-    if (project && project.user_id !== user.id) {
+    // 프로젝트가 존재하는지 확인
+    if (!projectData || projectData.length === 0) {
+      throw new Error('프로젝트를 찾을 수 없습니다.');
+    }
+
+    // 관리자 확인
+    const userIsAdmin = await isAdmin(user);
+
+    // 프로젝트 소유자 확인
+    const project = projectData[0];
+    if (project.user_id !== user.id && !userIsAdmin) {
       throw new Error('이 프로젝트를 삭제할 권한이 없습니다.');
     }
 
@@ -207,8 +279,13 @@ export async function deleteProjectAction(id: string): Promise<{ success: boolea
 
     // 캐시 무효화
     revalidatePath('/projects');
-    revalidatePath(`/projects/${id}`);
 
+    // console.log(`프로젝트 ID ${id} 삭제 성공. 프로젝트 목록 페이지로 리다이렉트합니다.`);
+
+    // 성공적으로 삭제 후 프로젝트 목록 페이지로 리다이렉트
+    redirect('/projects');
+
+    // 아래 코드는 리다이렉트 후에는 실행되지 않음
     return { success: true };
   } catch (error) {
     console.error('프로젝트 삭제 실패:', error);

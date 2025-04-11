@@ -1,17 +1,21 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
-type AuthContextType = {
+// 관리자로 지정할 이메일 주소 목록
+const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
+
+interface AuthContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
   fetchSession: () => Promise<void>;
-};
+  isAdmin: () => boolean;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -27,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      console.log('Fetched session:', session);
+      // console.log('Fetched session:', session);
       // 상태 업데이트를 동기적으로 처리
       setSession(session);
       setUser(session?.user ?? null);
@@ -46,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session);
+      // console.log('Auth state changed:', event, session);
 
       // 상태 변경 시 즉시 업데이트
       setSession(session);
@@ -55,10 +59,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // 로그인/로그아웃 이벤트 처리
       if (event === 'SIGNED_IN') {
-        console.log('SIGNED_IN event detected, updating state');
+        // console.log('SIGNED_IN event detected, updating state');
         await fetchSession();
       } else if (event === 'SIGNED_OUT') {
-        console.log('SIGNED_OUT event detected, clearing state');
+        // console.log('SIGNED_OUT event detected, clearing state');
         setSession(null);
         setUser(null);
       }
@@ -79,8 +83,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // 관리자 여부 확인 함수
+  const isAdmin = useCallback(() => {
+    if (!user) return false;
+    return ADMIN_EMAILS.includes(user.email || '');
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signOut, fetchSession }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        isLoading,
+        signOut,
+        fetchSession,
+        isAdmin,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

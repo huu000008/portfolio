@@ -4,7 +4,6 @@
 @use './base/interaction';
 @use './base/theme';
 
-
 /* CSS Reset */
 *,
 *::before,
@@ -82,15 +81,15 @@ textarea {
   font-size: var(--font-size-md);
   line-height: 1.75;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg-surface);
+  border: 0.1rem solid var(--color-border);
+  background-color: var(--color-bg-body);
   color: var(--color-text-primary);
   transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: var(--color-accent);
-    background-color: var(--color-bg-body);
+    box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 

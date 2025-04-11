@@ -41,8 +41,8 @@ export const ImageUploader = ({ name, id }: Props) => {
     const safeFileName = sanitizeFileName(file.name);
     const filePath = `${Date.now()}_${safeFileName}`;
 
-    console.log('🔍 선택한 파일:', file);
-    console.log('📂 업로드 경로:', filePath);
+    // console.log('🔍 선택한 파일:', file);
+    // console.log('📂 업로드 경로:', filePath);
 
     setUploading(true);
 
@@ -62,7 +62,7 @@ export const ImageUploader = ({ name, id }: Props) => {
       // 비동기 처리를 위해 await 추가
       const { data } = await supabase.storage.from('project-images').getPublicUrl(filePath);
 
-      console.log('✅ 업로드 성공:', data.publicUrl);
+      // console.log('✅ 업로드 성공:', data.publicUrl);
 
       setValue(name, data.publicUrl);
       setPreviewUrl(data.publicUrl);

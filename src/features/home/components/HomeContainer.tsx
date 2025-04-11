@@ -3,28 +3,56 @@
 import { Project } from '@/types/project';
 import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useTransition, useDeferredValue } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { TextShimmerWave } from '@/components/ui/TextShimmerWavw/TextShimmerWave';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 
+/**
+ * 홈 페이지 컨테이너 컴포넌트
+ * React 19 최적화가 적용된 컴포넌트
+ *
+ * @param initialProjects 서버에서 미리 가져온 초기 프로젝트 데이터
+ */
 export default function HomeContainer({ initialProjects }: { initialProjects: Project[] }) {
-  const { projects, isLoading, setProjects, fetchProjects } = useProjectStore();
+  // 최적화된 스토어 사용
+  const { projects, isLoading, setProjects, fetchProjectsFromServer, refreshProjects } =
+    useProjectStore();
 
-  // ✅ 최초 1회만 초기 데이터를 세팅
+  // React 19 Concurrent Mode 최적화
+  const [isPending, startTransition] = useTransition();
+
+  // 프로젝트 데이터에 낮은 우선순위 할당 (UI 블로킹 방지)
+  const deferredProjects = useDeferredValue(projects || initialProjects);
+
+  // ✅ 최초 1회만 초기 데이터를 세팅 (최적화 유지)
   const initialized = useRef(false);
 
+  // 초기 데이터 설정 및 필요시 서버에서 데이터 페칭
   useEffect(() => {
-    if (initialProjects && !initialized.current) {
+    // 1. 초기 데이터가 있고 아직 초기화되지 않았으면 스토어에 설정
+    if (initialProjects?.length && !initialized.current) {
       setProjects(initialProjects);
       initialized.current = true;
+      return;
     }
 
-    if (!projects && !isLoading) {
-      fetchProjects();
+    // 2. 스토어에 데이터가 없고 로딩 중이 아니면 Server Action으로 데이터 가져오기
+    if (!projects?.length && !isLoading && initialized.current) {
+      // 트랜지션으로 UI 응답성 유지하며 데이터 페칭
+      startTransition(() => {
+        fetchProjectsFromServer();
+      });
     }
-  }, [initialProjects, projects, isLoading, setProjects, fetchProjects]);
+  }, [initialProjects, projects, isLoading, setProjects, fetchProjectsFromServer]);
+
+  // 데이터 새로고침 핸들러 (필요시 컴포넌트에서 호출)
+  const handleRefresh = () => {
+    startTransition(() => {
+      refreshProjects();
+    });
+  };
 
   return (
     <div className={styles.wrap}>
@@ -50,10 +78,8 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
               프론트엔드 개발자입니다.
             </InViewMotion>
           </div>
-          <RecentProjects
-            projects={initialProjects || projects}
-            isLoading={projects ? false : isLoading}
-          />
+          {/* 데이터 페칭 중이어도 UI 응답성 유지 */}
+          <RecentProjects projects={deferredProjects} isLoading={isLoading || isPending} />
         </div>
         <div className={styles.overview}>
           <InViewMotion className={styles.title}>overniew</InViewMotion>

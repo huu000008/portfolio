@@ -11,18 +11,28 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface ProjectHeaderProps {
   id?: string;
+  userId?: string; // 프로젝트 작성자 ID
 }
 
-export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
+export const ProjectHeader = ({ id, userId }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { success, error: showError } = useToast();
   const { mutate: deleteProject, isPending } = useDeleteProject();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   const isEditPage = pathname.startsWith('/projects/edit');
   const isListPage = pathname === '/projects';
   const isDetailPage = pathname.startsWith('/projects/') && !isEditPage;
+
+  // 현재 사용자가 프로젝트 작성자인지 확인
+  const isAuthor = user?.id === userId;
+
+  // 작성자이거나 관리자인 경우 수정/삭제 권한 부여
+  const hasEditPermission = isAuthor || isAdmin();
+
+  // 관리자인 경우 알림 표시
+  const isAdminUser = isAdmin();
 
   const handleDelete = () => {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
@@ -71,7 +81,8 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
           </TransitionLink>
         )}
 
-        {isDetailPage && id && user && (
+        {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
+        {isDetailPage && id && user && hasEditPermission && (
           <>
             <TransitionLink href={`/projects/edit/${id}`} isButton>
               수정
@@ -86,14 +97,16 @@ export const ProjectHeader = ({ id }: ProjectHeaderProps) => {
           </>
         )}
 
-        {isEditPage && id && user && (
-          <Button
-            onClick={handleDelete}
-            disabled={isPending}
-            className={isPending ? styles.loading : ''}
-          >
-            {isPending ? '삭제 중...' : '삭제'}
-          </Button>
+        {isEditPage && id && user && hasEditPermission && (
+          <>
+            <Button
+              onClick={handleDelete}
+              disabled={isPending}
+              className={isPending ? styles.loading : ''}
+            >
+              {isPending ? '삭제 중...' : '삭제'}
+            </Button>
+          </>
         )}
       </div>
     </div>
