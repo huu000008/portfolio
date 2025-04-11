@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Button.module.scss';
-import classNames from 'classnames';
+import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -9,9 +9,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<ButtonProps> = ({ children, className, ...props }) => {
   return (
-    <button className={classNames(styles.wrap, className)} {...props}>
+    <button className={cn(styles.wrap, className)} {...props}>
       {children}
     </button>
   );
-}
+};
 export default Button;

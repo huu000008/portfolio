@@ -3,6 +3,7 @@
 import { Project } from '@/types/project';
 import { ProjectItem } from './ProjectItem';
 import styles from './ProjectList.module.scss';
+import { cn } from '@/lib/utils';
 
 interface Props {
   projects: Project[];
@@ -30,7 +31,7 @@ export const ProjectList = ({
   }
 
   return (
-    <div className={`${styles.wrap} ${styles[variant]}`}>
+    <div className={cn(styles.wrap, styles[variant])}>
       {projects.map(project => (
         <ProjectItem key={project.id} project={project} />
       ))}

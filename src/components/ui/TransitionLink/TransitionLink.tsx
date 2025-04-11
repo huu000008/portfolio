@@ -1,6 +1,6 @@
 'use client';
 
-import classNames from 'classnames';
+import { cn } from '@/lib/utils';
 import styles from './TransitionLink.module.scss';
 import Link from 'next/link';
 
@@ -13,7 +13,7 @@ type Props = {
 
 export const TransitionLink = ({ href, children, isButton, className }: Props) => {
   return (
-    <Link href={href} className={classNames(styles.wrap, className, isButton && styles.button)}>
+    <Link href={href} className={cn(styles.wrap, className, isButton && styles.button)}>
       {children}
     </Link>
   );
