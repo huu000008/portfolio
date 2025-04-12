@@ -66,8 +66,10 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
                 Projects
               </TransitionLink>
             </InViewMotion>
-            <InViewMotion>
-              <TransitionLink href="/about">About</TransitionLink>
+            <InViewMotion delay={0.3}>
+              <TransitionLink href="/" scrollToTop={true}>
+                comming soon{' '}
+              </TransitionLink>
             </InViewMotion>
           </div>
         </div>
