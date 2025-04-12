@@ -89,17 +89,6 @@ export default function Header() {
           </h1>
         </TransitionLink>
       </InViewMotion>
-      {/* <div>
-        {!isLoading && (
-          <>
-            {user ? (
-              <Button onClick={signOut}>로그아웃</Button>
-            ) : (
-              <AuthModal trigger={<Button>로그인</Button>} initialMode="login" />
-            )}
-          </>
-        )}
-      </div> */}
     </header>
   );
 }

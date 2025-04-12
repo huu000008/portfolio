@@ -26,8 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Header />
           <main>{children}</main>
+          <QuickAction />
         </Providers>
-        <QuickAction />
 
         <ToastContainer />
       </body>
