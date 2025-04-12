@@ -55,9 +55,7 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
 
           <div className={styles.linkWrap}>
             <InViewMotion>
-              <TransitionLink href="/projects" className={styles.asd}>
-                Projects
-              </TransitionLink>
+              <TransitionLink href="/projects">Projects</TransitionLink>
             </InViewMotion>
             <InViewMotion delay={0.3}>
               <TransitionLink href="/" scrollToTop={true}>

@@ -1,3 +1,5 @@
+@use '@/styles/abstracts/mixins' as *;
+
 .wrap {
   display: inline-flex;
   flex-direction: column;
@@ -6,7 +8,9 @@
   left: 2rem;
   padding: 10rem 2rem;
   z-index: 100;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: padding, background-color, box-shadow;
+  border: 1px solid transparent;
+  transition: all 0.5s;
 
   &.scrolled {
     padding: 2rem;
@@ -14,6 +18,7 @@
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-border);
+    transform: translateZ(0);
   }
 }
 
@@ -23,7 +28,9 @@
   font-size: 18vw;
   font-weight: 900;
   line-height: 1;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: font-size;
+  transform: translateZ(0);
+  transition: all 0.5s;
 
   .scrolled & {
     font-size: 3rem;
@@ -33,11 +40,13 @@
 .expanded,
 .shrinked {
   display: inline-block;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  will-change: transform, letter-spacing;
+  transition: all 0.5s;
 }
 
 .shrinked {
-  transform: scale(0.95);
+  transform: scale(0.95) translateZ(0);
   letter-spacing: -1px;
 }
 
