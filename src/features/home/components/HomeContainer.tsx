@@ -6,7 +6,6 @@ import RecentProjects from './RecentProjects';
 import { useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
-import { TextShimmerWave } from '@/components/ui/TextShimmerWavw/TextShimmerWave';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 
 /**
@@ -32,43 +31,35 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
   return (
     <div className={styles.wrap}>
       <div className={styles.inner}>
-        <InViewMotion>
-          <TextShimmerWave
-            duration={1}
-            spread={1}
-            zDistance={1}
-            scaleDistance={1.1}
-            rotateYDistance={20}
-          >
-            Every line of code, a step towards mastery.
-          </TextShimmerWave>
-        </InViewMotion>
+        <div className={styles.visual}>JUST DO</div>
+
         <div className={styles.bottom}>
           <div className={styles.left}>
-            <InViewMotion className={styles.text}>
+            <div className={styles.text}>
               기술을 배우고,
               <br />
               경험으로 익히는
               <br />
               프론트엔드 개발자입니다.
-            </InViewMotion>
+            </div>
           </div>
           {/* 서버 데이터를 직접 사용해 즉시 렌더링 */}
           <RecentProjects projects={initialProjects} isLoading={false} />
         </div>
         <div className={styles.overview}>
-          <InViewMotion className={styles.title}>overniew</InViewMotion>
+          <div className={styles.title}>overniew</div>
           <div className={styles.description}>
-            <InViewMotion>
+            <p>
               Project 페이지에는 개인 및 팀 프로젝트와 직무에서 진행한 프로젝트의 결과가 담겨
               있습니다. 이 과정에서 고민했던 점, 해결 방법, 관련 공부 기록, 그리고 구현한 기능들을
               통해 저의 기술 스택과 문제 해결 능력을 깊이 있게 확인하실 수 있습니다.
-            </InViewMotion>
-            <InViewMotion>
+            </p>
+            <p>
               About 페이지에서는 제 경험과 가치관, 그리고 앞으로 프론트엔드 개발자로서 나아가고 싶은
               방향을 간략히 소개하고 있습니다.
-            </InViewMotion>
+            </p>
           </div>
+
           <div className={styles.linkWrap}>
             <InViewMotion>
               <TransitionLink href="/projects" className={styles.asd}>

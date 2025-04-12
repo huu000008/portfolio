@@ -12,15 +12,9 @@
     margin: 0 auto;
   }
   .visual {
-    display: flex;
-    flex-direction: column;
+    font-size: 25rem;
+    font-weight: 800;
     line-height: 1;
-    .text1 {
-      font-size: 3rem;
-    }
-    .text2 {
-      font-size: 10rem;
-    }
   }
   .bottom {
     display: flex;
