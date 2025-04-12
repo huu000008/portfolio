@@ -16,7 +16,7 @@
       background-color: var(--color-bg-surface-hover);
     }
     &:disabled {
-      background-color: var(--color-disabled);
+         background-color: var(--color-disabled);
       cursor: not-allowed;
     }
     &:active {
