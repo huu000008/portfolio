@@ -10,7 +10,7 @@
   z-index: 100;
   will-change: padding, background-color, box-shadow;
   border: 1px solid transparent;
-  transition: all 0.5s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 
   &.scrolled {
     padding: 2rem;
@@ -30,7 +30,7 @@
   line-height: 1;
   will-change: font-size;
   transform: translateZ(0);
-  transition: all 0.5s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 
   .scrolled & {
     font-size: 3rem;
@@ -42,12 +42,86 @@
   display: inline-block;
   transform: translateZ(0);
   will-change: transform, letter-spacing;
-  transition: all 0.5s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .shrinked {
   transform: scale(0.95) translateZ(0);
   letter-spacing: -1px;
+}
+
+.textMorph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  transform: translateZ(0);
+  will-change: transform, width, opacity;
+  filter: blur(0);
+  letter-spacing: -0.01em;
+  overflow: visible;
+  perspective: 800px;
+}
+
+.morphChar {
+  transform: translateZ(0);
+  transform-origin: center;
+  will-change: transform, opacity, width, filter;
+  white-space: nowrap;
+  backface-visibility: hidden;
+  letter-spacing: -0.02em;
+  filter: blur(0);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
+  // 글자별 색상과 경계 효과
+  &:nth-child(1),
+  &:nth-child(6) {
+    color: var(--color-primary);
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  // 키 글자 스타일 (J와 D)
+  &.keyLetter {
+    font-weight: 700;
+    z-index: 2;
+    opacity: 1;
+    color: var(--color-primary);
+  }
+
+  // 스크롤 시 스타일
+  .scrolled & {
+    // 모든 글자 기본 스타일 (축소 시)
+    opacity: 0.3;
+    filter: blur(0.5px);
+    transform-origin: center;
+
+    // J와 D 강조 스타일
+    &:nth-child(1),
+    &:nth-child(6),
+    &.keyLetter {
+      opacity: 1;
+      filter: blur(0);
+      font-weight: bold;
+      letter-spacing: 0;
+      color: var(--color-primary);
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+
+    // 비주요 글자들은 조금 보이게 만들기
+    &:not(.keyLetter) {
+      transition-duration: 0.5s;
+    }
+  }
+
+  // 늘어날 때 글자별 효과
+  @for $i from 1 through 7 {
+    &:nth-child(#{$i}) {
+      transition-delay: $i * 0.03s;
+    }
+  }
 }
 
 @keyframes textExpand {

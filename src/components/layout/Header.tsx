@@ -5,9 +5,10 @@ import styles from './Header.module.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { InViewMotion } from '../ui/InViewMotion';
+import { motion } from 'framer-motion';
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [logoText, setLogoText] = useState('JUST DO');
   const pathname = usePathname();
   const isMainPage = useMemo(() => pathname === '/', [pathname]);
@@ -28,11 +29,11 @@ export default function Header() {
     // requestAnimationFrame을 사용하여 디바운싱 적용
     if (!ticking.current) {
       requestAnimationFrame(() => {
-        if (scrollPosition > 100 && !isScrolled) {
-          setIsScrolled(true);
+        if (scrollPosition > 100 && !scrolled) {
+          setScrolled(true);
           setLogoText('JD');
-        } else if (scrollPosition <= 100 && isScrolled) {
-          setIsScrolled(false);
+        } else if (scrollPosition <= 100 && scrolled) {
+          setScrolled(false);
           setLogoText('JUST DO');
         }
         ticking.current = false;
@@ -40,22 +41,22 @@ export default function Header() {
 
       ticking.current = true;
     }
-  }, [isMainPage, isScrolled]);
+  }, [isMainPage, scrolled]);
 
   // 경로 변경 시 처리
   useEffect(() => {
     // 현재 페이지가 메인 페이지가 아닌 경우 항상 scrolled 상태 적용
     if (!isMainPage) {
-      setIsScrolled(true);
+      setScrolled(true);
       setLogoText('JD');
     } else {
       // 메인 페이지로 돌아온 경우 현재 스크롤 위치에 따라 상태 결정
       const scrollPosition = window.scrollY;
       if (scrollPosition <= 100) {
-        setIsScrolled(false);
+        setScrolled(false);
         setLogoText('JUST DO');
       } else {
-        setIsScrolled(true);
+        setScrolled(true);
         setLogoText('JD');
       }
     }
@@ -74,21 +75,46 @@ export default function Header() {
 
   // 메모이제이션된 클래스 계산
   const headerClass = useMemo(
-    () => `${styles.wrap} ${isScrolled ? styles.scrolled : ''}`,
-    [isScrolled],
+    () => `${styles.wrap} ${scrolled ? styles.scrolled : ''}`,
+    [scrolled],
   );
 
-  const logoClass = useMemo(() => (isScrolled ? styles.shrinked : styles.expanded), [isScrolled]);
+  const logoClass = useMemo(() => (scrolled ? styles.shrinked : styles.expanded), [scrolled]);
 
   return (
     <header className={headerClass}>
       <InViewMotion direction="left-to-right">
         <TransitionLink href="/">
           <h1 className={styles.logo}>
-            <span className={logoClass}>{logoText}</span>
+            <span className={logoClass}>
+              <TextMorph text={logoText} />
+            </span>
           </h1>
         </TransitionLink>
       </InViewMotion>
     </header>
   );
 }
+
+// 글자 하나씩 모핑하는 애니메이션
+const TextMorph = ({ text }: { text: string }) => {
+  const characters = text.split('');
+
+  return (
+    <>
+      {characters.map((char, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 0.5,
+          }}
+          className={styles.character}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </>
+  );
+};
