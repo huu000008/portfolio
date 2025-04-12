@@ -1,12 +1,7 @@
 import React from 'react';
 import styles from './Skills.module.scss';
 import classNames from 'clsx';
-import { InViewMotion } from '@/components/ui/InViewMotion';
-
-interface DirectionProps {
-  x: number;
-  y: number;
-}
+import { InViewMotion, Direction } from '@/components/ui/InViewMotion';
 
 interface Skill {
   name: string;
@@ -15,7 +10,7 @@ interface Skill {
 interface SkillCategory {
   category: string;
   className: string;
-  direction: string;
+  direction: Direction;
   skills: Skill[];
 }
 
@@ -75,7 +70,7 @@ const Skills = () => {
           <InViewMotion
             key={category.category}
             className={classNames(styles.categoryCard, category.className)}
-            direction={category.direction as any}
+            direction={category.direction}
             delay={categoryIndex * 0.2}
           >
             <h3 className={styles.categoryTitle}>{category.category}</h3>

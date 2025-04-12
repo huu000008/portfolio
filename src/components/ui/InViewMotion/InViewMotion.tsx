@@ -4,27 +4,38 @@ import { ElementType, useRef, useMemo, memo } from 'react';
 import { motion, useInView, Variants, Transition } from 'framer-motion';
 
 // 방향성 타입 정의
-type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
+export type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
 
-// 방향별 기본 variants 미리 정의 (재사용 가능)
-const DIRECTION_VARIANTS: Record<Direction, (distance: number) => Variants> = {
-  'left-to-right': distance => ({
+// 애니메이션 미리 정의
+const ANIMATIONS = {
+  leftToRight: (distance: number): Variants => ({
     hidden: { opacity: 0, x: -distance },
     visible: { opacity: 1, x: 0 },
   }),
-  'right-to-left': distance => ({
+  rightToLeft: (distance: number): Variants => ({
     hidden: { opacity: 0, x: distance },
     visible: { opacity: 1, x: 0 },
   }),
-  'top-to-bottom': distance => ({
+  topToBottom: (distance: number): Variants => ({
     hidden: { opacity: 0, y: -distance },
     visible: { opacity: 1, y: 0 },
   }),
-  'bottom-to-top': distance => ({
+  bottomToTop: (distance: number): Variants => ({
     hidden: { opacity: 0, y: distance },
     visible: { opacity: 1, y: 0 },
   }),
 };
+
+// 방향별 기본 variants 미리 정의 (재사용 가능)
+const DIRECTION_VARIANTS: Record<Direction, (distance: number) => Variants> = {
+  'left-to-right': ANIMATIONS.leftToRight,
+  'right-to-left': ANIMATIONS.rightToLeft,
+  'top-to-bottom': ANIMATIONS.topToBottom,
+  'bottom-to-top': ANIMATIONS.bottomToTop,
+};
+
+// 기본 InView 옵션
+const DEFAULT_INVIEW_OPTIONS = { once: true, amount: 0.3 };
 
 type InViewMotionProps<T extends React.ElementType> = {
   as?: T;
@@ -40,7 +51,6 @@ type InViewMotionProps<T extends React.ElementType> = {
   transition?: Transition;
 } & Omit<React.ComponentPropsWithoutRef<T>, 'variants' | 'transition'>;
 
-// 제네릭 타입을 유지하면서 memo 적용을 위한 구현
 function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMotionProps<T>) {
   const {
     as,
@@ -48,7 +58,7 @@ function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMoti
     direction = 'bottom-to-top',
     distance = 20,
     delay = 0,
-    inViewOptions = { once: true, amount: 0.3 },
+    inViewOptions = DEFAULT_INVIEW_OPTIONS,
     variants,
     transition,
     ...rest
@@ -57,31 +67,22 @@ function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMoti
   const ref = useRef(null);
   const isInView = useInView(ref, inViewOptions);
 
-  // variants 메모이제이션 - direction이나 distance가 변경될 때만 재계산
-  const finalVariants = useMemo(() => {
-    // 사용자 정의 variants가 있으면 그대로 사용
-    if (variants) return variants;
+  // variants 메모이제이션
+  const finalVariants = useMemo(
+    () => variants || DIRECTION_VARIANTS[direction](distance),
+    [variants, direction, distance],
+  );
 
-    // 미리 정의된 방향별 variants 사용
-    return DIRECTION_VARIANTS[direction](distance);
-  }, [variants, direction, distance]);
+  // transition 객체 메모이제이션
+  const finalTransition = useMemo(
+    () => ({
+      duration: 0.5,
+      ...(transition || {}),
+      delay: transition?.delay ?? delay,
+    }),
+    [transition, delay],
+  );
 
-  // transition 객체 메모이제이션 - 의존성이 변경될 때만 재계산
-  const finalTransition = useMemo(() => {
-    if (!transition) {
-      return {
-        duration: 0.5,
-        delay,
-      };
-    }
-
-    return {
-      ...transition,
-      delay: transition.delay ?? delay,
-    };
-  }, [transition, delay]);
-
-  // 컴포넌트 생성
   const Component = as ? motion(as as ElementType) : motion.div;
 
   return (
@@ -98,9 +99,4 @@ function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMoti
   );
 }
 
-// memo로 감싸기
 export const InViewMotion = memo(InViewMotionBase);
-
-// 디버깅용 displayName 수동 설정
-InViewMotionBase.displayName = 'InViewMotionBase';
-(InViewMotion as any).displayName = 'InViewMotion';
