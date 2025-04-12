@@ -72,7 +72,7 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
       const itemDirection = ANIMATION_DIRECTIONS[index];
 
       // 딜레이 계산: 첫 번째는 0, 나머지는 지수함수적으로 증가
-      const itemDelay = index === 0 ? 0 : Math.pow(index, 1.5) * delayIncrement;
+      const itemDelay = index === 0 ? 0 : Math.pow(index, 1) * delayIncrement;
 
       return (
         <ProjectItem

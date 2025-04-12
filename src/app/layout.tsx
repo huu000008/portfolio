@@ -6,7 +6,6 @@ import Header from '@/components/layout/Header';
 import Providers from './providers';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import QuickAction from '@/components/layout/QuickAction';
-import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -26,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Providers>
           <Header />
-          <main className={styles.wrap}>{children}</main>
+          <main>{children}</main>
         </Providers>
         <QuickAction />
 

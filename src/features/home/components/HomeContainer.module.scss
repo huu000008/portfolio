@@ -20,29 +20,11 @@
     display: flex;
     justify-content: space-between;
     gap: 2rem;
-    margin-top: 15rem;
     .left {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      padding-top: 4rem;
-      &::before {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 5rem;
-        height: 0.1rem;
-        content: '';
-        background: var(--color-text-muted);
-      }
-      .text {
-        font-size: 4rem;
-        font-weight: 500;
-        line-height: 1.5;
-        color: var(--color-neutral-800);
-      }
     }
   }
 }

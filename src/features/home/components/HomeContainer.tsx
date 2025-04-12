@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { InViewMotion } from '@/components/ui/InViewMotion';
+import Skills from './Skills';
 
 /**
  * 홈 페이지 컨테이너 컴포넌트
@@ -31,17 +32,9 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
   return (
     <div className={styles.wrap}>
       <div className={styles.inner}>
-        <div className={styles.visual}>JUST DO</div>
-
         <div className={styles.bottom}>
           <div className={styles.left}>
-            <div className={styles.text}>
-              기술을 배우고,
-              <br />
-              경험으로 익히는
-              <br />
-              프론트엔드 개발자입니다.
-            </div>
+            <Skills />
           </div>
           {/* 서버 데이터를 직접 사용해 즉시 렌더링 */}
           <RecentProjects projects={initialProjects} isLoading={false} />

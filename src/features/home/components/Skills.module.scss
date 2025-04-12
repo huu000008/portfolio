@@ -1,0 +1,150 @@
+@use '@/styles/abstracts/mixins' as *;
+
+.skillsContainer {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.skillsTitle {
+  font-size: 2.8rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.skillsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  @include respond(sm) {
+  }
+}
+
+.categoryCard {
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &.frontend {
+    background-color: rgba(97, 218, 251, 0.1);
+    border-color: rgba(97, 218, 251, 0.3);
+  }
+
+  &.styling {
+    background-color: rgba(180, 141, 214, 0.1);
+    border-color: rgba(180, 141, 214, 0.3);
+  }
+
+  &.state {
+    background-color: rgba(87, 188, 144, 0.1);
+    border-color: rgba(87, 188, 144, 0.3);
+  }
+
+  &.etc {
+    background-color: rgba(237, 137, 54, 0.1);
+    border-color: rgba(237, 137, 54, 0.3);
+  }
+}
+
+.categoryTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+
+  .frontend & {
+    color: #61dafb; // React 색상
+  }
+
+  .styling & {
+    color: #b48dd6; // 보라색 계열
+  }
+
+  .state & {
+    color: #57bc90; // 초록색 계열
+  }
+
+  .etc & {
+    color: #ed8936; // 주황색 계열
+  }
+}
+
+.skillsList {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.skillItem {
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+
+  .frontend & {
+    border-color: rgba(97, 218, 251, 0.5);
+    background-color: rgba(97, 218, 251, 0.05);
+
+    &:hover {
+      background-color: rgba(97, 218, 251, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  .styling & {
+    border-color: rgba(180, 141, 214, 0.5);
+    background-color: rgba(180, 141, 214, 0.05);
+
+    &:hover {
+      background-color: rgba(180, 141, 214, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  .state & {
+    border-color: rgba(87, 188, 144, 0.5);
+    background-color: rgba(87, 188, 144, 0.05);
+
+    &:hover {
+      background-color: rgba(87, 188, 144, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  .etc & {
+    border-color: rgba(237, 137, 54, 0.5);
+    background-color: rgba(237, 137, 54, 0.05);
+
+    &:hover {
+      background-color: rgba(237, 137, 54, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.skillName {
+  font-weight: 500;
+  font-size: var(--font-size-md);
+
+  .frontend & {
+    color: rgba(97, 218, 251, 0.9);
+  }
+
+  .styling & {
+    color: rgba(180, 141, 214, 0.9);
+  }
+
+  .state & {
+    color: rgba(87, 188, 144, 0.9);
+  }
+
+  .etc & {
+    color: rgba(237, 137, 54, 0.9);
+  }
+}
