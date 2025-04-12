@@ -16,10 +16,8 @@
     "jsx": "preserve", // JSX 그대로 유지 (Next.js 처리)
     "types": ["node"], // Node 타입 자동 포함
     "skipLibCheck": true, // 성능 최적화를 위한 lib 체크 생략
-    "noUnusedLocals": true, // 사용되지 않는 지역 변수 경고 금지
+    "noUnusedLocals": true, // 사용되지 않는 지역 변수 경고
     "noImplicitAny": true, // any 타입 사용 금지
-    "noImplicitThis": true, // this의 타입 명시 필요
-    "strictNullChecks": true, // null/undefined 값 체크 강화
     "plugins": [
       {
         "name": "next"

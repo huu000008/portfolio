@@ -17,9 +17,6 @@ export const ThemeToggle = () => {
     }
   }, [theme]);
 
-  // 테마가 아직 확정되지 않았다면 아무것도 렌더링하지 않음
-  if (label === null) return null;
-
   return <Button onClick={toggleTheme}>{label}</Button>;
 };
 
