@@ -10,7 +10,6 @@ import { useCreateProject, useUpdateProject } from '@/hooks/useProjects';
 import styles from './ProjectForm.module.scss';
 import { useToast } from '@/hooks/useToast';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
-
 import { parseISO, isValid } from 'date-fns';
 import { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button/Button';
@@ -24,7 +23,7 @@ const projectFormSchema = z.object({
   projectPeriod: z.string().min(1, { message: '프로젝트 기간을 선택해주세요.' }),
   team: requiredText('팀 구성을 입력해주세요.'),
   roles: requiredText('맡은 역할을 입력해주세요.'),
-  techStack: z.array(z.string()).min(1, { message: '기술 스택을 1개 이상 선택해주세요.' }),
+  techStack: z.array(z.string()),
   contributions: requiredText('주요 기여 내용을 입력해주세요.'),
   achievements: requiredText('프로젝트 성과를 입력해주세요.'),
   retrospective: requiredText('회고를 입력해주세요.'),
@@ -116,9 +115,55 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
     });
   }, [defaultValues, formattedPeriod, reset]);
 
+  // 에러 발생 시 포커스 이동 로직
+  const handleFormError = (formErrors: typeof errors) => {
+    const errorFields = Object.keys(formErrors);
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0] as keyof ProjectFormValues;
+      let elementToFocus: HTMLElement | null = null;
+      console.log(`Focus attempt for error field: ${firstErrorField}`);
+
+      // 1. Specific lookup for CheckboxGroup first (using name)
+      if (firstErrorField === 'techStack') {
+        elementToFocus = document.querySelector<HTMLElement>(
+          `input[name="${firstErrorField}"][type="checkbox"]`,
+        );
+        console.log('TechStack Checkbox focus target:', elementToFocus);
+      }
+      // 2. Standard ID lookup for all other fields (including DatePicker button)
+      else {
+        elementToFocus = document.getElementById(firstErrorField);
+        console.log('Element found by ID:', elementToFocus);
+      }
+
+      // 3. Fallback to label if no element found by specific logic or ID
+      if (!elementToFocus) {
+        elementToFocus = document.querySelector(`label[for="${firstErrorField}"]`);
+        console.log('Fallback label focus target:', elementToFocus);
+      }
+
+      // 4. Focus and scroll with delay
+      if (elementToFocus) {
+        console.log('Attempting focus on:', elementToFocus);
+        setTimeout(() => {
+          elementToFocus.focus({ preventScroll: true });
+          elementToFocus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          console.log('Focus executed after delay for:', firstErrorField);
+        }, 50);
+      } else {
+        console.warn('Could not find ANY element or label to focus for field:', firstErrorField);
+      }
+    }
+    // 에러 발생 시 isSubmitting 상태를 false로 설정
+    setIsSubmitting(false);
+  };
+
+  // 폼 제출 성공 시 로직
   const onSubmit = (data: ProjectFormValues) => {
-    if (isSubmitting) return; // 이미 제출 중이면 더 이상 진행하지 않음
+    if (isSubmitting) return; // 중복 제출 방지
     setIsSubmitting(true);
+
+    // --- Submission Logic (Restored) ---
     if (isEditMode && defaultValues?.id) {
       // 수정 모드일 때
       updateProject(
@@ -182,7 +227,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit, handleFormError)}
         className={styles.wrap}
         aria-label="프로젝트 정보 입력 폼"
         inert={isSubmitting}
@@ -233,7 +278,11 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           <label htmlFor="projectPeriod" className={styles.label}>
             프로젝트 기간
           </label>
-          <DatePicker name="projectPeriod" id="projectPeriod" />
+          <DatePicker
+            id="projectPeriod"
+            name="projectPeriod"
+            aria-invalid={errors.projectPeriod ? 'true' : 'false'}
+          />
           {errors.projectPeriod && (
             <p className={styles.error} role="alert">
               {errors.projectPeriod.message}
@@ -245,10 +294,11 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           <label htmlFor="team" className={styles.label}>
             팀 구성
           </label>
-          <textarea
+          <input
+            type="text"
             id="team"
             {...register('team')}
-            className={styles.textarea}
+            className={styles.input}
             aria-invalid={errors.team ? 'true' : 'false'}
           />
           {errors.team && (
@@ -262,10 +312,11 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           <label htmlFor="roles" className={styles.label}>
             맡은 역할
           </label>
-          <textarea
+          <input
+            type="text"
             id="roles"
             {...register('roles')}
-            className={styles.textarea}
+            className={styles.input}
             aria-invalid={errors.roles ? 'true' : 'false'}
           />
           {errors.roles && (
@@ -275,19 +326,25 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           )}
         </div>
 
-        <fieldset className={styles.formGroup}>
-          <legend className={styles.label}>🛠️ 사용 기술 스택</legend>
-          <CheckboxButtonGroup name="techStack" options={TECH_STACK_OPTIONS} />
+        <div className={styles.formGroup}>
+          <label htmlFor="techStack" className={styles.label}>
+            기술 스택
+          </label>
+          <CheckboxButtonGroup
+            name="techStack"
+            options={TECH_STACK_OPTIONS}
+            aria-invalid={errors.techStack ? 'true' : 'false'}
+          />
           {errors.techStack && (
             <p className={styles.error} role="alert">
               {errors.techStack.message}
             </p>
           )}
-        </fieldset>
+        </div>
 
         <div className={styles.formGroup}>
           <label htmlFor="contributions" className={styles.label}>
-            주요 기여
+            주요 기여 내용
           </label>
           <textarea
             id="contributions"
@@ -321,7 +378,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
 
         <div className={styles.formGroup}>
           <label htmlFor="retrospective" className={styles.label}>
-            회고 & 느낀 점
+            회고
           </label>
           <textarea
             id="retrospective"
