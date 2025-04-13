@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import styles from './ImageUploader.module.scss';
@@ -56,6 +56,28 @@ export const ImageUploader = ({ name, id }: Props) => {
   >('checking');
   const [isClient, setIsClient] = useState(false);
 
+  // handleRetry 함수를 useCallback으로 메모이제이션
+  const handleRetry = useCallback(() => {
+    setError(null);
+    setUploadProgress(0);
+
+    // 파일 다시 선택하도록 안내
+    if (retryCount >= MAX_RETRIES) {
+      alert('여러 번 시도했지만 업로드에 실패했습니다. 페이지를 새로고침한 후 다시 시도해 주세요.');
+      return;
+    }
+
+    // 재시도 카운트 증가
+    setRetryCount(prev => prev + 1);
+
+    // 마지막으로 선택한 파일 정보가 있으면 자동으로 업로드 재시도
+    const fileInput = document.getElementById(id as string) as HTMLInputElement;
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      const changeEvent = new Event('change', { bubbles: true });
+      fileInput.dispatchEvent(changeEvent);
+    }
+  }, [retryCount, MAX_RETRIES, id]);
+
   useEffect(() => {
     const watchedUrl = watch(name);
     const fallback = getValues(name); // <- 초기 값
@@ -82,7 +104,7 @@ export const ImageUploader = ({ name, id }: Props) => {
     return () => {
       if (retryTimeout) clearTimeout(retryTimeout);
     };
-  }, [autoRetry, error, retryCount]);
+  }, [autoRetry, error, retryCount, handleRetry, MAX_RETRIES]);
 
   // 클라이언트 사이드에서만 실행되는 코드 처리
   useEffect(() => {
@@ -122,27 +144,6 @@ export const ImageUploader = ({ name, id }: Props) => {
 
     return () => clearInterval(intervalId);
   }, []);
-
-  const handleRetry = () => {
-    setError(null);
-    setUploadProgress(0);
-
-    // 파일 다시 선택하도록 안내
-    if (retryCount >= MAX_RETRIES) {
-      alert('여러 번 시도했지만 업로드에 실패했습니다. 페이지를 새로고침한 후 다시 시도해 주세요.');
-      return;
-    }
-
-    // 재시도 카운트 증가
-    setRetryCount(prev => prev + 1);
-
-    // 마지막으로 선택한 파일 정보가 있으면 자동으로 업로드 재시도
-    const fileInput = document.getElementById(id as string) as HTMLInputElement;
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const changeEvent = new Event('change', { bubbles: true });
-      fileInput.dispatchEvent(changeEvent);
-    }
-  };
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
