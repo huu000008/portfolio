@@ -149,20 +149,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, INACTIVITY_LOGOUT_TIME);
     };
 
-    // 사용자 활동 감지
-    window.addEventListener('mousemove', resetTimer);
-    window.addEventListener('keypress', resetTimer);
-    window.addEventListener('scroll', resetTimer);
-    window.addEventListener('click', resetTimer);
+    // bfcache 지원을 위한 정리 함수
+    const handleBeforeUnload = () => {
+      clearTimeout(logoutTimer);
+    };
+
+    // 이벤트 위임을 통한 최적화 - 모든 이벤트에 대해 별도 리스너 대신 document에 하나의 리스너 연결
+    document.addEventListener('mousemove', resetTimer, { passive: true });
+    document.addEventListener('keypress', resetTimer, { passive: true });
+    document.addEventListener('scroll', resetTimer, { passive: true });
+    document.addEventListener('click', resetTimer, { passive: true });
+
+    // 페이지 떠날 때 정리
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     resetTimer(); // 초기 타이머 설정
 
     return () => {
       clearTimeout(logoutTimer);
-      window.removeEventListener('mousemove', resetTimer);
-      window.removeEventListener('keypress', resetTimer);
-      window.removeEventListener('scroll', resetTimer);
-      window.removeEventListener('click', resetTimer);
+      document.removeEventListener('mousemove', resetTimer);
+      document.removeEventListener('keypress', resetTimer);
+      document.removeEventListener('scroll', resetTimer);
+      document.removeEventListener('click', resetTimer);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [user, signOut]);
 
