@@ -18,9 +18,13 @@ export const ProjectItem = ({ project }: Props) => {
             alt={`${project.title} 썸네일`}
             width={600}
             height={400}
-            objectFit="cover"
-            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
             className={styles.image}
+            priority={false}
+            quality={80}
+            fetchPriority="low"
+            decoding="async"
           />
         </div>
         <div className={styles.content}>

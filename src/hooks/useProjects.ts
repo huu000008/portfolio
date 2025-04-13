@@ -92,9 +92,13 @@ export const useProjects = () => {
   return useQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY],
     queryFn: () => fetchProjectsAction() as Promise<Project[]>,
-    staleTime: 1000 * 60 * 5, // 5분 동안 데이터가 신선하다고 간주
-    gcTime: 1000 * 60 * 10, // 10분 동안 캐시 유지 (이전의 cacheTime)
-    refetchOnWindowFocus: false, // 창 포커스 시 자동 리페치 비활성화
+    // providers.tsx의 전역 설정과 일관성 유지 (5분)
+    // 명시적으로 설정하여 이 쿼리의 중요성 강조
+    staleTime: 5 * 60 * 1000,
+    // 전역 설정과 일관성 유지 (10분)
+    gcTime: 10 * 60 * 1000,
+    // 사용자 경험 향상을 위해 비활성화
+    refetchOnWindowFocus: false,
   });
 };
 

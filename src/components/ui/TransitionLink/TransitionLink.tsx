@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import styles from './TransitionLink.module.scss';
 import Link from 'next/link';
-import { useCallback } from 'react';
+import { useCallback, memo } from 'react';
 import { usePathname } from 'next/navigation';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
   scrollOptions?: ScrollToOptions;
 };
 
-export const TransitionLink = ({
+const TransitionLinkBase = ({
   href,
   children,
   isButton,
@@ -33,9 +33,12 @@ export const TransitionLink = ({
       // 링크가 홈을 가리키거나 scrollToTop이 true인 경우
       if (isHomeLink || scrollToTop) {
         e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          ...scrollOptions,
+        // 성능 최적화: requestAnimationFrame 사용
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: 0,
+            ...scrollOptions,
+          });
         });
       }
     },
@@ -47,8 +50,12 @@ export const TransitionLink = ({
       href={href}
       className={cn(styles.wrap, className, isButton && styles.button)}
       onClick={handleClick}
+      prefetch={false} // 성능 최적화: 필요한 경우에만 prefetch 활성화
     >
       {children}
     </Link>
   );
 };
+
+// 메모이제이션으로 불필요한 리렌더링 방지
+export const TransitionLink = memo(TransitionLinkBase);

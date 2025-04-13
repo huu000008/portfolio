@@ -12,6 +12,7 @@
  * - 향상된 서버 컴포넌트 지원
  * - 자동 Promise Unwrapping
  * - 성능 최적화
+ * - 개선된 세션 관리 및 인증 상태 동기화
  */
 
 import { createServerClient } from '@supabase/ssr';

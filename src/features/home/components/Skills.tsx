@@ -62,7 +62,7 @@ const Skills = () => {
   return (
     <div className={styles.skillsContainer}>
       <InViewMotion>
-        <h2 className={styles.skillsTitle}>기술 스택</h2>
+        <h2 className={styles.skillsTitle}>Skills</h2>
       </InViewMotion>
 
       <div className={styles.skillsGrid}>

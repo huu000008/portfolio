@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, memo } from 'react';
+import React, { useMemo, memo, useCallback } from 'react';
 import styles from './RecentProjects.module.scss';
 import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { Project } from '@/types/project';
@@ -26,6 +26,11 @@ const ANIMATION_DIRECTIONS: Direction[] = [
   'bottom-to-top',
 ];
 
+// 지연 시간 계산 함수 - 컴포넌트 외부로 이동하여 리렌더링 시 재계산 방지
+const calculateDelay = (index: number, increment: number): number => {
+  return index === 0 ? 0 : Math.pow(index, 1) * increment;
+};
+
 // 각 프로젝트 아이템을 별도의 메모이제이션된 컴포넌트로 분리
 const ProjectItem = memo(
   ({
@@ -39,8 +44,11 @@ const ProjectItem = memo(
     itemDirection: Direction;
     itemDelay: number;
   }) => {
-    const endDate = getPeriodEnd(project.project_period);
-    const periodRelative = formatRelativeTimeOrInProgress(endDate);
+    // 날짜 계산 메모이제이션
+    const periodRelative = useMemo(() => {
+      const endDate = getPeriodEnd(project.project_period);
+      return formatRelativeTimeOrInProgress(endDate);
+    }, [project.project_period]);
 
     return (
       <InViewMotion
@@ -62,17 +70,26 @@ const ProjectItem = memo(
 ProjectItem.displayName = 'ProjectItem';
 
 function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps) {
+  // 프로젝트 슬라이싱 메모이제이션 - 최대 5개 항목만 표시
+  const slicedProjects = useMemo(() => {
+    return projects?.length ? projects.slice(0, 5) : [];
+  }, [projects]);
+
+  // 방향 가져오기 함수 메모이제이션
+  const getDirection = useCallback((index: number): Direction => {
+    return ANIMATION_DIRECTIONS[index % ANIMATION_DIRECTIONS.length];
+  }, []);
+
   // 프로젝트 목록 메모이제이션
   const projectItems = useMemo(() => {
-    if (!projects?.length) return null;
+    if (!slicedProjects.length) return null;
 
-    // 최대 5개 항목만 표시
-    return projects.slice(0, 5).map((project, index) => {
+    return slicedProjects.map((project, index) => {
       // 해당 인덱스의 방향 가져오기
-      const itemDirection = ANIMATION_DIRECTIONS[index];
+      const itemDirection = getDirection(index);
 
-      // 딜레이 계산: 첫 번째는 0, 나머지는 지수함수적으로 증가
-      const itemDelay = index === 0 ? 0 : Math.pow(index, 1) * delayIncrement;
+      // 딜레이 계산: 미리 정의된 함수 사용
+      const itemDelay = calculateDelay(index, delayIncrement);
 
       return (
         <ProjectItem
@@ -84,7 +101,7 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
         />
       );
     });
-  }, [projects, delayIncrement]);
+  }, [slicedProjects, delayIncrement, getDirection]);
 
   // 목록이 비어있으면 별도 처리
   if (!projects?.length) {

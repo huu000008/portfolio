@@ -6,23 +6,23 @@ import { motion, useInView, Variants, Transition } from 'framer-motion';
 // 방향성 타입 정의
 export type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
 
-// 애니메이션 미리 정의
+// 애니메이션 미리 정의 - 컴포넌트 외부로 이동하여 리렌더링 시 재생성 방지
 const ANIMATIONS = {
   leftToRight: (distance: number): Variants => ({
-    hidden: { opacity: 0, x: -distance },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -distance, willChange: 'opacity, transform' },
+    visible: { opacity: 1, x: 0, willChange: 'opacity, transform' },
   }),
   rightToLeft: (distance: number): Variants => ({
-    hidden: { opacity: 0, x: distance },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: distance, willChange: 'opacity, transform' },
+    visible: { opacity: 1, x: 0, willChange: 'opacity, transform' },
   }),
   topToBottom: (distance: number): Variants => ({
-    hidden: { opacity: 0, y: -distance },
-    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: -distance, willChange: 'opacity, transform' },
+    visible: { opacity: 1, y: 0, willChange: 'opacity, transform' },
   }),
   bottomToTop: (distance: number): Variants => ({
-    hidden: { opacity: 0, y: distance },
-    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: distance, willChange: 'opacity, transform' },
+    visible: { opacity: 1, y: 0, willChange: 'opacity, transform' },
   }),
 };
 
@@ -35,7 +35,7 @@ const DIRECTION_VARIANTS: Record<Direction, (distance: number) => Variants> = {
 };
 
 // 기본 InView 옵션
-const DEFAULT_INVIEW_OPTIONS = { once: true, amount: 0.3 };
+const DEFAULT_INVIEW_OPTIONS = { once: true, amount: 0.2, rootMargin: '50px' }; // 최적화된 옵션
 
 type InViewMotionProps<T extends React.ElementType> = {
   as?: T;
