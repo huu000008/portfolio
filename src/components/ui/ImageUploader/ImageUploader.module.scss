@@ -88,6 +88,78 @@
   animation: pulse 1.5s infinite;
 }
 
+.error {
+  color: var(--color-error, #ff0000);
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.retryActions {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.autoRetry {
+  color: var(--color-accent);
+  font-weight: 500;
+  font-size: 1.4rem;
+  animation: pulse 1.5s infinite;
+}
+
+.retryButton,
+.refreshButton {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-hover);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.refreshButton {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+
+  &:hover {
+    background-color: var(--color-accent-hover);
+  }
+}
+
+.progressBar {
+  width: 100%;
+  height: 0.6rem;
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-md);
+  transition: width 0.3s ease;
+}
+
 @keyframes pulse {
   0% {
     opacity: 0.6;
@@ -108,4 +180,75 @@
 .upload .icon {
   font-size: 2rem;
   color: var(--color-text-muted);
+}
+
+// 디버그 관련 스타일
+.debugToggle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 10;
+
+  &:hover + .debugContainer {
+    display: block !important;
+  }
+}
+
+.debugContainer {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-elevated);
+  font-size: 1.4rem;
+}
+
+.debugHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h4 {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.connectionStatus {
+  font-size: 1.2rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-surface);
+}
+
+.debugInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  p {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+}
+
+.debugButton {
+  margin-top: 0.5rem;
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-hover);
+  }
 }
