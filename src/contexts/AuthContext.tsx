@@ -74,41 +74,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []); // 외부 의존성이 없으므로 빈 배열 유지
 
-  // 세션 만료 감지 함수
-  const checkSession = useCallback(async () => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const currentUser = user; // 클로저를 통해 현재 user 상태 캡처
-
-      // 세션이 없지만 사용자 상태는 있는 경우 (세션 만료)
-      if (!data.session && currentUser) {
-        // 세션 갱신 시도
-        const refreshResult = await refreshSession();
-
-        // 갱신 실패 시 로그아웃 처리
-        if (!refreshResult) {
-          toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
-          // signOut 함수를 직접 호출하지 않고 내부 로직 구현
-          try {
-            await supabase.auth.signOut();
-            // 상태 명시적 업데이트
-            setSession(null);
-            setUser(null);
-            router.push('/auth/login');
-          } catch (error) {
-            console.error('Error signing out:', error);
-          }
-        }
-      } else if (data.session) {
-        // 세션이 있으면 상태 업데이트 (클라이언트-서버 상태 동기화)
-        setSession(data.session);
-        setUser(data.session.user);
-      }
-    } catch (error) {
-      console.error('세션 확인 중 오류 발생:', error);
-    }
-  }, [refreshSession, router, user]); // user 의존성 제거
-
   // 로그아웃 함수
   const signOut = useCallback(
     async (isSessionExpired = false) => {
@@ -130,6 +95,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     [router],
   );
+
+  // 세션 만료 감지 함수
+  const checkSession = useCallback(async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const currentUser = user; // 클로저를 통해 현재 user 상태 캡처
+
+      // 세션이 없지만 사용자 상태는 있는 경우 (세션 만료)
+      if (!data.session && currentUser) {
+        // 세션 갱신 시도
+        const refreshResult = await refreshSession();
+
+        // 갱신 실패 시 로그아웃 처리
+        if (!refreshResult) {
+          toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+          // signOut 함수 호출로 변경 (isSessionExpired = true)
+          await signOut(true);
+        }
+      } else if (data.session) {
+        // 세션이 있으면 상태 업데이트 (클라이언트-서버 상태 동기화)
+        setSession(data.session);
+        setUser(data.session.user);
+      }
+    } catch (error) {
+      console.error('세션 확인 중 오류 발생:', error);
+    }
+  }, [refreshSession, signOut, user]); // router -> signOut, user 의존성 유지
 
   // 관리자 여부 확인 함수
   const isAdmin = useCallback(() => {
@@ -217,15 +209,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const inactiveTime = Date.now() - lastActivityRef.current;
         if (inactiveTime >= INACTIVITY_LOGOUT_TIME) {
           toast.info('장시간 활동이 없어 자동 로그아웃 되었습니다.');
-          // signOut 함수 직접 호출 대신 내부 로직 구현
-          try {
-            await supabase.auth.signOut();
-            setSession(null);
-            setUser(null);
-            router.push('/');
-          } catch (error) {
-            console.error('자동 로그아웃 중 오류 발생:', error);
-          }
+          // signOut 함수 직접 호출 대신 내부 로직 구현 -> signOut 호출로 변경
+          await signOut(true); // isSessionExpired = true 로 호출
         }
       }, INACTIVITY_LOGOUT_TIME);
     };
@@ -272,7 +257,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [user, router, checkSession]); // signOut 대신 router 의존성 추가
+  }, [user, checkSession, signOut]); // router -> signOut 의존성 추가
 
   return (
     <AuthContext.Provider

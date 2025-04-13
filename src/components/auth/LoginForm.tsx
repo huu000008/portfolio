@@ -61,20 +61,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-lg border border-[#e9dfd5] bg-[#fdf6ed] p-8 shadow-md">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-[#3d2c29]">로그인</h2>
-        <p className="mt-2 text-sm text-[#5f4b45]">
-          계정이 없으신가요?{' '}
-          <a
-            href="/auth/signup"
-            className="font-medium text-[#e67e22] hover:text-[#d35400] transition-colors"
-          >
-            회원가입
-          </a>
-        </p>
-      </div>
-
+    <div className="w-full max-w-md rounded-lg ">
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
         {error && <div className="rounded-md bg-red-50 p-4 text-sm text-[#e74c3c]">{error}</div>}
 
