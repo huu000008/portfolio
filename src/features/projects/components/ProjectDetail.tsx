@@ -4,7 +4,6 @@ import { Project } from '@/types/project';
 import styles from './ProjectDetail.module.scss';
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import Image from 'next/image';
 
 interface ProjectDetailProps {
   project: Project;
@@ -28,26 +27,10 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
   return (
     <div className={styles.wrap}>
       <h2>{project.title}</h2>
-      <div className={styles.date}>{formatDateKST(project.created_at)}</div>
+      {/* <div className={styles.date}>{formatDateKST(project.created_at)}</div> */}
 
       <div className={styles.info}>
-        <div className={styles.label}>썸네일 이미지</div>
-        <div className={styles.value}>
-          {project.thumbnail_url && (
-            <Image
-              src={project.thumbnail_url}
-              alt="썸네일"
-              width={800}
-              height={600}
-              style={{ width: '100%', height: 'auto' }}
-              priority
-            />
-          )}
-        </div>
-      </div>
-
-      <div className={styles.info}>
-        <div className={styles.label}>설명</div>
+        <div className={styles.label}>📝 설명</div>
         <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
           {project.description}
         </div>

@@ -18,6 +18,7 @@ export const ProjectItem = ({ project }: Props) => {
             alt={`${project.title} 썸네일`}
             width={600}
             height={400}
+            objectFit="cover"
             priority
             className={styles.image}
           />

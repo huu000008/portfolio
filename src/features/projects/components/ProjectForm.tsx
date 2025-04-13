@@ -41,6 +41,10 @@ const TECH_STACK_OPTIONS = [
   'Supabase',
   'Zustand',
   'React Query',
+  'Vue.js',
+  'Vuetify',
+  'Vuex',
+  'jQuery',
 ];
 
 interface ProjectFormProps {
