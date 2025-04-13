@@ -6,6 +6,7 @@ import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import { Project } from '@/types/project';
 import { getPeriodEnd, formatRelativeTimeOrInProgress } from '@/utils/date';
 import { InViewMotion } from '@/components/ui/InViewMotion';
+import { cn } from '@/lib/utils';
 
 // 방향 타입 정의
 type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
@@ -118,7 +119,18 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
   return (
     <div className={styles.wrap}>
       <InViewMotion className={styles.title}>Recent Projects</InViewMotion>
-      <div className={styles.list}>{projectItems}</div>
+      <div className={styles.list}>
+        {projectItems}
+        <InViewMotion
+          className={cn(styles.item, styles.more)}
+          delay={calculateDelay(slicedProjects.length, delayIncrement)}
+          direction={getDirection(slicedProjects.length)}
+        >
+          <TransitionLink href="/projects">
+            <div className={styles.title}>More</div>
+          </TransitionLink>
+        </InViewMotion>
+      </div>
     </div>
   );
 }

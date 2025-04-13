@@ -1,7 +1,8 @@
 'use client';
 
-import { ElementType, useRef, useMemo, memo } from 'react';
-import { motion, useInView, Variants, Transition } from 'framer-motion';
+import { ElementType, useMemo, memo } from 'react';
+import { motion, Variants, Transition } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 // 방향성 타입 정의
 export type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
@@ -35,7 +36,11 @@ const DIRECTION_VARIANTS: Record<Direction, (distance: number) => Variants> = {
 };
 
 // 기본 InView 옵션
-const DEFAULT_INVIEW_OPTIONS = { once: true, amount: 0.2, rootMargin: '50px' }; // 최적화된 옵션
+const DEFAULT_INVIEW_OPTIONS = {
+  triggerOnce: true,
+  threshold: 0.2,
+  rootMargin: '50px',
+}; // 최적화된 옵션
 
 type InViewMotionProps<T extends React.ElementType> = {
   as?: T;
@@ -44,8 +49,9 @@ type InViewMotionProps<T extends React.ElementType> = {
   distance?: number;
   delay?: number;
   inViewOptions?: {
-    once?: boolean;
-    amount?: number;
+    triggerOnce?: boolean;
+    threshold?: number;
+    rootMargin?: string;
   };
   variants?: Variants;
   transition?: Transition;
@@ -64,8 +70,11 @@ function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMoti
     ...rest
   } = props;
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, inViewOptions);
+  // react-intersection-observer 사용
+  const [ref, inView] = useInView({
+    ...DEFAULT_INVIEW_OPTIONS,
+    ...inViewOptions,
+  });
 
   // variants 메모이제이션
   const finalVariants = useMemo(
@@ -89,7 +98,7 @@ function InViewMotionBase<T extends React.ElementType = 'div'>(props: InViewMoti
     <Component
       ref={ref}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      animate={inView ? 'visible' : 'hidden'}
       variants={finalVariants}
       transition={finalTransition}
       {...rest}

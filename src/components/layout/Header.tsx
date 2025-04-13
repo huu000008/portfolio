@@ -2,76 +2,44 @@
 
 import { TransitionLink } from '../ui/TransitionLink/TransitionLink';
 import styles from './Header.module.scss';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { InViewMotion } from '../ui/InViewMotion';
 import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [logoText, setLogoText] = useState('JUST DO');
   const pathname = usePathname();
   const isMainPage = useMemo(() => pathname === '/', [pathname]);
-  const prevScrollY = useRef(0);
-  const ticking = useRef(false);
 
-  // 스크롤 핸들러 - 디바운싱 적용
-  const handleScroll = useCallback(() => {
-    if (!isMainPage) return;
+  // IntersectionObserver를 활용한 헤더 동작 제어
+  const [headerSentinelRef, headerSentinelInView] = useInView({
+    /* 화면 상단으로부터의 offset을 100px로 설정 */
+    rootMargin: '-100px 0px 0px 0px',
+    threshold: 0,
+    initialInView: true,
+  });
 
-    const scrollPosition = window.scrollY;
-
-    // 이전 스크롤 위치와 크게 다를 때만 처리 (최적화)
-    if (Math.abs(scrollPosition - prevScrollY.current) < 10) return;
-
-    prevScrollY.current = scrollPosition;
-
-    // requestAnimationFrame을 사용하여 디바운싱 적용
-    if (!ticking.current) {
-      requestAnimationFrame(() => {
-        if (scrollPosition > 100 && !scrolled) {
-          setScrolled(true);
-          setLogoText('JD');
-        } else if (scrollPosition <= 100 && scrolled) {
-          setScrolled(false);
-          setLogoText('JUST DO');
-        }
-        ticking.current = false;
-      });
-
-      ticking.current = true;
-    }
-  }, [isMainPage, scrolled]);
-
-  // 경로 변경 시 처리
+  // 뷰포트가 변경될 때마다 스크롤 상태 업데이트
   useEffect(() => {
-    // 현재 페이지가 메인 페이지가 아닌 경우 항상 scrolled 상태 적용
     if (!isMainPage) {
+      // 메인 페이지가 아닌 경우 항상 축소된 상태
       setScrolled(true);
       setLogoText('JD');
+      return;
+    }
+
+    // 메인 페이지에서는 InView 상태에 따라 설정
+    if (headerSentinelInView) {
+      setScrolled(false);
+      setLogoText('JUST DO');
     } else {
-      // 메인 페이지로 돌아온 경우 현재 스크롤 위치에 따라 상태 결정
-      const scrollPosition = window.scrollY;
-      if (scrollPosition <= 100) {
-        setScrolled(false);
-        setLogoText('JUST DO');
-      } else {
-        setScrolled(true);
-        setLogoText('JD');
-      }
+      setScrolled(true);
+      setLogoText('JD');
     }
-  }, [isMainPage]);
-
-  // 스크롤 이벤트 리스너 등록 (메인 페이지에서만)
-  useEffect(() => {
-    if (isMainPage) {
-      // Passive 옵션으로 성능 향상
-      window.addEventListener('scroll', handleScroll, { passive: true });
-
-      // 컴포넌트 언마운트 시 이벤트 리스너 제거
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-  }, [isMainPage, handleScroll]);
+  }, [headerSentinelInView, isMainPage]);
 
   // 메모이제이션된 클래스 계산
   const headerClass = useMemo(
@@ -82,17 +50,22 @@ export default function Header() {
   const logoClass = useMemo(() => (scrolled ? styles.shrinked : styles.expanded), [scrolled]);
 
   return (
-    <header className={headerClass}>
-      <InViewMotion direction="left-to-right">
-        <TransitionLink href="/">
-          <h1 className={styles.logo}>
-            <span className={logoClass}>
-              <TextMorph text={logoText} />
-            </span>
-          </h1>
-        </TransitionLink>
-      </InViewMotion>
-    </header>
+    <>
+      {/* 메인 페이지일 때만 감시 요소 사용 */}
+      {isMainPage && <div ref={headerSentinelRef} className={styles.headerSentinel} />}
+
+      <header className={headerClass}>
+        <InViewMotion direction="left-to-right">
+          <TransitionLink href="/">
+            <h1 className={styles.logo}>
+              <span className={logoClass}>
+                <TextMorph text={logoText} />
+              </span>
+            </h1>
+          </TransitionLink>
+        </InViewMotion>
+      </header>
+    </>
   );
 }
 
@@ -104,7 +77,7 @@ const TextMorph = ({ text }: { text: string }) => {
     <>
       {characters.map((char, index) => (
         <motion.span
-          key={index}
+          key={`${char}-${index}-${text.length}`} // 더 안정적인 키 값
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           transition={{
