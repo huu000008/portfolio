@@ -4,10 +4,7 @@ import { fetchProjectByIdAction } from '@/app/actions/projectActions';
 import { requireAuth } from '@/app/actions/authActions';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { User } from '@supabase/supabase-js'; // Supabase User 타입 사용
-
-// 관리자 이메일 목록 (AuthContext와 동일하게 유지)
-const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
+import { checkAdminStatus } from '@/lib/authUtils'; // 유틸리티 함수 임포트
 
 interface EditPageProps {
   params: Promise<{ id: string }>;
@@ -18,14 +15,6 @@ export const metadata: Metadata = {
   description: '프로젝트 정보를 수정합니다.',
 };
 
-/**
- * 현재 사용자가 관리자인지 확인하는 함수
- */
-async function isAdmin(user: User | null) {
-  if (!user || !user.email) return false;
-  return ADMIN_EMAILS.includes(user.email);
-}
-
 export default async function EditPage({ params }: EditPageProps) {
   // 인증된 사용자만 접근 가능
   const user = await requireAuth();
@@ -35,8 +24,8 @@ export default async function EditPage({ params }: EditPageProps) {
   // 프로젝트 정보 가져오기
   const project = await fetchProjectByIdAction(id);
 
-  // 현재 사용자가 관리자인지 확인
-  const userIsAdmin = await isAdmin(user);
+  // 현재 사용자가 관리자인지 확인 (유틸리티 함수 사용)
+  const userIsAdmin = checkAdminStatus(user);
 
   // 현재 사용자가 작성자이거나 관리자인지 확인
   if (user.id !== project.user_id && !userIsAdmin) {

@@ -7,18 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
 import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from './authActions';
-import { User } from '@supabase/supabase-js'; // Supabase User 타입 사용
-
-// 관리자 이메일 목록
-const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
-
-/**
- * 현재 사용자가 관리자인지 확인하는 함수
- */
-async function isAdmin(user: User | null) {
-  if (!user || !user.email) return false;
-  return ADMIN_EMAILS.includes(user.email);
-}
+import { checkAdminStatus } from '@/lib/authUtils'; // 유틸리티 함수 임포트
 
 /**
  * 프로젝트 목록 조회 서버 액션
@@ -178,8 +167,8 @@ export async function updateProjectAction(
       throw new Error('프로젝트를 찾을 수 없습니다.');
     }
 
-    // 관리자 확인
-    const userIsAdmin = await isAdmin(user);
+    // 관리자 확인 (유틸리티 함수 사용)
+    const userIsAdmin = checkAdminStatus(user);
 
     // 프로젝트 소유자 확인
     const project = projectData[0];
@@ -257,8 +246,8 @@ export async function deleteProjectAction(id: string): Promise<{ success: boolea
       throw new Error('프로젝트를 찾을 수 없습니다.');
     }
 
-    // 관리자 확인
-    const userIsAdmin = await isAdmin(user);
+    // 관리자 확인 (유틸리티 함수 사용)
+    const userIsAdmin = checkAdminStatus(user);
 
     // 프로젝트 소유자 확인
     const project = projectData[0];

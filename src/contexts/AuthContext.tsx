@@ -5,14 +5,12 @@ import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/utils/toast';
-
-// 관리자로 지정할 이메일 주소 목록
-const ADMIN_EMAILS = ['sqwasd@naver.com']; // 실제 관리자 이메일로 변경 필요
-
-// 세션 관련 상수
-const SESSION_REFRESH_INTERVAL = 15 * 60 * 1000; // 15분마다 세션 갱신 (기존 1시간에서 단축)
-const INACTIVITY_LOGOUT_TIME = 30 * 60 * 1000; // 30분 무활동 시 자동 로그아웃
-const SESSION_CHECK_INTERVAL = 5 * 60 * 1000; // 5분마다 세션 유효성 확인
+import {
+  SESSION_REFRESH_INTERVAL,
+  INACTIVITY_LOGOUT_TIME,
+  SESSION_CHECK_INTERVAL,
+} from '@/config/auth'; // 상수 임포트
+import { checkAdminStatus } from '@/lib/authUtils'; // 유틸리티 함수 임포트
 
 // 인터페이스 정의
 interface AuthContextType {
@@ -96,37 +94,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router],
   );
 
-  // 세션 만료 감지 함수
+  // 세션 만료 감지 및 처리 함수
   const checkSession = useCallback(async () => {
     try {
       const { data } = await supabase.auth.getSession();
       const currentUser = user; // 클로저를 통해 현재 user 상태 캡처
 
-      // 세션이 없지만 사용자 상태는 있는 경우 (세션 만료)
+      // 클라이언트 측 세션은 없지만, AuthContext의 user 상태는 있는 경우:
+      // 1. 다른 탭/창에서 로그아웃 했을 때
+      // 2. 서버 측에서 세션이 만료되었을 때 (Supabase 내부 만료 시간 도달 등)
       if (!data.session && currentUser) {
+        console.warn(
+          '세션 불일치 감지: 클라이언트 세션 없음, Context 사용자 있음. 세션 갱신 시도...',
+        );
         // 세션 갱신 시도
         const refreshResult = await refreshSession();
 
-        // 갱신 실패 시 로그아웃 처리
+        // 갱신 실패 시 (ex: 리프레시 토큰 만료) 로그아웃 처리
         if (!refreshResult) {
           toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
-          // signOut 함수 호출로 변경 (isSessionExpired = true)
+          // 로그아웃 후 로그인 페이지로 이동 (세션 만료 시)
           await signOut(true);
         }
       } else if (data.session) {
-        // 세션이 있으면 상태 업데이트 (클라이언트-서버 상태 동기화)
-        setSession(data.session);
-        setUser(data.session.user);
+        // 클라이언트 측 세션이 존재하면, AuthContext 상태와 동기화
+        // (다른 탭/창에서 세션 갱신이 발생했을 경우 등)
+        if (JSON.stringify(session) !== JSON.stringify(data.session)) {
+          console.log('세션 동기화: 클라이언트 세션 정보로 Context 업데이트');
+          setSession(data.session);
+          setUser(data.session.user);
+        }
       }
     } catch (error) {
       console.error('세션 확인 중 오류 발생:', error);
     }
-  }, [refreshSession, signOut, user]); // router -> signOut, user 의존성 유지
+  }, [refreshSession, signOut, user, session]); // session 의존성 추가
 
   // 관리자 여부 확인 함수
   const isAdmin = useCallback(() => {
-    if (!user) return false;
-    return ADMIN_EMAILS.includes(user.email || '');
+    // 환경 변수 미설정 경고는 checkAdminStatus 함수 내부에서 처리하지 않으므로,
+    // 필요하다면 여기서 한 번만 확인하고 로깅하는 것을 고려할 수 있습니다.
+    // 예: if (!process.env.NEXT_PUBLIC_ADMIN_EMAILS) console.warn(...);
+    return checkAdminStatus(user);
   }, [user]); // user가 변경될 때만 함수 재생성
 
   // 초기 세션 로드 및 인증 상태 변경 구독
