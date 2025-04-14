@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 import { ProjectHeader } from './ProjectHeader';
+import { cn } from '@/lib/utils';
 
 interface ProjectDetailProps {
   project: Project;
@@ -61,8 +62,12 @@ export const ProjectDetail = ({ project, id, userId }: ProjectDetailProps) => {
 
         <InViewMotion className={styles.info}>
           <div className={styles.label}>🛠️ 사용한 기술 스택</div>
-          <div className={styles.value}>
-            {project.tech_stack?.map(tech => <span key={tech}>{tech}</span>)}
+          <div className={cn(styles.value, styles.techStack)}>
+            {project.tech_stack?.map(tech => (
+              <span key={tech} className={styles.techItem}>
+                {tech}
+              </span>
+            ))}
           </div>
         </InViewMotion>
 
