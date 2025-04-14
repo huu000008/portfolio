@@ -210,7 +210,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (inactiveTime >= INACTIVITY_LOGOUT_TIME) {
           toast.info('장시간 활동이 없어 자동 로그아웃 되었습니다.');
           // signOut 함수 직접 호출 대신 내부 로직 구현 -> signOut 호출로 변경
-          await signOut(true); // isSessionExpired = true 로 호출
+          await signOut(false); // isSessionExpired = true 에서 false로 변경
         }
       }, INACTIVITY_LOGOUT_TIME);
     };
