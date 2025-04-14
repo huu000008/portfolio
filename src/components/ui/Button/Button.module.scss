@@ -19,4 +19,12 @@
     background-color: var(--color-active);
     transform: scale(0.98);
   }
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
+  }
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
 }

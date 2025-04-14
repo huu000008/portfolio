@@ -284,7 +284,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
             aria-invalid={errors.projectPeriod ? 'true' : 'false'}
           />
           {errors.projectPeriod && (
-            <p className={styles.error} role="alert">
+            <p className={styles.error} role="alert" id="projectPeriod-error">
               {errors.projectPeriod.message}
             </p>
           )}

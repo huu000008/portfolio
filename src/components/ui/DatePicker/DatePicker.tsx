@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useFormContext, useController } from 'react-hook-form';
+import { useFormContext, useController, FieldError } from 'react-hook-form';
 import { format, parseISO, isValid } from 'date-fns';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -16,11 +16,18 @@ interface DatePickerProps {
 }
 
 export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
-  const { control, setValue, trigger } = useFormContext();
+  const {
+    control,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useFormContext();
 
   const {
     field: { value, ref },
   } = useController({ name, control });
+
+  const fieldError = errors[name] as FieldError | undefined;
 
   const initialRange = useMemo((): DateRange | undefined => {
     if (typeof value === 'string' && value.includes('~')) {
@@ -66,7 +73,14 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
         open={open}
         onOpenChange={setOpen}
         trigger={
-          <Button type="button" id={id} className={styles.trigger} aria-label="날짜 범위 선택">
+          <Button
+            type="button"
+            id={id}
+            className={styles.trigger}
+            aria-label="날짜 범위 선택"
+            aria-invalid={fieldError ? 'true' : 'false'}
+            aria-describedby={fieldError ? `${name}-error` : undefined}
+          >
             {triggerLabel}
           </Button>
         }

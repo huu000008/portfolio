@@ -16,12 +16,17 @@
       background-color: var(--color-bg-surface-hover);
     }
     &:disabled {
-         background-color: var(--color-disabled);
+      background-color: var(--color-disabled);
       cursor: not-allowed;
     }
     &:active {
       background-color: var(--color-active);
       transform: scale(0.98);
+    }
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
     }
   }
 }

@@ -2,26 +2,12 @@
   position: relative;
   display: flex;
   flex-direction: column;
-}
-.trigger {
-  display: flex;
-  align-items: center;
-  padding: 1rem 2rem;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  background-color: var(--color-accent);
-  color: var(--color-text-primary);
-  line-height: 1.75;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.1s ease;
-  &:hover {
-    background-color: var(--color-accent-hover);
-  }
-
-  &:active {
-    transform: scale(0.96);
-    box-shadow: none;
+  .trigger {
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.1s ease;
+    border: 0.1rem solid var(--color-border);
+    background-color: var(--color-bg-body);
   }
 }

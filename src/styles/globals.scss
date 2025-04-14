@@ -90,7 +90,6 @@ textarea {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 
   &:disabled {
@@ -101,24 +100,20 @@ textarea {
   &:active {
     transform: scale(0.98);
   }
+  &[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
 }
 
 textarea {
   min-height: 12rem;
   padding: 2rem;
-  border-radius: var(--radius-md);
-  border: 0.1rem solid var(--color-border);
-  background-color: var(--color-bg-body);
   white-space: pre-wrap;
   resize: vertical;
   &:focus {
     border-color: var(--color-accent);
     box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
     outline: none;
-  }
-
-  &[aria-invalid='true'] {
-    border-color: var(--color-danger);
   }
 }
 
