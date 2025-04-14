@@ -11,13 +11,14 @@ export default function Header() {
   const pathname = usePathname();
   const isMainPage = useMemo(() => pathname === '/', [pathname]);
 
-  const [scrolled, setScrolled] = useState(true);
-  const [logoText, setLogoText] = useState('JD');
+  const [scrolled, setScrolled] = useState(false);
+  const [logoText, setLogoText] = useState('JUST DO');
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
 
     if (isMainPage) {
+      // 메인 페이지에서는 초기에 확장된 상태로 시작
       setScrolled(false);
       setLogoText('JUST DO');
 
@@ -26,6 +27,7 @@ export default function Header() {
         setLogoText('JD');
       }, 2000);
     } else {
+      // 다른 페이지에서는 축소된 상태로 시작
       setScrolled(true);
       setLogoText('JD');
     }
