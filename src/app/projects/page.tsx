@@ -1,4 +1,3 @@
-import { ProjectHeader } from '@/features/projects/components/ProjectHeader';
 import { ProjectList } from '@/features/projects/components/ProjectList';
 import { fetchProjectsAction } from '@/app/actions/projectActions';
 
@@ -10,10 +9,5 @@ export default async function ProjectsPage() {
   // 서버 액션을 통해 프로젝트 데이터 가져오기
   const projects = await fetchProjectsAction();
 
-  return (
-    <>
-      <ProjectHeader />
-      <ProjectList projects={projects} />
-    </>
-  );
+  return <ProjectList projects={projects} />;
 }

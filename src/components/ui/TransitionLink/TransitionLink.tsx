@@ -50,7 +50,7 @@ const TransitionLinkBase = ({
       href={href}
       className={cn(styles.wrap, className, isButton && styles.button)}
       onClick={handleClick}
-      prefetch={false} // 성능 최적화: 필요한 경우에만 prefetch 활성화
+      prefetch={true} // 성능 최적화: 필요한 경우에만 prefetch 활성화
     >
       {children}
     </Link>

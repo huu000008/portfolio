@@ -4,6 +4,7 @@ import { Project } from '@/types/project';
 import { ProjectItem } from './ProjectItem';
 import styles from './ProjectList.module.scss';
 import { cn } from '@/lib/utils';
+import { ProjectHeader } from './ProjectHeader';
 
 interface Props {
   projects: Project[];
@@ -31,10 +32,13 @@ export const ProjectList = ({
   }
 
   return (
-    <div className={cn(styles.wrap, styles[variant])}>
-      {projects.map(project => (
-        <ProjectItem key={project.id} project={project} />
-      ))}
+    <div className={styles.wrap}>
+      <ProjectHeader />
+      <div className={cn(styles.list, styles[variant])}>
+        {projects.map(project => (
+          <ProjectItem key={project.id} project={project} />
+        ))}
+      </div>
     </div>
   );
 };
