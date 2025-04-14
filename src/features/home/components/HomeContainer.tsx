@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Project } from '@/types/project';
 import styles from './HomeContainer.module.scss';
 import RecentProjects from './RecentProjects';
@@ -7,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { useProjectStore } from '@/stores/projectStore';
 import Skills from './Skills';
 import Image from 'next/image';
-import { useInView } from 'react-intersection-observer';
+import { InViewMotion } from '@/components/ui/InViewMotion';
 
 /**
  * 홈 페이지 컨테이너 컴포넌트
@@ -23,27 +24,6 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
   // 서버 데이터 초기화 플래그
   const initialized = useRef(false);
 
-  // useInView 훅을 사용하여 각 섹션에 대한 교차 관찰 설정
-  const [profileRef, profileInView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-    rootMargin: '0px 0px -10% 0px',
-  });
-
-  const [skillsRef, skillsInView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-    rootMargin: '0px 0px -10% 0px',
-    delay: 200, // 지연 효과
-  });
-
-  const [projectsRef, projectsInView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-    rootMargin: '0px 0px -10% 0px',
-    delay: 400, // 지연 효과
-  });
-
   // 서버 데이터를 스토어에 한 번만 설정 (필요한 경우만)
   useEffect(() => {
     if (initialProjects?.length && !initialized.current) {
@@ -54,8 +34,8 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
 
   return (
     <div className={styles.wrap}>
-      <div ref={profileRef} className={`${styles.profile} ${profileInView ? styles.visible : ''}`}>
-        <div className={styles.image}>
+      <div className={styles.profile}>
+        <InViewMotion className={styles.image} direction="left-to-right">
           <Image
             src="/profile_2.png"
             alt="profile"
@@ -66,8 +46,8 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
             sizes="(max-width: 768px) 300px, 500px"
             placeholder="empty"
           />
-        </div>
-        <div className={styles.right}>
+        </InViewMotion>
+        <InViewMotion className={styles.right} delay={0.5}>
           <div className={styles.introduce}>
             <div className={styles.name}>조혁래</div>
             <div className={styles.job}>Frontend Developer</div>
@@ -80,18 +60,14 @@ export default function HomeContainer({ initialProjects }: { initialProjects: Pr
             <br />이 포트폴리오는 단순히 아이디어에 머무르지 않고, 실제로 구현해내는 개발자임을
             보여줍니다.
           </div>
-        </div>
+        </InViewMotion>
       </div>
       <div className={styles.inner}>
         <div className={styles.bottom}>
-          <div ref={skillsRef} className={`${styles.skills} ${skillsInView ? styles.visible : ''}`}>
+          <div className={styles.skills}>
             <Skills />
           </div>
-          {/* 서버 데이터를 직접 사용해 즉시 렌더링 */}
-          <div
-            ref={projectsRef}
-            className={`${styles.projects} ${projectsInView ? styles.visible : ''}`}
-          >
+          <div className={styles.projects}>
             <RecentProjects projects={initialProjects} isLoading={false} />
           </div>
         </div>

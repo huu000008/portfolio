@@ -14,6 +14,51 @@ interface SkillCategory {
   skills: Skill[];
 }
 
+// SkillItem 컴포넌트 분리 및 React.memo 적용
+interface SkillItemProps {
+  skill: Skill;
+  index: number;
+}
+
+const SkillItem = React.memo(({ skill, index }: SkillItemProps) => {
+  return (
+    <li className={styles.skillItem}>
+      <InViewMotion direction="bottom-to-top" delay={0.3 + index * 0.1} distance={10}>
+        <span className={styles.skillName}>{skill.name}</span>
+      </InViewMotion>
+    </li>
+  );
+});
+
+SkillItem.displayName = 'SkillItem'; // React DevTools에서 컴포넌트 이름 표시
+
+// SkillCategoryCard 컴포넌트 분리 및 React.memo 적용
+interface SkillCategoryCardProps {
+  category: SkillCategory;
+  index: number;
+}
+
+const SkillCategoryCard = React.memo(({ category, index }: SkillCategoryCardProps) => {
+  return (
+    <InViewMotion
+      key={category.category} // key는 map 내부에서 사용되므로 여기서는 제거해도 무방하나, 명시적으로 남겨둠
+      className={classNames(styles.categoryCard, category.className)}
+      direction={category.direction}
+      delay={index * 0.2}
+    >
+      <h3 className={styles.categoryTitle}>{category.category}</h3>
+      <ul className={styles.skillsList}>
+        {category.skills.map((skill, skillIndex) => (
+          <SkillItem key={skill.name} skill={skill} index={skillIndex} />
+        ))}
+      </ul>
+    </InViewMotion>
+  );
+});
+
+SkillCategoryCard.displayName = 'SkillCategoryCard'; // React DevTools에서 컴포넌트 이름 표시
+
+// Skills 컴포넌트: 데이터 정의 및 SkillCategoryCard 렌더링
 const Skills = () => {
   const skillCategories: SkillCategory[] = [
     {
@@ -67,27 +112,8 @@ const Skills = () => {
 
       <div className={styles.skillsGrid}>
         {skillCategories.map((category, categoryIndex) => (
-          <InViewMotion
-            key={category.category}
-            className={classNames(styles.categoryCard, category.className)}
-            direction={category.direction}
-            delay={categoryIndex * 0.2}
-          >
-            <h3 className={styles.categoryTitle}>{category.category}</h3>
-            <ul className={styles.skillsList}>
-              {category.skills.map((skill, skillIndex) => (
-                <li key={skill.name} className={styles.skillItem}>
-                  <InViewMotion
-                    direction="bottom-to-top"
-                    delay={0.3 + skillIndex * 0.1}
-                    distance={10}
-                  >
-                    <span className={styles.skillName}>{skill.name}</span>
-                  </InViewMotion>
-                </li>
-              ))}
-            </ul>
-          </InViewMotion>
+          // 분리된 SkillCategoryCard 컴포넌트 사용
+          <SkillCategoryCard key={category.category} category={category} index={categoryIndex} />
         ))}
       </div>
     </div>
