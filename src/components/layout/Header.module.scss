@@ -13,9 +13,20 @@
   will-change: padding, background-color, box-shadow, height;
   border: 1px solid transparent;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  @include respond(md) {
+    top: 1rem;
+    left: 1rem;
+    padding: 1rem;
+  }
   &.scrolled {
     height: 80px;
     padding: 2rem;
+    @include respond(md) {
+      padding: 1rem;
+      height: 60px;
+      background-color: var(--color-bg-body);
+      border-radius: var(--radius-lg);
+    }
   }
 }
 

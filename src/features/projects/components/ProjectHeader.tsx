@@ -8,13 +8,16 @@ import { useDeleteProject } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/useToast';
 import Button from '@/components/ui/Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { cn } from '@/lib/utils';
 
 interface ProjectHeaderProps {
   id?: string;
-  userId?: string; // 프로젝트 작성자 ID
+  userId?: string;
+  className?: string;
+  title?: string;
 }
 
-export const ProjectHeader = ({ id, userId }: ProjectHeaderProps) => {
+export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { success, error: showError } = useToast();
@@ -63,8 +66,8 @@ export const ProjectHeader = ({ id, userId }: ProjectHeaderProps) => {
   };
 
   return (
-    <div className={styles.wrap}>
-      <h2>Projects</h2>
+    <div className={cn(styles.wrap, className)}>
+      <h2 className={styles.title}>{title ? title : 'Projects'}</h2>
       <div className={styles.actions}>
         {!isListPage && (
           <TransitionLink href="/projects" isButton>

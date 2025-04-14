@@ -7,7 +7,8 @@
   transition: transform 0.2s ease;
   overflow: hidden;
   text-decoration: none;
-
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
   &:hover,
   &:focus {
     transform: translateY(-0.4rem);
@@ -22,7 +23,6 @@
     padding: 2rem;
     position: relative;
     overflow: hidden;
-    border-radius: var(--radius-sm);
     background-color: var(--color-white);
 
     .image {
@@ -49,6 +49,7 @@
     gap: 0.75rem;
     flex: 1;
     width: 100%;
+    padding: 3rem 2rem;
   }
 
   .title {

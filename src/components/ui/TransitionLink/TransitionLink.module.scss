@@ -1,3 +1,4 @@
+@use '@/styles/abstracts/mixins' as *;
 .wrap {
   transition: all 0.2s ease;
   &:hover {
@@ -13,7 +14,7 @@
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     &:hover {
-      background-color: var(--color-bg-surface-hover);
+      background-color: var(--color-bg-elevated);
     }
     &:disabled {
       background-color: var(--color-disabled);
@@ -27,6 +28,10 @@
       outline: none;
       border-color: var(--color-accent);
       box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
+    }
+    @include respond(md) {
+      padding: 1rem;
+      font-size: var(--font-size-sm);
     }
   }
 }

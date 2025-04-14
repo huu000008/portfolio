@@ -1,3 +1,4 @@
+@use '@/styles/abstracts/mixins' as *;
 .wrap {
   padding: 1rem 2rem;
   border-radius: var(--radius-md);
@@ -9,7 +10,7 @@
     color 0.2s ease,
     transform 0.1s ease;
   &:hover {
-    background-color: var(--color-bg-surface-hover);
+    background-color: var(--color-bg-elevated);
   }
   &:disabled {
     background-color: var(--color-disabled);
@@ -26,5 +27,9 @@
   }
   &[aria-invalid='true'] {
     border-color: var(--color-danger);
+  }
+  @include respond(md) {
+    padding: 1rem;
+    font-size: var(--font-size-sm);
   }
 }

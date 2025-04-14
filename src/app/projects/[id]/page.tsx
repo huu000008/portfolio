@@ -1,5 +1,4 @@
 import { ProjectDetail } from '@/features/projects/components/ProjectDetail';
-import { ProjectHeader } from '@/features/projects/components/ProjectHeader';
 import { fetchProjectByIdAction } from '@/app/actions/projectActions';
 import { notFound } from 'next/navigation';
 
@@ -27,8 +26,7 @@ export default async function DetailPage({ params }: DetailPageProps) {
 
     return (
       <>
-        <ProjectHeader id={id} userId={userId} />
-        <ProjectDetail project={project} />
+        <ProjectDetail project={project} id={id} userId={userId} />
       </>
     );
   } catch (error) {

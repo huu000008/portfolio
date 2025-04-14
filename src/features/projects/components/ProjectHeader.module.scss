@@ -1,21 +1,55 @@
+@use '@/styles/abstracts/mixins' as *;
+
 .wrap {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  max-width: 120rem;
+  justify-content: space-between;
+  position: sticky;
+  top: 2rem;
+  z-index: 1;
   width: 100%;
+  max-width: 120rem;
   margin: 0 auto;
-  padding: 5rem 2rem;
-  h2 {
-    font-size: 10rem;
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  @include respond(md) {
+    width: calc(100% - 100px);
+    margin-left: 100px;
+    margin-right: -10px;
+    margin-bottom: 3rem;
+    padding: 1rem 2rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
   }
+  h2 {
+    font-size: 3rem;
+    font-weight: var(--font-weight-bold);
+    @include respond(md) {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.4;
+    }
+  }
+
   .actions {
     display: flex;
-    align-items: center;
     gap: 1rem;
-    .button {
-      display: flex;
+
+    @include respond(md) {
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 2rem;
+      a,
+      button {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+      }
     }
   }
 }
