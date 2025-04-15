@@ -7,6 +7,7 @@ import Providers from './providers';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import QuickAction from '@/components/layout/QuickAction';
 import { pretendard } from '@/assets/fonts/fonts';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -18,6 +19,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" suppressHydrationWarning className={pretendard.variable}>
       <head>
         <ThemeScript />
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'My App',
+              description: 'Next.js 15 with custom theme system',
+              url: 'https://myapp.com',
+            }),
+          }}
+        />
       </head>
       <body>
         <Providers>

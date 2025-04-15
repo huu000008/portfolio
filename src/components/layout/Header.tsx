@@ -50,7 +50,7 @@ export default function Header() {
     <>
       <header className={headerClass}>
         <InViewMotion direction="left-to-right">
-          <TransitionLink href="/">
+          <TransitionLink href="/" aria-label="홈페이지로 이동">
             <h1 className={styles.logo}>
               <span className={logoClass}>
                 <TextMorph text={logoText} />

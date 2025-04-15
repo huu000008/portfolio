@@ -70,13 +70,13 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
       <h2 className={styles.title}>{title ? title : 'Projects'}</h2>
       <div className={styles.actions}>
         {!isListPage && (
-          <TransitionLink href="/projects" isButton>
+          <TransitionLink href="/projects" isButton aria-label="프로젝트 목록 보기">
             목록
           </TransitionLink>
         )}
 
         {isListPage && user && (
-          <TransitionLink href="/projects/write" isButton>
+          <TransitionLink href="/projects/write" isButton aria-label="프로젝트 작성 하기">
             작성
           </TransitionLink>
         )}
@@ -84,7 +84,7 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
         {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
         {isDetailPage && id && user && hasEditPermission && (
           <>
-            <TransitionLink href={`/projects/edit/${id}`} isButton>
+            <TransitionLink href={`/projects/edit/${id}`} isButton aria-label="프로젝트 수정 하기">
               수정
             </TransitionLink>
             <Button
