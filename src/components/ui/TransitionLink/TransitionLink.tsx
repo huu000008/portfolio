@@ -7,7 +7,7 @@ import { useCallback, memo } from 'react';
 import { usePathname } from 'next/navigation';
 
 type Props = {
-  href: string;
+  href: Parameters<typeof Link>[0]['href'];
   children: React.ReactNode;
   isButton?: boolean;
   className?: string;

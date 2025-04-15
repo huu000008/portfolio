@@ -8,6 +8,7 @@ import { ProjectFormValues } from '@/features/projects/components/ProjectForm';
 import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from './authActions';
 import { checkAdminStatus } from '@/lib/authUtils'; // 유틸리티 함수 임포트
+import { User } from '@/types/user';
 
 /**
  * 프로젝트 목록 조회 서버 액션
@@ -83,6 +84,38 @@ export async function fetchProjectByIdAction(id: string): Promise<Project> {
   }
 }
 
+// 공통 에러 핸들링 함수 (Error 객체 반환)
+function handleError(error: unknown, defaultMsg = '알 수 없는 오류가 발생했습니다.'): { error: Error } {
+  if (error instanceof Error) return { error };
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return { error: new Error((error as { message: string }).message) };
+  }
+  return { error: new Error(defaultMsg) };
+}
+
+// User 타입 가드 함수 (모든 필수 속성 검사)
+function isUser(obj: unknown): obj is User {
+  return (
+    !!obj &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    typeof (obj as { id?: unknown }).id === 'string' &&
+    'email' in obj &&
+    typeof (obj as { email?: unknown }).email === 'string' &&
+    'app_metadata' in obj &&
+    'user_metadata' in obj &&
+    'aud' in obj &&
+    typeof (obj as { aud?: unknown }).aud === 'string' &&
+    'created_at' in obj &&
+    typeof (obj as { created_at?: unknown }).created_at === 'string'
+  );
+}
+
 /**
  * 프로젝트 생성 서버 액션
  * 인증된 사용자만 접근 가능
@@ -91,12 +124,11 @@ export async function createProjectAction(
   formData: ProjectFormValues,
 ): Promise<{ data: Project; error: null } | { data: null; error: Error }> {
   try {
-    // 인증 확인
-    const user = await getCurrentUser();
-    if (!user) {
+    const userResult = await getCurrentUser();
+    if (!isUser(userResult)) {
       redirect('/auth/login');
     }
-
+    const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();
 
     // 폼 데이터를 DB 스키마에 맞게 변환
@@ -113,16 +145,16 @@ export async function createProjectAction(
       thumbnail_url: formData.thumbnailUrl || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      user_id: user.id, // 현재 사용자 ID 저장
+      user_id: user.id, // 타입 안전하게 접근
     };
 
     // .single() 대신 배열로 받아서 처리
     const { data, error } = await supabase.from('projects').insert(projectData).select('*');
 
-    if (error) throw new Error(error.message);
+    if (error) return { data: null, ...handleError(error, '프로젝트 생성 실패') };
 
     if (!data || data.length === 0) {
-      throw new Error('프로젝트가 생성되었지만 데이터를 가져오지 못했습니다.');
+      return { data: null, ...handleError('프로젝트가 생성되었지만 데이터를 가져오지 못했습니다.', '프로젝트가 생성되었지만 데이터를 가져오지 못했습니다.') };
     }
 
     // 캐시 무효화
@@ -131,10 +163,7 @@ export async function createProjectAction(
     return { data: data[0], error: null };
   } catch (error) {
     console.error('프로젝트 생성 실패:', error);
-    return {
-      data: null,
-      error: error instanceof Error ? error : new Error('프로젝트 생성 중 오류가 발생했습니다'),
-    };
+    return { data: null, ...handleError(error, '프로젝트 생성 중 오류가 발생했습니다.') };
   }
 }
 
@@ -146,12 +175,11 @@ export async function updateProjectAction(
   data: ProjectFormValues & { id: string },
 ): Promise<{ data: Project; error: null } | { data: null; error: Error }> {
   try {
-    // 인증 확인
-    const user = await getCurrentUser();
-    if (!user) {
+    const userResult = await getCurrentUser();
+    if (!isUser(userResult)) {
       redirect('/auth/login');
     }
-
+    const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();
 
     // 프로젝트 소유자 확인 - .single() 제거
@@ -160,20 +188,19 @@ export async function updateProjectAction(
       .select('user_id')
       .eq('id', data.id);
 
-    if (fetchError) throw new Error(fetchError.message);
+    if (fetchError) return { data: null, ...handleError(fetchError, '프로젝트 소유자 확인 실패') };
 
     // 프로젝트가 존재하는지 확인
     if (!projectData || projectData.length === 0) {
-      throw new Error('프로젝트를 찾을 수 없습니다.');
+      return { data: null, ...handleError('프로젝트를 찾을 수 없습니다.', '프로젝트를 찾을 수 없습니다.') };
     }
 
-    // 관리자 확인 (유틸리티 함수 사용)
-    const userIsAdmin = checkAdminStatus(user);
+    // user는 isUser 체크로 User 타입이 보장됨
+    const userIsAdmin = checkAdminStatus(user); // user: User
 
-    // 프로젝트 소유자 확인
     const project = projectData[0];
     if (project.user_id !== user.id && !userIsAdmin) {
-      throw new Error('이 프로젝트를 수정할 권한이 없습니다.');
+      return { data: null, ...handleError('이 프로젝트를 수정할 권한이 없습니다.', '이 프로젝트를 수정할 권한이 없습니다.') };
     }
 
     // 폼 데이터를 DB 스키마에 맞게 변환
@@ -198,10 +225,10 @@ export async function updateProjectAction(
       .eq('id', data.id)
       .select('*');
 
-    if (error) throw new Error(error.message);
+    if (error) return { data: null, ...handleError(error, '프로젝트 업데이트 실패') };
 
     if (!result || result.length === 0) {
-      throw new Error('프로젝트가 업데이트되었지만 데이터를 가져오지 못했습니다.');
+      return { data: null, ...handleError('프로젝트가 업데이트되었지만 데이터를 가져오지 못했습니다.', '프로젝트가 업데이트되었지만 데이터를 가져오지 못했습니다.') };
     }
 
     // 캐시 무효화
@@ -211,10 +238,7 @@ export async function updateProjectAction(
     return { data: result[0], error: null };
   } catch (error) {
     console.error('프로젝트 수정 실패:', error);
-    return {
-      data: null,
-      error: error instanceof Error ? error : new Error('프로젝트 수정 중 오류가 발생했습니다'),
-    };
+    return { data: null, ...handleError(error, '프로젝트 수정 중 오류가 발생했습니다.') };
   }
 }
 
@@ -223,14 +247,13 @@ export async function updateProjectAction(
  * 인증된 사용자만 접근 가능
  * 삭제 성공 시 프로젝트 목록 페이지로 자동 리다이렉트
  */
-export async function deleteProjectAction(id: string): Promise<{ success: boolean }> {
+export async function deleteProjectAction(id: string): Promise<{ success: boolean; error?: Error }> {
   try {
-    // 인증 확인
-    const user = await getCurrentUser();
-    if (!user) {
+    const userResult = await getCurrentUser();
+    if (!isUser(userResult)) {
       redirect('/auth/login');
     }
-
+    const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();
 
     // 프로젝트 소유자 확인 - .single() 제거
@@ -239,25 +262,24 @@ export async function deleteProjectAction(id: string): Promise<{ success: boolea
       .select('user_id')
       .eq('id', id);
 
-    if (fetchError) throw new Error(fetchError.message);
+    if (fetchError) return { success: false, ...handleError(fetchError, '프로젝트 소유자 확인 실패') };
 
     // 프로젝트가 존재하는지 확인
     if (!projectData || projectData.length === 0) {
-      throw new Error('프로젝트를 찾을 수 없습니다.');
+      return { success: false, ...handleError('프로젝트를 찾을 수 없습니다.', '프로젝트를 찾을 수 없습니다.') };
     }
 
-    // 관리자 확인 (유틸리티 함수 사용)
-    const userIsAdmin = checkAdminStatus(user);
+    // user는 isUser 체크로 User 타입이 보장됨
+    const userIsAdmin = checkAdminStatus(user); // user: User
 
-    // 프로젝트 소유자 확인
     const project = projectData[0];
     if (project.user_id !== user.id && !userIsAdmin) {
-      throw new Error('이 프로젝트를 삭제할 권한이 없습니다.');
+      return { success: false, ...handleError('이 프로젝트를 삭제할 권한이 없습니다.', '이 프로젝트를 삭제할 권한이 없습니다.') };
     }
 
     const { error } = await supabase.from('projects').delete().eq('id', id);
 
-    if (error) throw new Error(error.message);
+    if (error) return { success: false, ...handleError(error, '프로젝트 삭제 실패') };
 
     // 캐시 무효화
     revalidatePath('/projects');
@@ -271,6 +293,6 @@ export async function deleteProjectAction(id: string): Promise<{ success: boolea
     return { success: true };
   } catch (error) {
     console.error('프로젝트 삭제 실패:', error);
-    throw error;
+    return { success: false, ...handleError(error, '프로젝트 삭제 중 오류가 발생했습니다.') };
   }
 }

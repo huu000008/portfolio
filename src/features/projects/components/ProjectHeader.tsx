@@ -84,7 +84,7 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
         {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
         {isDetailPage && id && user && hasEditPermission && (
           <>
-            <TransitionLink href={`/projects/edit/${id}`} isButton aria-label="프로젝트 수정 하기">
+            <TransitionLink href={{ pathname: `/projects/edit/${id}` }} isButton aria-label="프로젝트 수정 하기">
               수정
             </TransitionLink>
             <Button
