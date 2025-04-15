@@ -11,7 +11,11 @@ type Props = {
 export const ProjectItem = ({ project }: Props) => {
   return (
     <InViewMotion>
-      <TransitionLink className={styles.wrap} href={`/projects/${project.id}`}>
+      <TransitionLink
+        className={styles.wrap}
+        href={`/projects/${project.id}`}
+        aria-label={`${project.title} 프로젝트 상세 정보 보기`}
+      >
         <div className={styles.thumbnail}>
           <Image
             src={project.thumbnail_url || 'https://dummyimage.com/600x400'}

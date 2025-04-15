@@ -21,7 +21,7 @@ html {
 body {
   position: relative;
   min-height: 100vh;
-  font-family: 'Pretendard', sans-serif;
+  font-family: var(--font-pretendard), system-ui, sans-serif;
   font-size: 1.6rem;
   line-height: 1.75;
   background-color: var(--color-bg-body);
@@ -67,7 +67,7 @@ a {
 }
 
 button {
-  font-family: 'Pretendard', sans-serif;
+  font-family: var(--font-pretendard), system-ui, sans-serif;
   font-size: var(--font-size-md);
   line-height: 1.75;
   cursor: pointer;

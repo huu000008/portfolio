@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import '@/styles/tailwind.css';
-import '@/styles/globals.scss';
+import '@/assets/styles/tailwind.css';
+import '@/assets/styles/globals.scss';
 import { ThemeScript } from '@/components/ThemeScript';
 import Header from '@/components/layout/Header';
 import Providers from './providers';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import QuickAction from '@/components/layout/QuickAction';
+import { pretendard } from '@/assets/fonts/fonts';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -14,13 +15,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning className={pretendard.variable}>
       <head>
         <ThemeScript />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
-        />
       </head>
       <body>
         <Providers>
