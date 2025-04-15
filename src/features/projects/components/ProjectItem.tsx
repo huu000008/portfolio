@@ -13,7 +13,7 @@ export const ProjectItem = ({ project }: Props) => {
     <InViewMotion>
       <TransitionLink
         className={styles.wrap}
-        href={`/projects/${project.id}`}
+        href={{ pathname: `/projects/${project.id}` }}
         aria-label={`${project.title} 프로젝트 상세 정보 보기`}
       >
         <div className={styles.thumbnail}>

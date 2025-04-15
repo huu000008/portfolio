@@ -59,7 +59,7 @@ const ProjectItem = memo(
         direction={itemDirection}
       >
         <TransitionLink
-          href={`projects/${project.id}`}
+          href={{ pathname: `/projects/${project.id}` }}
           aria-label={`${project.title} 프로젝트 상세 정보 보기`}
         >
           <div className={styles.title}>{project.title}</div>

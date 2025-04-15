@@ -3,6 +3,21 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { User } from '@/types/user';
+
+// 공통 에러 핸들링 함수
+function handleError(error: unknown, defaultMsg = '알 수 없는 오류가 발생했습니다.') {
+  if (error instanceof Error) return { success: false, error: error.message };
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return { success: false, error: (error as { message: string }).message };
+  }
+  return { success: false, error: defaultMsg };
+}
 
 // 로그인 유효성 검사 스키마
 const loginSchema = z.object({
@@ -26,6 +41,24 @@ const signupSchema = z
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
+// User 타입 가드 함수 (모든 필수 속성 검사)
+function isUser(obj: unknown): obj is User {
+  return (
+    !!obj &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    typeof (obj as { id?: unknown }).id === 'string' &&
+    'email' in obj &&
+    typeof (obj as { email?: unknown }).email === 'string' &&
+    'app_metadata' in obj &&
+    'user_metadata' in obj &&
+    'aud' in obj &&
+    typeof (obj as { aud?: unknown }).aud === 'string' &&
+    'created_at' in obj &&
+    typeof (obj as { created_at?: unknown }).created_at === 'string'
+  );
+}
+
 /**
  * 로그인 서버 액션
  */
@@ -33,7 +66,7 @@ export async function login(formData: LoginFormData) {
   // 유효성 검사
   const validationResult = loginSchema.safeParse(formData);
   if (!validationResult.success) {
-    return { error: validationResult.error.message };
+    return { success: false, error: validationResult.error.message };
   }
 
   const { email, password } = formData;
@@ -46,12 +79,12 @@ export async function login(formData: LoginFormData) {
     });
 
     if (error) {
-      return { error: error.message };
+      return handleError(error, '로그인 실패');
     }
 
     return { success: true };
-  } catch {
-    return { error: '로그인 중 오류가 발생했습니다.' };
+  } catch (error) {
+    return handleError(error, '로그인 중 오류가 발생했습니다.');
   }
 }
 
@@ -60,7 +93,7 @@ export async function signup(formData: SignupFormData) {
   // 유효성 검사
   const validationResult = signupSchema.safeParse(formData);
   if (!validationResult.success) {
-    return { error: validationResult.error.message };
+    return { success: false, error: validationResult.error.message };
   }
 
   const { email, password } = formData;
@@ -71,41 +104,59 @@ export async function signup(formData: SignupFormData) {
       email,
       password,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`,
       },
     });
 
     if (error) {
-      return { error: error.message };
+      return handleError(error, '회원가입 실패');
     }
 
     return { success: true, message: '이메일 확인을 위한 링크가 발송되었습니다.' };
-  } catch {
-    return { error: '회원가입 중 오류가 발생했습니다.' };
+  } catch (error) {
+    return handleError(error, '회원가입 중 오류가 발생했습니다.');
   }
 }
 
 // 로그아웃 서버 액션
 export async function logout() {
-  const supabase = await createServerSupabaseClient();
-  await supabase.auth.signOut();
-  redirect('/');
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      return handleError(error, '로그아웃 실패');
+    }
+    redirect('/');
+  } catch (error) {
+    return handleError(error, '로그아웃 중 오류가 발생했습니다.');
+  }
 }
 
 // 현재 로그인한 사용자 정보 가져오기
 export async function getCurrentUser() {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  try {
+    const supabase = await createServerSupabaseClient();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+    if (error) {
+      return handleError(error, '유저 정보를 가져오지 못했습니다.');
+    }
+    if (!isUser(user)) {
+      return { success: false, error: '유저 정보가 유효하지 않습니다.' };
+    }
+    return user;
+  } catch (error) {
+    return handleError(error, '유저 정보를 가져오지 못했습니다.');
+  }
 }
 
 // 사용자 인증 여부 확인
 // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
 export async function requireAuth() {
   const user = await getCurrentUser();
-  if (!user) {
+  if (!user || (user && 'success' in user && user.success === false)) {
     redirect('/auth/login');
   }
   return user;
