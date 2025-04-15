@@ -130,7 +130,10 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
           direction={getDirection(slicedProjects.length)}
         >
           <TransitionLink href="/projects" aria-label="모든 프로젝트 목록 보기">
-            <div className={styles.title}>More</div>
+            <div className={styles.title}>
+              More
+              <span className="sr-only">View All Projects</span>
+            </div>
           </TransitionLink>
         </InViewMotion>
       </div>

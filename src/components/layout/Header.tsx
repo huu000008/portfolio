@@ -15,26 +15,32 @@ export default function Header() {
   const [logoText, setLogoText] = useState('JUST DO');
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
+    let animationId: number | null = null;
 
     if (isMainPage) {
-      // 메인 페이지에서는 초기에 확장된 상태로 시작
       setScrolled(false);
       setLogoText('JUST DO');
 
-      timer = setTimeout(() => {
-        setScrolled(true);
-        setLogoText('JD');
-      }, 2000);
+      // setTimeout 대신 requestAnimationFrame 사용
+      const startTime = performance.now();
+      const animate = (currentTime: number) => {
+        if (currentTime - startTime >= 2000) {
+          setScrolled(true);
+          setLogoText('JD');
+          return;
+        }
+        animationId = requestAnimationFrame(animate);
+      };
+
+      animationId = requestAnimationFrame(animate);
     } else {
-      // 다른 페이지에서는 축소된 상태로 시작
       setScrolled(true);
       setLogoText('JD');
     }
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
       }
     };
   }, [isMainPage]);
@@ -50,7 +56,7 @@ export default function Header() {
     <>
       <header className={headerClass}>
         <InViewMotion direction="left-to-right">
-          <TransitionLink href="/" aria-label="홈페이지로 이동">
+          <TransitionLink href="/">
             <h1 className={styles.logo}>
               <span className={logoClass}>
                 <TextMorph text={logoText} />
@@ -67,11 +73,18 @@ const TextMorph = ({ text }: { text: string }) => {
   const characters = text.split('');
 
   const spanVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-    exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+    initial: { opacity: 0, transform: 'translateY(10px)' },
+    animate: {
+      opacity: 1,
+      transform: 'translateY(0px)',
+      transition: { duration: 0.2 },
+    },
+    exit: {
+      opacity: 0,
+      transform: 'translateY(-10px)',
+      transition: { duration: 0.15 },
+    },
   };
-
   return (
     <AnimatePresence mode="wait">
       <motion.div

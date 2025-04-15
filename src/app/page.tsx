@@ -1,6 +1,5 @@
-import HomeContainer from '@/features/home/components/HomeContainer';
+import { lazy, Suspense } from 'react';
 import { fetchProjectsAction } from '@/app/actions/projectActions';
-import { Suspense } from 'react';
 import { Project } from '@/types/project';
 
 /**
@@ -15,9 +14,11 @@ export default async function Home() {
   // React 19에서는 자동으로 Promise를 처리합니다
   const projects: Project[] = await fetchProjectsAction();
 
+  const LazyHomeContainer = lazy(() => import('@/features/home/components/HomeContainer'));
+
   return (
     <Suspense fallback={<div className="loading">Loading homepage...</div>}>
-      <HomeContainer initialProjects={projects} />
+      <LazyHomeContainer initialProjects={projects} />
     </Suspense>
   );
 }

@@ -9,9 +9,11 @@
   overflow: hidden;
   padding: 10rem 2rem;
   z-index: 100;
-  will-change: padding, background-color, box-shadow, height;
-  border: 1px solid transparent;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  transition:
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   @include respond(md) {
     top: 1rem;
     left: 1rem;
