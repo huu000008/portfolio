@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: 'Next.js 15 with custom theme system',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children, modal }: { children: React.ReactNode, modal: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning className={pretendard.variable}>
       <head>
@@ -37,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Header />
           <main>{children}</main>
+          {modal}
           <QuickAction />
         </Providers>
 

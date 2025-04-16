@@ -2,48 +2,43 @@
 
 import { TransitionLink } from '../ui/TransitionLink/TransitionLink';
 import styles from './Header.module.scss';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { InViewMotion } from '../ui/InViewMotion';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const pathname = usePathname();
-  const isMainPage = useMemo(() => pathname === '/', [pathname]);
 
   const [scrolled, setScrolled] = useState(false);
   const [logoText, setLogoText] = useState('JUST DO');
 
-  useEffect(() => {
-    let animationId: number | null = null;
+  const animatedOnce = useRef(false); // 최초 1회만 애니메이션
 
-    if (isMainPage) {
+  useEffect(() => {
+    let timeoutId: number | null = null;
+
+    if (pathname === '/' && !animatedOnce.current) {
+      animatedOnce.current = true;
       setScrolled(false);
       setLogoText('JUST DO');
 
-      // setTimeout 대신 requestAnimationFrame 사용
-      const startTime = performance.now();
-      const animate = (currentTime: number) => {
-        if (currentTime - startTime >= 2000) {
-          setScrolled(true);
-          setLogoText('JD');
-          return;
-        }
-        animationId = requestAnimationFrame(animate);
-      };
-
-      animationId = requestAnimationFrame(animate);
+      timeoutId = window.setTimeout(() => {
+        setScrolled(true);
+        setLogoText('JD');
+      }, 2000);
     } else {
       setScrolled(true);
       setLogoText('JD');
     }
 
     return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
     };
-  }, [isMainPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 최초 마운트에만 실행
 
   const headerClass = useMemo(
     () => `${styles.wrap} ${scrolled ? styles.scrolled : ''}`,
