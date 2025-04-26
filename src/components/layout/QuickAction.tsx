@@ -3,7 +3,7 @@
 import React from 'react';
 import { ThemeToggle } from '../ThemeToggle';
 import styles from './QuickAction.module.scss';
-import Button from '@/components/ui/Button/Button';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { ExitIcon, EnterIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
@@ -18,9 +18,11 @@ const QuickAction = () => {
           <ExitIcon />
         </Button>
       ) : (
-        <Link href={{ pathname: '/login' }} aria-label="로그인">
-          <EnterIcon />
-        </Link>
+        <Button asChild>
+          <Link href={{ pathname: '/login' }} aria-label="로그인">
+            <EnterIcon />
+          </Link>
+        </Button>
       )}
       <ThemeToggle />
     </div>

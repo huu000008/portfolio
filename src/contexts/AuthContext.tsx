@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/utils/toast';
 import {
   SESSION_REFRESH_INTERVAL,
@@ -30,7 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
   // 마지막 활동 시간 참조 - 컴포넌트 최상위 레벨에서 useRef 사용
   const lastActivityRef = useRef<number>(Date.now());
 
@@ -73,26 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []); // 외부 의존성이 없으므로 빈 배열 유지
 
   // 로그아웃 함수
-  const signOut = useCallback(
-    async (isSessionExpired = false) => {
-      try {
-        await supabase.auth.signOut();
-        // 상태 명시적 업데이트
-        setSession(null);
-        setUser(null);
-
-        // 세션 만료가 아닌 경우에만 홈으로 리다이렉트
-        if (!isSessionExpired) {
-          router.push('/');
-        } else {
-          router.push('/auth/login');
-        }
-      } catch (error) {
-        console.error('Error signing out:', error);
-      }
-    },
-    [router],
-  );
+  const signOut = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      setSession(null);
+      setUser(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  }, []);
 
   // 세션 만료 감지 및 처리 함수
   const checkSession = useCallback(async () => {
@@ -114,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!refreshResult) {
           toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
           // 로그아웃 후 로그인 페이지로 이동 (세션 만료 시)
-          await signOut(true);
+          await signOut();
         }
       } else if (data.session) {
         // 클라이언트 측 세션이 존재하면, AuthContext 상태와 동기화
@@ -219,7 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (inactiveTime >= INACTIVITY_LOGOUT_TIME) {
           toast.info('장시간 활동이 없어 자동 로그아웃 되었습니다.');
           // signOut 함수 직접 호출 대신 내부 로직 구현 -> signOut 호출로 변경
-          await signOut(false); // isSessionExpired = true 에서 false로 변경
+          await signOut();
         }
       }, INACTIVITY_LOGOUT_TIME);
     };

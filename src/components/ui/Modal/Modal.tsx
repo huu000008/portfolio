@@ -1,12 +1,19 @@
 'use client';
 
-import * as Dialog from '@radix-ui/react-dialog';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogOverlay,
+  DialogPortal,
+} from '@/components/ui/dialog';
 import styles from './Modal.module.scss';
 
 interface ModalProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
   children: React.ReactNode;
   trigger?: React.ReactNode;
   title?: string;
@@ -15,27 +22,23 @@ interface ModalProps {
 
 export const Modal = ({
   open,
-  onOpenChange,
+  onOpenChangeAction,
   children,
   trigger,
   title = '모달 창',
   description = '모달 설명',
 }: ModalProps) => {
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
-      <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content}>
-          <VisuallyHidden asChild>
-            <Dialog.Title>{title}</Dialog.Title>
-          </VisuallyHidden>
-          <VisuallyHidden asChild>
-            <Dialog.Description>{description}</Dialog.Description>
-          </VisuallyHidden>
+    <Dialog open={open} onOpenChange={onOpenChangeAction}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      <DialogPortal>
+        <DialogOverlay className={styles.overlay} />
+        <DialogContent className={styles.content}>
+          <DialogTitle className="sr-only">{title}</DialogTitle>
+          <DialogDescription className="sr-only">{description}</DialogDescription>
           {children}
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   );
 };

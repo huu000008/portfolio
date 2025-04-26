@@ -16,6 +16,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './LoginModal.module.scss';
 import FormField from './FormField';
 import ResetPasswordForm from './ResetPasswordForm';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 type AuthMode = 'login' | 'signup' | 'reset';
 
@@ -25,7 +27,11 @@ interface AuthModalProps {
   initialMode?: AuthMode;
 }
 
-export default function AuthModal({ open = true, onClose, initialMode = 'login' }: AuthModalProps) {
+export default function AuthModal({
+  open: openProp = true,
+  onClose,
+  initialMode = 'login',
+}: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const router = useRouter();
   const { fetchSession } = useAuth();
@@ -35,6 +41,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState<string | null>(null);
   const [resetSuccess, setResetSuccess] = useState<string | null>(null);
+  const [open, setOpen] = useState(openProp);
 
   // 로그인 폼 설정
   const {
@@ -68,8 +75,11 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
     if (isLoading && !newOpen) return;
     if (!newOpen) {
       if (onClose) onClose();
+      setOpen(false);
       router.back();
       resetAllStates();
+    } else {
+      setOpen(true);
     }
   };
 
@@ -92,9 +102,21 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
         password: data.password,
       });
 
-      if (loginError) throw new Error(loginError.message);
+      if (loginError) {
+        if (loginError.status === 400) {
+          throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
+        }
+        throw new Error('로그인 중 오류가 발생했습니다.');
+      }
       if (userData?.user) {
         await fetchSession();
+        toast.success('로그인에 성공했습니다!');
+        if (onClose) {
+          onClose();
+        } else {
+          setOpen(false);
+        }
+        router.push('/');
         router.refresh();
       }
     } catch (err) {
@@ -176,10 +198,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
             {resetError && <div className={styles.error}>{resetError}</div>}
 
             {mode === 'login' && (
-              <form
-                onSubmit={handleSubmitLogin(onLoginSubmit)}
-                className={styles.form}
-              >
+              <form onSubmit={handleSubmitLogin(onLoginSubmit)} className={styles.form}>
                 <div className={styles.formGroup}>
                   <FormField<LoginFormData>
                     label="이메일"
@@ -205,7 +224,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button type="submit" disabled={isLoading} className={styles.submitButton}>
+                  <Button type="submit" disabled={isLoading} className={styles.submitButton}>
                     {isLoading ? (
                       <span className={styles.loadingWrapper}>
                         <svg
@@ -233,15 +252,12 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
                     ) : (
                       '로그인'
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
             {mode === 'signup' && (
-              <form
-                onSubmit={handleSubmitSignup(onSignupSubmit)}
-                className={styles.form}
-              >
+              <form onSubmit={handleSubmitSignup(onSignupSubmit)} className={styles.form}>
                 <div className={styles.formGroup}>
                   <FormField<SignupFormData>
                     label="이메일"
@@ -278,7 +294,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button type="submit" disabled={isLoading} className={styles.submitButton}>
+                  <Button type="submit" disabled={isLoading} className={styles.submitButton}>
                     {isLoading ? (
                       <span className={styles.loadingWrapper}>
                         <svg
@@ -306,7 +322,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
                     ) : (
                       '회원가입'
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
@@ -319,25 +335,40 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
             )}
             <div className={styles.actionRow}>
               {mode !== 'login' && (
-                <button type="button" onClick={() => setMode('login')} className={styles.signupLink}>
+                <Button
+                  type="button"
+                  onClick={() => setMode('login')}
+                  variant="link"
+                  className={styles.signupLink}
+                >
                   로그인으로 돌아가기
-                </button>
+                </Button>
               )}
               {mode !== 'signup' && (
-                <button type="button" onClick={() => setMode('signup')} className={styles.signupLink}>
+                <Button
+                  type="button"
+                  onClick={() => setMode('signup')}
+                  variant="link"
+                  className={styles.signupLink}
+                >
                   회원가입
-                </button>
+                </Button>
               )}
               {mode !== 'reset' && (
-                <button type="button" onClick={() => setMode('reset')} className={styles.signupLink}>
+                <Button
+                  type="button"
+                  onClick={() => setMode('reset')}
+                  variant="link"
+                  className={styles.signupLink}
+                >
                   비밀번호 재설정
-                </button>
+                </Button>
               )}
             </div>
           </div>
 
           <Dialog.Close asChild>
-            <button className={styles.closeButton} aria-label="닫기">
+            <Button className={styles.closeButton} aria-label="닫기" variant="ghost" size="icon">
               <svg
                 width="15"
                 height="15"
@@ -350,7 +381,7 @@ export default function AuthModal({ open = true, onClose, initialMode = 'login' 
                   fill="currentColor"
                 />
               </svg>
-            </button>
+            </Button>
           </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>

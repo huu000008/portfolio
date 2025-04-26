@@ -1,3 +1,4 @@
+@use '@/assets/styles/abstracts/mixins' as *;
 .wrap {
   display: flex;
   flex-direction: column;
@@ -6,6 +7,7 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
+  > a,
   > button {
     display: flex;
     align-items: center;
@@ -14,5 +16,9 @@
     height: 5rem;
     padding: 0;
     border-radius: 50%;
+    svg {
+      width: 15px;
+      height: 15px;
+    }
   }
 }

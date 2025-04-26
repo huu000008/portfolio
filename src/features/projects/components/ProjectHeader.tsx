@@ -5,8 +5,8 @@ import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
-import { useToast } from '@/hooks/useToast';
-import Button from '@/components/ui/Button/Button';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
@@ -20,7 +20,6 @@ interface ProjectHeaderProps {
 export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { success, error: showError } = useToast();
   const { mutate: deleteProject, isPending } = useDeleteProject();
   const { user, isAdmin } = useAuth();
 
@@ -38,8 +37,8 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 
     if (!id) {
-      showError('프로젝트 ID가 없습니다', {
-        title: '오류',
+      toast.error('프로젝트 ID가 없습니다', {
+        description: '오류',
         duration: 5000,
       });
       return;
@@ -47,17 +46,17 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
 
     deleteProject(id, {
       onSuccess: () => {
-        success('프로젝트가 성공적으로 삭제되었습니다', {
-          title: '삭제 완료',
+        toast.success('프로젝트가 성공적으로 삭제되었습니다', {
+          description: '삭제 완료',
           duration: 3000,
         });
         router.push('/projects');
       },
       onError: err => {
-        showError(
+        toast.error(
           '삭제 실패: ' + (err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다'),
           {
-            title: '오류',
+            description: '오류',
             duration: 5000,
           },
         );
@@ -84,7 +83,11 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
         {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
         {isDetailPage && id && user && hasEditPermission && (
           <>
-            <TransitionLink href={{ pathname: `/projects/edit/${id}` }} isButton aria-label="프로젝트 수정 하기">
+            <TransitionLink
+              href={{ pathname: `/projects/edit/${id}` }}
+              isButton
+              aria-label="프로젝트 수정 하기"
+            >
               수정
             </TransitionLink>
             <Button

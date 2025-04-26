@@ -8,11 +8,11 @@ import { DatePicker } from '@/components/ui/DatePicker/DatePicker';
 import { CheckboxButtonGroup } from '@/components/ui/CheckboxButtonGroup/CheckboxButtonGroup';
 import { useCreateProject, useUpdateProject } from '@/hooks/useProjects';
 import styles from './ProjectForm.module.scss';
-import { useToast } from '@/hooks/useToast';
+import { toast } from 'sonner';
 import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
 import { parseISO, isValid } from 'date-fns';
 import { useEffect, useState } from 'react';
-import Button from '@/components/ui/Button/Button';
+import { Button } from '@/components/ui/button';
 
 // 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
@@ -95,7 +95,6 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
   } = methods;
 
   const router = useRouter();
-  const { success, error: showError } = useToast();
 
   // 새로운 커스텀 훅 사용
   const { mutate: createProject } = useCreateProject();
@@ -171,14 +170,14 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
         {
           onSuccess: result => {
             if (result.data) {
-              success(`프로젝트가 성공적으로 수정되었습니다.`, {
-                title: '저장 완료',
+              toast.success(`프로젝트가 성공적으로 수정되었습니다.`, {
+                description: '저장 완료',
                 duration: 3000,
               });
               router.push('/projects');
             } else if (result.error) {
-              showError(result.error.message, {
-                title: '저장 실패',
+              toast.error(result.error.message, {
+                description: '저장 실패',
                 duration: 5000,
               });
             }
@@ -186,8 +185,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           onError: err => {
             const errorMessage =
               err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
-            showError(errorMessage, {
-              title: '오류',
+            toast.error(errorMessage, {
+              description: '오류',
               duration: 5000,
             });
           },
@@ -198,14 +197,14 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
       createProject(data, {
         onSuccess: result => {
           if (result.data) {
-            success(`프로젝트가 성공적으로 생성되었습니다.`, {
-              title: '저장 완료',
+            toast.success(`프로젝트가 성공적으로 생성되었습니다.`, {
+              description: '저장 완료',
               duration: 3000,
             });
             router.push('/projects');
           } else if (result.error) {
-            showError(result.error.message, {
-              title: '저장 실패',
+            toast.error(result.error.message, {
+              description: '저장 실패',
               duration: 5000,
             });
           }
@@ -213,8 +212,8 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
         onError: err => {
           const errorMessage =
             err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
-          showError(errorMessage, {
-            title: '오류',
+          toast.error(errorMessage, {
+            description: '오류',
             duration: 5000,
           });
         },

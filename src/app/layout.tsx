@@ -4,7 +4,7 @@ import '@/assets/styles/globals.scss';
 import { ThemeScript } from '@/components/ThemeScript';
 import Header from '@/components/layout/Header';
 import Providers from './providers';
-import { ToastContainer } from '@/components/ui/Toast/Toast';
+import { Toaster } from '@/components/ui/sonner';
 import QuickAction from '@/components/layout/QuickAction';
 import { pretendard } from '@/assets/fonts/fonts';
 import Script from 'next/script';
@@ -14,7 +14,13 @@ export const metadata: Metadata = {
   description: 'Next.js 15 with custom theme system',
 };
 
-export default function RootLayout({ children, modal }: { children: React.ReactNode, modal: React.ReactNode }) {
+export default function RootLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   return (
     <html lang="ko" suppressHydrationWarning className={pretendard.variable}>
       <head>
@@ -39,9 +45,8 @@ export default function RootLayout({ children, modal }: { children: React.ReactN
           <main>{children}</main>
           {modal}
           <QuickAction />
+          <Toaster />
         </Providers>
-
-        <ToastContainer />
       </body>
     </html>
   );
