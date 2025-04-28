@@ -4,20 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { User } from '@/types/user';
-
-// 공통 에러 핸들링 함수
-function handleError(error: unknown, defaultMsg = '알 수 없는 오류가 발생했습니다.') {
-  if (error instanceof Error) return { success: false, error: error.message };
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'message' in error &&
-    typeof (error as { message?: unknown }).message === 'string'
-  ) {
-    return { success: false, error: (error as { message: string }).message };
-  }
-  return { success: false, error: defaultMsg };
-}
+import { extractErrorMessage } from '@/utils/common';
 
 // 로그인 유효성 검사 스키마
 const loginSchema = z.object({
@@ -79,12 +66,12 @@ export async function login(formData: LoginFormData) {
     });
 
     if (error) {
-      return handleError(error, '로그인 실패');
+      return { success: false, error: extractErrorMessage(error, '로그인 실패') };
     }
 
     return { success: true };
   } catch (error) {
-    return handleError(error, '로그인 중 오류가 발생했습니다.');
+    return { success: false, error: extractErrorMessage(error, '로그인 중 오류가 발생했습니다.') };
   }
 }
 
@@ -109,12 +96,15 @@ export async function signup(formData: SignupFormData) {
     });
 
     if (error) {
-      return handleError(error, '회원가입 실패');
+      return { success: false, error: extractErrorMessage(error, '회원가입 실패') };
     }
 
     return { success: true, message: '이메일 확인을 위한 링크가 발송되었습니다.' };
   } catch (error) {
-    return handleError(error, '회원가입 중 오류가 발생했습니다.');
+    return {
+      success: false,
+      error: extractErrorMessage(error, '회원가입 중 오류가 발생했습니다.'),
+    };
   }
 }
 
@@ -124,11 +114,14 @@ export async function logout() {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.auth.signOut();
     if (error) {
-      return handleError(error, '로그아웃 실패');
+      return { success: false, error: extractErrorMessage(error, '로그아웃 실패') };
     }
     redirect('/');
   } catch (error) {
-    return handleError(error, '로그아웃 중 오류가 발생했습니다.');
+    return {
+      success: false,
+      error: extractErrorMessage(error, '로그아웃 중 오류가 발생했습니다.'),
+    };
   }
 }
 
@@ -141,14 +134,20 @@ export async function getCurrentUser() {
       error,
     } = await supabase.auth.getUser();
     if (error) {
-      return handleError(error, '유저 정보를 가져오지 못했습니다.');
+      return {
+        success: false,
+        error: extractErrorMessage(error, '유저 정보를 가져오지 못했습니다.'),
+      };
     }
     if (!isUser(user)) {
       return { success: false, error: '유저 정보가 유효하지 않습니다.' };
     }
     return user;
   } catch (error) {
-    return handleError(error, '유저 정보를 가져오지 못했습니다.');
+    return {
+      success: false,
+      error: extractErrorMessage(error, '유저 정보를 가져오지 못했습니다.'),
+    };
   }
 }
 

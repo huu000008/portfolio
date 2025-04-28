@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import '@/assets/styles/tailwind.css';
-import '@/assets/styles/globals.scss';
+import '@/assets/styles/globals.css';
 import { ThemeScript } from '@/components/ThemeScript';
 import Header from '@/components/layout/Header';
 import Providers from './providers';

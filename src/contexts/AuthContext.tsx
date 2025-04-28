@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
-import { toast } from '@/utils/toast';
+import { toast } from 'sonner';
 import {
   SESSION_REFRESH_INTERVAL,
   INACTIVITY_LOGOUT_TIME,

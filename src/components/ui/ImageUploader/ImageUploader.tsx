@@ -6,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import styles from './ImageUploader.module.scss';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase/client';
+import { extractErrorMessage } from '@/utils/common';
 
 interface Props {
   name: string;
@@ -288,18 +289,7 @@ export const ImageUploader = ({ name, id }: Props) => {
 
         if (err instanceof Error) {
           console.error('❌ 예상치 못한 오류:', err.message);
-
-          // 타임아웃 오류 처리
-          if (err.message.includes('시간이 초과')) {
-            setError(
-              '업로드 시간이 초과되었습니다. 네트워크 연결을 확인하거나 나중에 다시 시도해주세요.',
-            );
-          } else {
-            setError(err.message);
-          }
-        } else {
-          console.error('❌ 예상치 못한 오류:', err);
-          setError('이미지 업로드 중 오류가 발생했습니다.');
+          setError(extractErrorMessage(err, '이미지 업로드 중 오류가 발생했습니다.'));
         }
 
         // 자동 재시도 활성화
@@ -307,7 +297,7 @@ export const ImageUploader = ({ name, id }: Props) => {
       }
     } catch (err) {
       console.error('❌ 전체 프로세스 오류:', err);
-      setError(err instanceof Error ? err.message : '이미지 업로드 중 오류가 발생했습니다.');
+      setError(extractErrorMessage(err, '이미지 업로드 중 오류가 발생했습니다.'));
 
       // 자동 재시도 활성화
       setAutoRetry(true);
@@ -335,6 +325,7 @@ export const ImageUploader = ({ name, id }: Props) => {
       setTimeout(() => input.dispatchEvent(event), 0);
     } catch (error) {
       console.error('파일 자동 선택 중 오류:', error);
+      setError(extractErrorMessage(error, '파일 자동 선택 중 오류가 발생했습니다.'));
       // 실패 시 자동 재시도 비활성화
       setAutoRetry(false);
     }

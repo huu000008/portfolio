@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogClose,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
@@ -18,6 +26,7 @@ import FormField from './FormField';
 import ResetPasswordForm from './ResetPasswordForm';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { extractErrorMessage } from '@/utils/common';
 
 type AuthMode = 'login' | 'signup' | 'reset';
 
@@ -86,9 +95,10 @@ export default function AuthModal({
   const handleAuthError = (err: unknown) => {
     console.error(`${mode === 'login' ? '로그인' : '회원가입'} 오류:`, err);
     setError(
-      err instanceof Error
-        ? err.message
-        : `${mode === 'login' ? '로그인' : '회원가입'} 중 오류가 발생했습니다.`,
+      extractErrorMessage(
+        err,
+        `${mode === 'login' ? '로그인' : '회원가입'} 중 오류가 발생했습니다.`,
+      ),
     );
   };
 
@@ -176,21 +186,21 @@ export default function AuthModal({
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogPortal>
+        <DialogOverlay className={styles.overlay} />
+        <DialogContent className={styles.content}>
           <div className={styles.modalContainer}>
-            <Dialog.Title className={styles.title}>
+            <DialogTitle className={styles.title}>
               {mode === 'login' ? '로그인' : mode === 'signup' ? '회원가입' : '비밀번호 재설정'}
-            </Dialog.Title>
-            <Dialog.Description className={styles.description}>
+            </DialogTitle>
+            <DialogDescription className={styles.description}>
               {mode === 'login'
                 ? '계정에 로그인하여 서비스를 이용하세요.'
                 : mode === 'signup'
                   ? '회원가입을 통해 서비스를 이용해보세요.'
                   : '비밀번호를 재설정하세요.'}
-            </Dialog.Description>
+            </DialogDescription>
 
             {error && <div className={styles.error}>{error}</div>}
             {successMessage && <div className={styles.success}>{successMessage}</div>}
@@ -367,8 +377,8 @@ export default function AuthModal({
             </div>
           </div>
 
-          <Dialog.Close asChild>
-            <Button className={styles.closeButton} aria-label="닫기" variant="ghost" size="icon">
+          <DialogClose asChild>
+            <button className={styles.closeButton} aria-label="닫기">
               <svg
                 width="15"
                 height="15"
@@ -381,10 +391,10 @@ export default function AuthModal({
                   fill="currentColor"
                 />
               </svg>
-            </Button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+            </button>
+          </DialogClose>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   );
 }

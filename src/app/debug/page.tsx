@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase/client';
 import { useEffect, useState, useCallback } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { toast } from '@/utils/toast';
+import { toast } from 'sonner';
 
 export default function DebugPage() {
   const { user, session, isLoading, fetchSession } = useAuth();

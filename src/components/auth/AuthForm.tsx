@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { z } from 'zod';
+import { extractErrorMessage } from '@/utils/common';
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -29,13 +30,7 @@ export default function AuthForm({ mode, onSubmit, loading, error }: AuthFormPro
     try {
       await onSubmit(email, password);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setFormError(err.message);
-      } else if (typeof err === 'string') {
-        setFormError(err);
-      } else {
-        setFormError('알 수 없는 오류가 발생했습니다.');
-      }
+      setFormError(extractErrorMessage(err));
     }
   };
 

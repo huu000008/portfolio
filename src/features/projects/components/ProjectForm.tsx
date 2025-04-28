@@ -13,6 +13,7 @@ import { ImageUploader } from '@/components/ui/ImageUploader/ImageUploader';
 import { parseISO, isValid } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { extractErrorMessage } from '@/utils/common';
 
 // 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
@@ -183,9 +184,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
             }
           },
           onError: err => {
-            const errorMessage =
-              err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
-            toast.error(errorMessage, {
+            toast.error(extractErrorMessage(err, '예기치 않은 오류가 발생했습니다.'), {
               description: '오류',
               duration: 5000,
             });
@@ -210,9 +209,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           }
         },
         onError: err => {
-          const errorMessage =
-            err instanceof Error ? err.message : '예기치 않은 오류가 발생했습니다.';
-          toast.error(errorMessage, {
+          toast.error(extractErrorMessage(err, '예기치 않은 오류가 발생했습니다.'), {
             description: '오류',
             duration: 5000,
           });

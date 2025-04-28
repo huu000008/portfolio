@@ -6,8 +6,8 @@ import { format, parseISO, isValid } from 'date-fns';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import styles from './DatePicker.module.scss';
-import { Modal } from '../Modal/Modal';
-import Button from '../Button/Button';
+import { Dialog, DialogTrigger, DialogContent, DialogOverlay, DialogPortal } from '../dialog';
+import { Button } from '../button';
 
 interface DatePickerProps {
   name: string;
@@ -69,10 +69,8 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
     <div className={styles.wrap}>
       <input type="hidden" name={name} value={value ?? ''} ref={ref} />
 
-      <Modal
-        open={open}
-        onOpenChange={setOpen}
-        trigger={
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
           <Button
             type="button"
             id={id}
@@ -83,19 +81,23 @@ export const DatePicker = ({ name, id, onBlur }: DatePickerProps) => {
           >
             {triggerLabel}
           </Button>
-        }
-      >
-        <DayPicker
-          mode="range"
-          numberOfMonths={2}
-          selected={tempRange}
-          onSelect={range => setTempRange(range as DateRange)}
-          showOutsideDays={false}
-        />
-        <Button type="button" className={styles.confirm} onClick={handleConfirm}>
-          적용
-        </Button>
-      </Modal>
+        </DialogTrigger>
+        <DialogPortal>
+          <DialogOverlay />
+          <DialogContent className={styles.content}>
+            <DayPicker
+              mode="range"
+              numberOfMonths={2}
+              selected={tempRange}
+              onSelect={range => setTempRange(range as DateRange)}
+              showOutsideDays={false}
+            />
+            <Button type="button" className={styles.confirm} onClick={handleConfirm}>
+              적용
+            </Button>
+          </DialogContent>
+        </DialogPortal>
+      </Dialog>
     </div>
   );
 };

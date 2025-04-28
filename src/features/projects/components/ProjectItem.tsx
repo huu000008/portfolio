@@ -1,6 +1,6 @@
 import { Project } from '../../../types/project';
 import styles from './ProjectItem.module.scss';
-import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
+import Link from 'next/link';
 import Image from 'next/image';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 
@@ -11,7 +11,7 @@ type Props = {
 export const ProjectItem = ({ project }: Props) => {
   return (
     <InViewMotion>
-      <TransitionLink
+      <Link
         className={styles.wrap}
         href={{ pathname: `/projects/${project.id}` }}
         aria-label={`${project.title} 프로젝트 상세 정보 보기`}
@@ -44,7 +44,7 @@ export const ProjectItem = ({ project }: Props) => {
             </div>
           )}
         </div>
-      </TransitionLink>
+      </Link>
     </InViewMotion>
   );
 };

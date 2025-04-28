@@ -1,7 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogClose,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -72,20 +81,18 @@ export default function LoginModal({ trigger }: LoginModalProps) {
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogPortal>
+        <DialogOverlay className={styles.overlay} />
+        <DialogContent className={styles.content}>
           <div className={styles.modalContainer}>
-            <Dialog.Title className={styles.title}>로그인</Dialog.Title>
-            <Dialog.Description className={styles.description}>
+            <DialogTitle className={styles.title}>로그인</DialogTitle>
+            <DialogDescription className={styles.description}>
               계정에 로그인하여 서비스를 이용하세요.
-            </Dialog.Description>
-
+            </DialogDescription>
             <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
               {error && <div className={styles.error}>{error}</div>}
-
               <div className={styles.formGroup}>
                 <div className={styles.formField}>
                   <label htmlFor="email" className={styles.label}>
@@ -103,7 +110,6 @@ export default function LoginModal({ trigger }: LoginModalProps) {
                     {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
                   </div>
                 </div>
-
                 <div className={styles.formField}>
                   <label htmlFor="password" className={styles.label}>
                     비밀번호
@@ -123,7 +129,6 @@ export default function LoginModal({ trigger }: LoginModalProps) {
                   </div>
                 </div>
               </div>
-
               <div className={styles.actionRow}>
                 <div>
                   <a href="/auth/signup" className={styles.signupLink}>
@@ -131,7 +136,6 @@ export default function LoginModal({ trigger }: LoginModalProps) {
                   </a>
                 </div>
               </div>
-
               <div>
                 <button type="submit" disabled={isLoading} className={styles.submitButton}>
                   {isLoading ? (
@@ -165,8 +169,7 @@ export default function LoginModal({ trigger }: LoginModalProps) {
               </div>
             </form>
           </div>
-
-          <Dialog.Close asChild>
+          <DialogClose asChild>
             <button className={styles.closeButton} aria-label="닫기">
               <svg
                 width="15"
@@ -181,9 +184,9 @@ export default function LoginModal({ trigger }: LoginModalProps) {
                 />
               </svg>
             </button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+          </DialogClose>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   );
 }

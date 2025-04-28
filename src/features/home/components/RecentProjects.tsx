@@ -2,7 +2,7 @@
 
 import React, { useMemo, memo, useCallback } from 'react';
 import styles from './RecentProjects.module.scss';
-import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
+import Link from 'next/link';
 import { Project } from '@/types/project';
 import { getPeriodEnd, formatRelativeTimeOrInProgress } from '@/utils/date';
 import { InViewMotion } from '@/components/ui/InViewMotion';
@@ -58,14 +58,14 @@ const ProjectItem = memo(
         delay={itemDelay}
         direction={itemDirection}
       >
-        <TransitionLink
+        <Link
           href={{ pathname: `/projects/${project.id}` }}
           aria-label={`${project.title} 프로젝트 상세 정보 보기`}
         >
           <div className={styles.title}>{project.title}</div>
           {index === 0 && <div className={styles.description}>{project.description}</div>}
           <div className={styles.period}>{periodRelative}</div>
-        </TransitionLink>
+        </Link>
       </InViewMotion>
     );
   },
@@ -129,12 +129,12 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
           delay={calculateDelay(slicedProjects.length, delayIncrement)}
           direction={getDirection(slicedProjects.length)}
         >
-          <TransitionLink href="/projects" aria-label="모든 프로젝트 목록 보기">
+          <Link href="/projects" aria-label="모든 프로젝트 목록 보기">
             <div className={styles.title}>
               More
               <span className="sr-only">View All Projects</span>
             </div>
-          </TransitionLink>
+          </Link>
         </InViewMotion>
       </div>
     </div>

@@ -1,7 +1,6 @@
 // components/ProjectHeader.tsx
 'use client';
 
-import { TransitionLink } from '@/components/ui/TransitionLink/TransitionLink';
 import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
@@ -9,6 +8,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { extractErrorMessage } from '@/utils/common';
+import Link from 'next/link';
 
 interface ProjectHeaderProps {
   id?: string;
@@ -53,13 +54,10 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
         router.push('/projects');
       },
       onError: err => {
-        toast.error(
-          '삭제 실패: ' + (err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다'),
-          {
-            description: '오류',
-            duration: 5000,
-          },
-        );
+        toast.error('삭제 실패: ' + extractErrorMessage(err, '알 수 없는 오류가 발생했습니다'), {
+          description: '오류',
+          duration: 5000,
+        });
       },
     });
   };
@@ -69,27 +67,31 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
       <h2 className={styles.title}>{title ? title : 'Projects'}</h2>
       <div className={styles.actions}>
         {!isListPage && (
-          <TransitionLink href="/projects" isButton aria-label="프로젝트 목록 보기">
+          <Link href="/projects" aria-label="프로젝트 목록 보기" className={styles.button}>
             목록
-          </TransitionLink>
+          </Link>
         )}
 
         {isListPage && user && (
-          <TransitionLink href="/projects/write" isButton aria-label="프로젝트 작성 하기">
-            작성
-          </TransitionLink>
+          <Button asChild>
+            <Link href="/projects/write" aria-label="프로젝트 작성 하기" className={styles.button}>
+              작성
+            </Link>
+          </Button>
         )}
 
         {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
         {isDetailPage && id && user && hasEditPermission && (
           <>
-            <TransitionLink
-              href={{ pathname: `/projects/edit/${id}` }}
-              isButton
-              aria-label="프로젝트 수정 하기"
-            >
-              수정
-            </TransitionLink>
+            <Button asChild>
+              <Link
+                href={{ pathname: `/projects/edit/${id}` }}
+                aria-label="프로젝트 수정 하기"
+                className={styles.button}
+              >
+                수정
+              </Link>
+            </Button>
             <Button
               onClick={handleDelete}
               disabled={isPending}
