@@ -320,7 +320,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
             <FormItem className="flex flex-col gap-2">
               <FormLabel>팀 구성</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="팀 구성" {...field} />
+                <Textarea placeholder="팀 구성" className="min-h-[25rem]" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
