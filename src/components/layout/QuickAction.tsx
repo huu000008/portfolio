@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ThemeToggle } from '../ThemeToggle';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import styles from './QuickAction.module.scss';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';

@@ -1,90 +1,90 @@
+/* 색상, radius, spacing 등 변수 정의 (최적화) */
 :root {
-  --color-active: #a68c6e;
-  --color-disabled: #faf5f0;
-  --color-hover: #c4a98a;
+  /* Radius */
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
-  // 따뜻한 색상으로 변경된 배경
-  --color-bg-body: #fffaf5;
-  --color-bg-surface: #fdf6ed;
-  --color-bg-elevated: #f9f0e3;
+  /* Layout */
+  --header-height: 3.5rem;
+  --sticky-offset: 1.5rem;
+  --sticky-top: calc(var(--header-height) + var(--sticky-offset));
 
-  // 따뜻한 색상의 텍스트
-  --color-text-primary: #3d2c29;
-  --color-text-secondary: #5f4b45;
-  --color-text-muted: #9c8981;
+  /* Main Colors (Light) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.13 0.028 261.692);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.028 261.692);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.13 0.028 261.692);
+  --primary: oklch(0.21 0.034 264.665);
+  --primary-foreground: oklch(0.985 0.002 247.839);
+  --secondary: oklch(0.967 0.003 264.542);
+  --secondary-foreground: oklch(0.21 0.034 264.665);
+  --muted: oklch(0.967 0.003 264.542);
+  --muted-foreground: oklch(0.551 0.027 264.364);
+  --accent: oklch(0.967 0.003 264.542);
+  --accent-foreground: oklch(0.21 0.034 264.665);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.928 0.006 264.531);
+  --input: oklch(0.928 0.006 264.531);
+  --ring: oklch(0.707 0.022 261.325);
 
-  // 따뜻한 테두리 색상
-  --color-border: #e9dfd5;
+  /* Chart Colors */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
 
-  // 따뜻한 액센트 색상
-  --color-accent: #e67e22;
-  --color-accent-hover: #d35400;
+  /* Sidebar */
+  --sidebar: oklch(0.985 0.002 247.839);
+  --sidebar-foreground: oklch(0.13 0.028 261.692);
+  --sidebar-primary: oklch(0.21 0.034 264.665);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.967 0.003 264.542);
+  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
+  --sidebar-border: oklch(0.928 0.006 264.531);
+  --sidebar-ring: oklch(0.707 0.022 261.325);
+}
 
-  // 따뜻한 시맨틱 색상
-  --color-success: #27ae60;
-  --color-warning: #f39c12;
-  --color-danger: #e74c3c;
+.dark {
+  /* Main Colors (Dark) */
+  --background: oklch(0.13 0.028 261.692);
+  --foreground: oklch(0.985 0.002 247.839);
+  --card: oklch(0.21 0.034 264.665);
+  --card-foreground: oklch(0.985 0.002 247.839);
+  --popover: oklch(0.21 0.034 264.665);
+  --popover-foreground: oklch(0.985 0.002 247.839);
+  --primary: oklch(0.928 0.006 264.531);
+  --primary-foreground: oklch(0.21 0.034 264.665);
+  --secondary: oklch(0.278 0.033 256.848);
+  --secondary-foreground: oklch(0.985 0.002 247.839);
+  --muted: oklch(0.278 0.033 256.848);
+  --muted-foreground: oklch(0.707 0.022 261.325);
+  --accent: oklch(0.278 0.033 256.848);
+  --accent-foreground: oklch(0.985 0.002 247.839);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
 
-  // 상호작용 상태를 위한 색상
-  --color-focus-ring: rgba(230, 126, 34, 0.4);
+  /* Chart Colors (Dark) */
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
 
-  --color-gradient: rgba(0, 0, 0, 0.02);
-
-  --color-hover-overlay: rgba(230, 126, 34, 0.08);
-  --color-active-overlay: rgba(230, 126, 34, 0.16);
-
-  // 기존 반경 유지
-  --radius-sm: 0.4rem;
-  --radius-md: 0.8rem;
-  --radius-lg: 1.6rem;
-
-  // 기존 폰트 크기 유지
-  --font-size-xs: 1.2rem;
-  --font-size-sm: 1.4rem;
-  --font-size-md: 1.6rem;
-  --font-size-lg: 1.8rem;
-  --font-size-xl: 2.4rem;
-
-  // 따뜻한 그림자 (약간 갈색 톤)
-  --shadow-sm: 0 1px 2px rgba(79, 59, 39, 0.05);
-  --shadow-md: 0 4px 8px rgba(79, 59, 39, 0.08);
-  --shadow-lg: 0 12px 20px rgba(79, 59, 39, 0.12);
-
-  // 추가할 수 있는 색상 변수들
-  --color-accent-light: #f8c291;
-  --color-accent-dark: #b7561e;
-
-  // 따뜻한 중성 색상
-  --color-neutral-100: #faf5f0;
-  --color-neutral-200: #f0e5d8;
-  --color-neutral-300: #e6d5c1;
-  --color-neutral-400: #d7c0a6;
-  --color-neutral-500: #c4a98a;
-  --color-neutral-600: #a68c6e;
-  --color-neutral-700: #846f54;
-  --color-neutral-800: #5f4d39;
-  --color-neutral-900: #3d3121;
-
-  // HSLA 기반 색상 변수 (계산 용이)
-  --hue-primary: 28; // 따뜻한 주황색 계열
-  --saturation-primary: 80%;
-  --lightness-primary: 60%;
-  --color-primary-base: hsla(
-    var(--hue-primary),
-    var(--saturation-primary),
-    var(--lightness-primary),
-    1
-  );
-  --color-primary-light: hsla(
-    var(--hue-primary),
-    var(--saturation-primary),
-    calc(var(--lightness-primary) + 15%),
-    1
-  );
-  --color-primary-dark: hsla(
-    var(--hue-primary),
-    var(--saturation-primary),
-    calc(var(--lightness-primary) - 15%),
-    1
-  );
+  /* Sidebar (Dark) */
+  --sidebar: oklch(0.21 0.034 264.665);
+  --sidebar-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-accent: oklch(0.278 0.033 256.848);
+  --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
 }
