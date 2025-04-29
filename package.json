@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_NO_WARNINGS=1 NODE_OPTIONS='--no-warnings --max-old-space-size=4096' next dev",
+    "dev": "cross-env NODE_NO_WARNINGS=1 NODE_OPTIONS='--no-warnings --max-old-space-size=4096' next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -53,6 +53,7 @@
     "prettier": "^3.5.3",
     "sass": "^1.86.3",
     "tailwindcss": "^4.1.4",
+    "turbo": "^2.5.2",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5"
   }
