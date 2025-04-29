@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import '@/assets/styles/globals.css';
-import { ThemeScript } from '@/components/ThemeScript';
 import Header from '@/components/layout/Header';
 import Providers from './providers';
 import { Toaster } from '@/components/ui/sonner';
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning className={pretendard.variable}>
       <head>
-        <ThemeScript />
         <Script
           id="structured-data"
           type="application/ld+json"
