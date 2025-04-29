@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase/client';
 import { useEffect, useState, useCallback } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { toast } from 'sonner';
 
 export default function DebugPage() {
   const { user, session, isLoading, fetchSession } = useAuth();
@@ -41,15 +40,12 @@ export default function DebugPage() {
     try {
       const { error } = await supabase.auth.refreshSession();
       if (error) {
-        toast.error('세션 갱신 실패: ' + error.message);
         return;
       }
 
-      toast.success('세션이 성공적으로 갱신되었습니다.');
       await getSession(); // 갱신된 세션 정보 다시 조회
       await fetchSession(); // AuthContext 세션 정보도 갱신
     } catch (err) {
-      toast.error('세션 갱신 중 오류 발생');
       console.error(err);
     }
   }, [getSession, fetchSession]);

@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
-import { toast } from 'sonner';
 import {
   SESSION_REFRESH_INTERVAL,
   INACTIVITY_LOGOUT_TIME,
@@ -99,7 +98,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // 갱신 실패 시 (ex: 리프레시 토큰 만료) 로그아웃 처리
         if (!refreshResult) {
-          toast.warning('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
           // 로그아웃 후 로그인 페이지로 이동 (세션 만료 시)
           await signOut();
         }
@@ -204,7 +202,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // 실제 비활성 시간 다시 확인 (타이머 실행 시점에)
         const inactiveTime = Date.now() - lastActivityRef.current;
         if (inactiveTime >= INACTIVITY_LOGOUT_TIME) {
-          toast.info('장시간 활동이 없어 자동 로그아웃 되었습니다.');
           // signOut 함수 직접 호출 대신 내부 로직 구현 -> signOut 호출로 변경
           await signOut();
         }

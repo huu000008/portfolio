@@ -23,7 +23,6 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import ResetPasswordForm from './ResetPasswordForm';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { extractErrorMessage } from '@/utils/common';
 import {
   Form,
@@ -62,11 +61,20 @@ export default function AuthModal({
   // 로그인 폼 설정
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   // 회원가입 폼 설정
   const signupForm = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const resetAllStates = () => {
@@ -117,7 +125,6 @@ export default function AuthModal({
       }
       if (userData?.user) {
         await fetchSession();
-        toast.success('로그인에 성공했습니다!');
         if (onClose) {
           onClose();
         } else {
@@ -382,11 +389,7 @@ export default function AuthModal({
               </Form>
             )}
             {mode === 'reset' && (
-              <ResetPasswordForm
-                onSubmit={handleResetPassword}
-                loading={resetLoading}
-                error={resetError || undefined}
-              />
+              <ResetPasswordForm onSubmit={handleResetPassword} loading={resetLoading} />
             )}
             <div className="flex justify-between">
               {mode !== 'login' && (

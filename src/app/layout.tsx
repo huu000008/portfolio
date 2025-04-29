@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import '@/assets/styles/globals.css';
 import Header from '@/components/layout/Header';
 import Providers from './providers';
-import { Toaster } from '@/components/ui/sonner';
+
 import QuickAction from '@/components/layout/QuickAction';
 import { pretendard } from '@/assets/fonts/fonts';
 import { Noto_Sans_KR } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ['latin', 'latin-ext'],

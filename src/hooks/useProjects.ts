@@ -152,9 +152,10 @@ export const useDeleteProject = () => {
  */
 export const useCreateProject = () => {
   const queryClient = useQueryClient();
+  type CreateProjectInput = Omit<ProjectFormValues, 'projectPeriod'> & { projectPeriod: string };
   const options = useMutationOptions<
     { data: Project; error: null } | { data: null; error: Error },
-    ProjectFormValues,
+    CreateProjectInput,
     MutationContext
   >(createProjectAction, {
     onMutateHandler: async () => {
@@ -166,7 +167,7 @@ export const useCreateProject = () => {
   return useMutation<
     { data: Project; error: null } | { data: null; error: Error },
     Error,
-    ProjectFormValues,
+    CreateProjectInput,
     MutationContext
   >(options);
 };
@@ -176,12 +177,16 @@ export const useCreateProject = () => {
  */
 export const useUpdateProject = () => {
   const queryClient = useQueryClient();
+  type UpdateProjectInput = Omit<ProjectFormValues, 'projectPeriod'> & {
+    projectPeriod: string;
+    id: string;
+  };
   const options = useMutationOptions<
     { data: Project; error: null } | { data: null; error: Error },
-    ProjectFormValues & { id: string },
+    UpdateProjectInput,
     MutationContext
   >(updateProjectAction, {
-    onMutateHandler: async (updatedProject: ProjectFormValues & { id: string }) => {
+    onMutateHandler: async (updatedProject: UpdateProjectInput) => {
       const previousProjects = queryClient.getQueryData<Project[]>([PROJECTS_QUERY_KEY]);
       const previousProject = queryClient.getQueryData<Project>([
         PROJECTS_QUERY_KEY,
@@ -214,7 +219,7 @@ export const useUpdateProject = () => {
   return useMutation<
     { data: Project; error: null } | { data: null; error: Error },
     Error,
-    ProjectFormValues & { id: string },
+    UpdateProjectInput,
     MutationContext
   >(options);
 };

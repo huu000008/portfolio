@@ -11,6 +11,11 @@ import { checkAdminStatus } from '@/lib/authUtils'; // 유틸리티 함수 임�
 import { User } from '@/types/user';
 import { toErrorObject } from '@/utils/common';
 
+// 1. 타입 import 및 변경
+type ProjectFormValuesWithPeriodString = Omit<ProjectFormValues, 'projectPeriod'> & {
+  projectPeriod: string;
+};
+
 /**
  * 프로젝트 목록 조회 서버 액션
  * @returns 프로젝트 배열
@@ -108,7 +113,7 @@ function isUser(obj: unknown): obj is User {
  * 인증된 사용자만 접근 가능
  */
 export async function createProjectAction(
-  formData: ProjectFormValues,
+  formData: ProjectFormValuesWithPeriodString,
 ): Promise<{ data: Project; error: null } | { data: null; error: Error }> {
   try {
     const userResult = await getCurrentUser();
@@ -165,7 +170,7 @@ export async function createProjectAction(
  * 인증된 사용자만 접근 가능
  */
 export async function updateProjectAction(
-  data: ProjectFormValues & { id: string },
+  data: ProjectFormValuesWithPeriodString & { id: string },
 ): Promise<{ data: Project; error: null } | { data: null; error: Error }> {
   try {
     const userResult = await getCurrentUser();

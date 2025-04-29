@@ -1,24 +1,19 @@
 // components/ProjectHeader.tsx
 'use client';
 
-import styles from './ProjectHeader.module.scss';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDeleteProject } from '@/hooks/useProjects';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
-import { extractErrorMessage } from '@/utils/common';
 import Link from 'next/link';
 
 interface ProjectHeaderProps {
   id?: string;
   userId?: string;
-  className?: string;
   title?: string;
 }
 
-export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderProps) => {
+export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { mutate: deleteProject, isPending } = useDeleteProject();
@@ -38,43 +33,59 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 
     if (!id) {
-      toast.error('프로젝트 ID가 없습니다', {
-        description: '오류',
-        duration: 5000,
-      });
       return;
     }
 
     deleteProject(id, {
       onSuccess: () => {
-        toast.success('프로젝트가 성공적으로 삭제되었습니다', {
-          description: '삭제 완료',
-          duration: 3000,
-        });
         router.push('/projects');
       },
-      onError: err => {
-        toast.error('삭제 실패: ' + extractErrorMessage(err, '알 수 없는 오류가 발생했습니다'), {
-          description: '오류',
-          duration: 5000,
-        });
-      },
+      onError: () => {},
     });
   };
 
   return (
-    <div className={cn(styles.wrap, className)}>
-      <h2 className={styles.title}>{title ? title : 'Projects'}</h2>
-      <div className={styles.actions}>
+    <div
+      className={`
+        flex items-center justify-between sticky top-8 z-10 w-full max-w-[120rem] mx-auto
+        p-8 rounded-md border border-[var(--color-border)] bg-[var(--color-bg-surface)]
+        md:w-[calc(100%-100px)] md:ml-[100px] md:mr-[-10px] md:mb-12 md:p-4
+        md:rounded-tr-none md:rounded-br-none md:border-r-0
+      `}
+    >
+      <h2
+        className={`
+          text-[3rem] font-bold
+          md:text-lg md:font-medium md:leading-[1.4]
+        `}
+      >
+        {title ? title : 'Projects'}
+      </h2>
+      <div
+        className="
+          flex gap-4
+          md:flex-col md:absolute md:top-full md:right-0 md:mt-8
+          [&>a]:md:rounded-tr-none [&>a]:md:rounded-br-none [&>a]:md:border-r-0
+          [&>button]:md:rounded-tr-none [&>button]:md:rounded-br-none [&>button]:md:border-r-0
+        "
+      >
         {!isListPage && (
-          <Link href="/projects" aria-label="프로젝트 목록 보기" className={styles.button}>
+          <Link
+            href="/projects"
+            aria-label="프로젝트 목록 보기"
+            className="btn btn-outline px-4 py-2 rounded-md border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-bg-surface)] transition"
+          >
             목록
           </Link>
         )}
 
         {isListPage && user && (
           <Button asChild>
-            <Link href="/projects/write" aria-label="프로젝트 작성 하기" className={styles.button}>
+            <Link
+              href="/projects/write"
+              aria-label="프로젝트 작성 하기"
+              className="btn btn-primary px-4 py-2 rounded-md"
+            >
               작성
             </Link>
           </Button>
@@ -87,7 +98,7 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
               <Link
                 href={{ pathname: `/projects/edit/${id}` }}
                 aria-label="프로젝트 수정 하기"
-                className={styles.button}
+                className="btn btn-outline px-4 py-2 rounded-md border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-bg-surface)] transition"
               >
                 수정
               </Link>
@@ -95,7 +106,7 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
             <Button
               onClick={handleDelete}
               disabled={isPending}
-              className={isPending ? styles.loading : ''}
+              className={`btn btn-destructive px-4 py-2 rounded-md ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isPending ? '삭제 중...' : '삭제'}
             </Button>
@@ -107,7 +118,7 @@ export const ProjectHeader = ({ id, userId, className, title }: ProjectHeaderPro
             <Button
               onClick={handleDelete}
               disabled={isPending}
-              className={isPending ? styles.loading : ''}
+              className={`btn btn-destructive px-4 py-2 rounded-md ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isPending ? '삭제 중...' : '삭제'}
             </Button>

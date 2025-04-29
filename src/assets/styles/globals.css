@@ -1,8 +1,4 @@
-@use './abstracts/breakpoints';
-@use './abstracts/mixins';
-@use './abstracts/variables';
-@use './base/interaction';
-@use './base/theme';
+@import './_variables.scss';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";

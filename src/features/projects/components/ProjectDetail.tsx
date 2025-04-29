@@ -1,12 +1,10 @@
 'use client';
 
 import { Project } from '@/types/project';
-import styles from './ProjectDetail.module.scss';
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 import { ProjectHeader } from './ProjectHeader';
-import { cn } from '@/lib/utils';
 
 interface ProjectDetailProps {
   project: Project;
@@ -30,66 +28,58 @@ export const ProjectDetail = ({ project, id, userId }: ProjectDetailProps) => {
   };
 
   return (
-    <div className={styles.wrap}>
-      <ProjectHeader id={id} userId={userId} className={styles.actions} title={project.title} />
-      {/* <div className={styles.date}>{formatDateKST(project.created_at)}</div> */}
-      <div className={styles.inner}>
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>📝 설명</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.description}
+    <div className="relative">
+      <ProjectHeader id={id} userId={userId} title={project.title} />
+      <div className="mx-auto w-full max-w-[120rem] columns-2 gap-x-16 p-20 md:columns-1 md:p-8">
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">📝 설명</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.description}</div>
+        </InViewMotion>
+
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">⏳ 프로젝트 기간</div>
+          <div className="text-md md:text-sm">{formatPeriod(project.project_period)}</div>
+        </InViewMotion>
+
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">👥 팀 구성</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.team}</div>
+        </InViewMotion>
+
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🧩 맡은 역할</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.roles}</div>
+        </InViewMotion>
+
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">
+            🛠️ 사용한 기술 스택
           </div>
-        </InViewMotion>
-
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>⏳ 프로젝트 기간</div>
-          <div className={styles.value}>{formatPeriod(project.project_period)}</div>
-        </InViewMotion>
-
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>👥 팀 구성</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.team}
-          </div>
-        </InViewMotion>
-
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>🧩 맡은 역할</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.roles}
-          </div>
-        </InViewMotion>
-
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>🛠️ 사용한 기술 스택</div>
-          <div className={cn(styles.value, styles.techStack)}>
+          <div className="text-md mt-2 flex flex-wrap gap-2 md:text-sm">
             {project.tech_stack?.map(tech => (
-              <span key={tech} className={styles.techItem}>
+              <span
+                key={tech}
+                className="rounded bg-[var(--color-bg-elevated)] px-2 py-1 text-sm whitespace-nowrap"
+              >
                 {tech}
               </span>
             ))}
           </div>
         </InViewMotion>
 
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>🌟 주요 기여</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.contributions}
-          </div>
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🌟 주요 기여</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.contributions}</div>
         </InViewMotion>
 
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>🏆 프로젝트 성과</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.achievements}
-          </div>
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🏆 프로젝트 성과</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.achievements}</div>
         </InViewMotion>
 
-        <InViewMotion className={styles.info}>
-          <div className={styles.label}>💡 회고 & 느낀 점</div>
-          <div className={styles.value} style={{ whiteSpace: 'pre-wrap' }}>
-            {project.retrospective}
-          </div>
+        <InViewMotion className="mb-16 inline-block w-full rounded-md border border-[var(--color-border)] p-8">
+          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">💡 회고 & 느낀 점</div>
+          <div className="text-md whitespace-pre-wrap md:text-sm">{project.retrospective}</div>
         </InViewMotion>
       </div>
     </div>
