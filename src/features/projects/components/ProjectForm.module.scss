@@ -9,3 +9,8 @@
   max-width: 60rem;
   margin: 0 auto;
 }
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
