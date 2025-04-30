@@ -42,3 +42,7 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
 }
+
+a {
+  display: block;
+}

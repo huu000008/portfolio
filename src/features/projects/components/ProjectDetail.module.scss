@@ -1,0 +1,54 @@
+@import '@/assets/styles/abstracts/mixins.scss';
+
+.masonry {
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 2rem;
+  column-count: 1;
+  column-gap: 2rem;
+  column-fill: balance;
+  column-count: 2;
+  @include respond(sm) {
+    column-count: 1;
+  }
+  @include respond(md) {
+    column-count: 2;
+  }
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: 2rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 2rem;
+}
+
+.cardTitle {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.cardContent {
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
+.cardTechStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.cardTech {
+  border-radius: 0.25rem;
+  background: var(--accent);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}

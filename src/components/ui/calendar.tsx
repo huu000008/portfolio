@@ -7,45 +7,48 @@ import { DayPicker } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}: React.ComponentProps<typeof DayPicker>) {
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn(
-        'rounded-xl border shadow-lg p-6',
-        'bg-[var(--color-card)] text-[var(--color-foreground)]',
-        className,
-      )}
+      className={cn('p-3', className)}
       classNames={{
-        months: 'flex flex-col sm:flex-row gap-4',
-        month: 'bg-[var(--color-card)] rounded-lg p-4 shadow',
-        caption: 'flex justify-between items-center mb-4',
-        caption_label: 'text-lg font-bold text-[var(--color-primary)]',
-        nav: 'flex items-center gap-2',
-        nav_button:
-          'text-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:text-[var(--color-accent-foreground)] rounded-full transition-colors',
+        months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
+        month: 'space-y-4',
+        caption: 'flex justify-center pt-1 relative items-center',
+        caption_label: 'text-sm font-medium',
+        nav: 'space-x-1 flex items-center',
+        nav_button: cn(
+          buttonVariants({ variant: 'outline' }),
+          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+        ),
         nav_button_previous: 'absolute left-1',
         nav_button_next: 'absolute right-1',
-        table: 'w-full',
+        table: 'w-full border-collapse space-y-1',
         head_row: 'flex',
-        head_cell:
-          'w-10 h-10 text-center text-xs font-semibold text-[var(--color-muted-foreground)]',
-        row: 'flex w-full',
-        cell: 'w-10 h-10 p-0 text-center',
-        day: 'w-10 h-10 rounded-full transition-colors duration-200 hover:bg-[var(--color-accent)] hover:text-[var(--color-accent-foreground)]',
+        head_cell: 'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]',
+        row: 'flex w-full mt-2',
+        cell: cn(
+          'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md',
+          props.mode === 'range'
+            ? '[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md'
+            : '[&:has([aria-selected])]:rounded-md',
+        ),
+        day: cn(
+          buttonVariants({ variant: 'ghost' }),
+          'h-8 w-8 p-0 font-normal aria-selected:opacity-100',
+        ),
+        day_range_start: 'day-range-start',
+        day_range_end: 'day-range-end',
         day_selected:
-          'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] hover:bg-[var(--color-primary)] hover:text-[var(--color-primary-foreground)] shadow-md',
-        day_today: 'border-2 border-[var(--color-primary)]',
-        day_outside: 'text-[var(--color-muted)]',
-        day_disabled: 'text-[var(--color-muted)] line-through opacity-50',
-        day_range_start: 'bg-[var(--color-accent)] text-[var(--color-accent-foreground)]',
-        day_range_end: 'bg-[var(--color-accent)] text-[var(--color-accent-foreground)]',
-        day_range_middle: 'bg-[var(--color-accent)]/50 text-[var(--color-accent-foreground)]',
+          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+        day_today: 'bg-accent text-accent-foreground',
+        day_outside:
+          'day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
+        day_disabled: 'text-muted-foreground opacity-50',
+        day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
         day_hidden: 'invisible',
         ...classNames,
       }}
@@ -61,5 +64,6 @@ function Calendar({
     />
   );
 }
+Calendar.displayName = 'Calendar';
 
 export { Calendar };

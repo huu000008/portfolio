@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { InViewMotion } from '@/components/ui/InViewMotion';
 import { ProjectHeader } from './ProjectHeader';
+import styles from './ProjectDetail.module.scss';
 
 interface ProjectDetailProps {
   project: Project;
@@ -28,58 +29,53 @@ export const ProjectDetail = ({ project, id, userId }: ProjectDetailProps) => {
   };
 
   return (
-    <div className="relative">
+    <div className={styles.projectDetailRoot}>
       <ProjectHeader id={id} userId={userId} title={project.title} />
-      <div className="container mx-auto columns-1 gap-8 p-8 [column-fill:_balance] sm:columns-2 lg:columns-3">
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">📝 설명</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.description}</div>
+      <div className={styles.masonry}>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>📝 설명</div>
+          <div className={styles.cardContent}>{project.description}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">⏳ 프로젝트 기간</div>
-          <div className="text-md md:text-sm">{formatPeriod(project.project_period)}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>⏳ 프로젝트 기간</div>
+          <div className={styles.cardContent}>{formatPeriod(project.project_period)}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">👥 팀 구성</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.team}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>👥 팀 구성</div>
+          <div className={styles.cardContent}>{project.team}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🧩 맡은 역할</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.roles}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>🧩 맡은 역할</div>
+          <div className={styles.cardContent}>{project.roles}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">
-            🛠️ 사용한 기술 스택
-          </div>
-          <div className="text-md mt-2 flex flex-wrap gap-2 md:text-sm">
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>🛠️ 사용한 기술 스택</div>
+          <div className={styles.cardTechStack}>
             {project.tech_stack?.map(tech => (
-              <span
-                key={tech}
-                className="rounded bg-[var(--color-bg-elevated)] px-2 py-1 text-sm whitespace-nowrap"
-              >
+              <span key={tech} className={styles.cardTech}>
                 {tech}
               </span>
             ))}
           </div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🌟 주요 기여</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.contributions}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>🌟 주요 기여</div>
+          <div className={styles.cardContent}>{project.contributions}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">🏆 프로젝트 성과</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.achievements}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>🏆 프로젝트 성과</div>
+          <div className={styles.cardContent}>{project.achievements}</div>
         </InViewMotion>
 
-        <InViewMotion className="mb-8 w-full break-inside-avoid rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-8 shadow">
-          <div className="md:text-md mb-4 text-lg font-bold md:font-medium">💡 회고 & 느낀 점</div>
-          <div className="text-md whitespace-pre-wrap md:text-sm">{project.retrospective}</div>
+        <InViewMotion className={styles.card}>
+          <div className={styles.cardTitle}>💡 회고 & 느낀 점</div>
+          <div className={styles.cardContent}>{project.retrospective}</div>
         </InViewMotion>
       </div>
     </div>

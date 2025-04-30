@@ -1,0 +1,92 @@
+.header {
+  position: sticky;
+  top: 2rem;
+  z-index: 10;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 2rem;
+    flex-direction: column;
+  }
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    opacity 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  &:hover {
+    background: rgba(var(--color-primary), 0.9);
+  }
+}
+
+.accent {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-accent-foreground);
+  &:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+}
+
+.destructive {
+  background: var(--color-destructive);
+  color: var(--color-destructive-foreground);
+  &:hover {
+    background: rgba(var(--color-destructive), 0.9);
+  }
+}
+
+.pending {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loader {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

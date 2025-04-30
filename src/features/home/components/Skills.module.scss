@@ -1,22 +1,24 @@
 @use '@/assets/styles/abstracts/mixins' as *;
 
+.skillsRoot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 .skillsContainer {
   width: 100%;
 }
 
 .skillsTitle {
-  font-size: 2.8rem;
-  font-weight: 500;
-  margin-bottom: 2rem;
+  font-size: 2.4rem;
+  font-weight: bold;
 }
 
 .skillsGrid {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-
-  @include respond(sm) {
-  }
 }
 
 .categoryCard {

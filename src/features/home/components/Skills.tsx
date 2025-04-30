@@ -1,7 +1,6 @@
 import React from 'react';
-import styles from './Skills.module.scss';
-import classNames from 'clsx';
 import { InViewMotion, Direction } from '@/components/ui/InViewMotion';
+import styles from './Skills.module.scss';
 
 interface Skill {
   name: string;
@@ -23,14 +22,19 @@ interface SkillItemProps {
 const SkillItem = React.memo(({ skill, index }: SkillItemProps) => {
   return (
     <li className={styles.skillItem}>
-      <InViewMotion direction="bottom-to-top" delay={0.3 + index * 0.1} distance={10}>
-        <span className={styles.skillName}>{skill.name}</span>
+      <InViewMotion
+        direction="bottom-to-top"
+        delay={0.3 + index * 0.1}
+        distance={10}
+        className={styles.skillPill}
+      >
+        <span>{skill.name}</span>
       </InViewMotion>
     </li>
   );
 });
 
-SkillItem.displayName = 'SkillItem'; // React DevTools에서 컴포넌트 이름 표시
+SkillItem.displayName = 'SkillItem';
 
 // SkillCategoryCard 컴포넌트 분리 및 React.memo 적용
 interface SkillCategoryCardProps {
@@ -39,10 +43,13 @@ interface SkillCategoryCardProps {
 }
 
 const SkillCategoryCard = React.memo(({ category, index }: SkillCategoryCardProps) => {
+  // categoryCard와 카테고리별 클래스 동시 적용
+  const cardClass = [styles.categoryCard, styles[category.className] || ''].join(' ');
+
   return (
     <InViewMotion
-      key={category.category} // key는 map 내부에서 사용되므로 여기서는 제거해도 무방하나, 명시적으로 남겨둠
-      className={classNames(styles.categoryCard, category.className)}
+      key={category.category}
+      className={cardClass}
       direction={category.direction}
       delay={index * 0.2}
     >
@@ -56,14 +63,13 @@ const SkillCategoryCard = React.memo(({ category, index }: SkillCategoryCardProp
   );
 });
 
-SkillCategoryCard.displayName = 'SkillCategoryCard'; // React DevTools에서 컴포넌트 이름 표시
+SkillCategoryCard.displayName = 'SkillCategoryCard';
 
-// Skills 컴포넌트: 데이터 정의 및 SkillCategoryCard 렌더링
 const Skills = () => {
   const skillCategories: SkillCategory[] = [
     {
       category: '프론트엔드',
-      className: styles.frontend,
+      className: 'frontend',
       direction: 'left-to-right',
       skills: [
         { name: 'React' },
@@ -75,13 +81,13 @@ const Skills = () => {
     },
     {
       category: '스타일링',
-      className: styles.styling,
+      className: 'styling',
       direction: 'right-to-left',
       skills: [{ name: 'SCSS Modules' }, { name: 'Radix UI' }, { name: 'Responsive Design' }],
     },
     {
       category: '상태 관리',
-      className: styles.state,
+      className: 'state',
       direction: 'left-to-right',
       skills: [
         { name: 'TanStack Query' },
@@ -93,7 +99,7 @@ const Skills = () => {
     },
     {
       category: '기타',
-      className: styles.etc,
+      className: 'etc',
       direction: 'right-to-left',
       skills: [
         { name: 'Supabase' },
@@ -105,14 +111,12 @@ const Skills = () => {
   ];
 
   return (
-    <div className={styles.skillsContainer}>
+    <div className={styles.skillsRoot}>
       <InViewMotion>
         <h2 className={styles.skillsTitle}>Skills</h2>
       </InViewMotion>
-
       <div className={styles.skillsGrid}>
         {skillCategories.map((category, categoryIndex) => (
-          // 분리된 SkillCategoryCard 컴포넌트 사용
           <SkillCategoryCard key={category.category} category={category} index={categoryIndex} />
         ))}
       </div>

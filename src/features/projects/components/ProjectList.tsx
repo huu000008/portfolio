@@ -1,8 +1,7 @@
-'use client';
-
 import { Project } from '@/types/project';
 import { ProjectItem } from './ProjectItem';
 import { ProjectHeader } from './ProjectHeader';
+import styles from './ProjectList.module.scss';
 
 interface Props {
   projects: Project[];
@@ -17,7 +16,7 @@ interface Props {
 export const ProjectList = ({ projects, emptyMessage = '프로젝트가 없습니다.' }: Props) => {
   if (!projects.length) {
     return (
-      <div className="text-center text-muted-foreground py-8" role="status">
+      <div className={styles.empty} role="status">
         {emptyMessage}
       </div>
     );
@@ -26,7 +25,7 @@ export const ProjectList = ({ projects, emptyMessage = '프로젝트가 없습�
   return (
     <div className="w-full">
       <ProjectHeader />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-20 max-w-[120rem] w-full mx-auto p-20 md:p-8">
+      <div className={styles.grid}>
         {projects.map(project => (
           <ProjectItem key={project.id} project={project} />
         ))}

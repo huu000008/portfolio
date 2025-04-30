@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useMemo, memo, useCallback } from 'react';
-import styles from './RecentProjects.module.scss';
 import Link from 'next/link';
 import { Project } from '@/types/project';
 import { getPeriodEnd, formatRelativeTimeOrInProgress } from '@/utils/date';
 import { InViewMotion } from '@/components/ui/InViewMotion';
-import { cn } from '@/lib/utils';
+import styles from './RecentProjects.module.scss';
 
 // 방향 타입 정의
 type Direction = 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top';
@@ -111,29 +110,25 @@ function RecentProjects({ projects, delayIncrement = 0.3 }: RecentProjectsProps)
   if (!projects?.length) {
     return (
       <div className={styles.wrap}>
-        <InViewMotion className={styles.title}>Recent Projects</InViewMotion>
-        <div className={styles.list}>
-          <div className={styles.empty}>프로젝트가 없습니다.</div>
-        </div>
+        <InViewMotion className={styles.sectionTitle}>Recent Projects</InViewMotion>
+        <div className={styles.empty}>프로젝트가 없습니다.</div>
       </div>
     );
   }
 
   return (
     <div className={styles.wrap}>
-      <InViewMotion className={styles.title}>Recent Projects</InViewMotion>
+      <InViewMotion className={styles.sectionTitle}>Recent Projects</InViewMotion>
       <div className={styles.list}>
         {projectItems}
         <InViewMotion
-          className={cn(styles.item, styles.more)}
+          className={styles.more}
           delay={calculateDelay(slicedProjects.length, delayIncrement)}
           direction={getDirection(slicedProjects.length)}
         >
           <Link href="/projects" aria-label="모든 프로젝트 목록 보기">
-            <div className={styles.title}>
-              More
-              <span className="sr-only">View All Projects</span>
-            </div>
+            More
+            <span className="sr-only">View All Projects</span>
           </Link>
         </InViewMotion>
       </div>

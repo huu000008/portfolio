@@ -24,7 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import styles from './ProjectForm.module.scss';
 
 // 스키마 및 타입 정의 부분은 동일하게 유지됩니다.
 const requiredText = (message: string) => z.string({ required_error: message }).min(1, { message });
@@ -230,7 +230,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit, handleFormError)}
-        className="container mx-auto flex flex-col gap-8 rounded-md border border-[var(--color-border)] bg-[var(--color-bg-surface)] p-16"
+        className={styles.form}
         aria-label="프로젝트 정보 입력 폼"
         inert={isSubmitting}
       >
@@ -238,7 +238,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="title"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>제목</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="제목" {...field} />
@@ -251,10 +251,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="description"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>설명</FormLabel>
               <FormControl>
-                <Textarea placeholder="설명" className="min-h-[25rem]" {...field} />
+                <Textarea placeholder="설명" className={styles.textarea} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -264,7 +264,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="thumbnailUrl"
           render={() => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>썸네일 이미지</FormLabel>
               <FormControl>
                 <ImageUploader name="thumbnailUrl" id="thumbnailUrl" />
@@ -277,20 +277,13 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="projectPeriod"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>프로젝트 기간</FormLabel>
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        'w-[300px] justify-start text-left font-normal',
-                        !field.value?.from && 'text-muted-foreground',
-                        'border-none',
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                    <Button variant="outline" className={styles.periodButton}>
+                      <CalendarIcon className={styles.periodIcon} />
                       {field.value?.from && field.value?.to ? (
                         `${format(field.value.from, 'yyyy.MM.dd')} ~ ${format(field.value.to, 'yyyy.MM.dd')}`
                       ) : (
@@ -317,10 +310,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="team"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>팀 구성</FormLabel>
               <FormControl>
-                <Textarea placeholder="팀 구성" className="min-h-[25rem]" {...field} />
+                <Textarea placeholder="팀 구성" className={styles.textarea} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -330,7 +323,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="roles"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>맡은 역할</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="맡은 역할" {...field} />
@@ -343,7 +336,7 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="techStack"
           render={() => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>기술 스택</FormLabel>
               <FormControl>
                 <CheckboxButtonGroup name="techStack" options={TECH_STACK_OPTIONS} />
@@ -356,10 +349,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="contributions"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>주요 기여 내용</FormLabel>
               <FormControl>
-                <Textarea placeholder="주요 기여 내용" className="min-h-[25rem]" {...field} />
+                <Textarea placeholder="주요 기여 내용" className={styles.textarea} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -369,10 +362,10 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="achievements"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>프로젝트 성과</FormLabel>
               <FormControl>
-                <Textarea placeholder="프로젝트 성과" className="min-h-[25rem]" {...field} />
+                <Textarea placeholder="프로젝트 성과" className={styles.textarea} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -382,20 +375,16 @@ export const ProjectForm = ({ defaultValues, isEditMode = false }: ProjectFormPr
           control={control}
           name="retrospective"
           render={({ field }) => (
-            <FormItem className="flex flex-col gap-2">
+            <FormItem className={styles.formItem}>
               <FormLabel>회고</FormLabel>
               <FormControl>
-                <Textarea placeholder="회고" className="min-h-[25rem]" {...field} />
+                <Textarea placeholder="회고" className={styles.textarea} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          className="sticky bottom-8 bg-[var(--color-neutral-500)] font-semibold shadow-lg hover:bg-[var(--color-neutral-400)]"
-          disabled={isSubmitting}
-        >
+        <Button type="submit" className={styles.submitButton} disabled={isSubmitting}>
           {isSubmitting ? (isEditMode ? '수정 중...' : '제출 중...') : buttonLabel}
         </Button>
       </form>

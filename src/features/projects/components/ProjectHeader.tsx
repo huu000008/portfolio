@@ -1,4 +1,3 @@
-// components/ProjectHeader.tsx
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
@@ -6,11 +5,66 @@ import { useDeleteProject } from '@/hooks/useProjects';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
+import styles from './ProjectHeader.module.scss';
 
 interface ProjectHeaderProps {
   id?: string;
   userId?: string;
   title?: string;
+}
+
+function ActionButton({
+  asLink,
+  href,
+  onClick,
+  isPending,
+  children,
+  color = 'primary',
+  ariaLabel,
+  disabled,
+  className = '',
+}: {
+  asLink?: boolean;
+  href?: string | { pathname: string };
+  onClick?: () => void;
+  isPending?: boolean;
+  children: React.ReactNode;
+  color?: 'primary' | 'accent' | 'destructive';
+  ariaLabel?: string;
+  disabled?: boolean;
+  className?: string;
+}) {
+  const colorMap = {
+    primary: styles.primary,
+    accent: styles.accent,
+    destructive: styles.destructive,
+  };
+  return (
+    <Button
+      asChild={!!asLink}
+      onClick={onClick}
+      disabled={isPending || disabled}
+      className={[
+        styles.actionButton,
+        colorMap[color],
+        isPending ? styles.pending : '',
+        className,
+      ].join(' ')}
+    >
+      {asLink && href ? (
+        <Link href={href} aria-label={ariaLabel}>
+          {isPending ? <Loader2 className={styles.loader} /> : null}
+          {children}
+        </Link>
+      ) : (
+        <>
+          {isPending ? <Loader2 className={styles.loader} /> : null}
+          {children}
+        </>
+      )}
+    </Button>
+  );
 }
 
 export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
@@ -31,11 +85,7 @@ export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
 
   const handleDelete = () => {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
-
-    if (!id) {
-      return;
-    }
-
+    if (!id) return;
     deleteProject(id, {
       onSuccess: () => {
         router.push('/projects');
@@ -45,84 +95,47 @@ export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
   };
 
   return (
-    <div
-      className={`
-        flex items-center justify-between sticky top-8 z-10 w-full max-w-[120rem] mx-auto
-        p-8 rounded-md border border-[var(--color-border)] bg-[var(--color-bg-surface)]
-        md:w-[calc(100%-100px)] md:ml-[100px] md:mr-[-10px] md:mb-12 md:p-4
-        md:rounded-tr-none md:rounded-br-none md:border-r-0
-      `}
-    >
-      <h2
-        className={`
-          text-[3rem] font-bold
-          md:text-lg md:font-medium md:leading-[1.4]
-        `}
-      >
-        {title ? title : 'Projects'}
-      </h2>
-      <div
-        className="
-          flex gap-4
-          md:flex-col md:absolute md:top-full md:right-0 md:mt-8
-          [&>a]:md:rounded-tr-none [&>a]:md:rounded-br-none [&>a]:md:border-r-0
-          [&>button]:md:rounded-tr-none [&>button]:md:rounded-br-none [&>button]:md:border-r-0
-        "
-      >
+    <div className={styles.header}>
+      <h2 className={styles.title}>{title ? title : 'Projects'}</h2>
+      <div className={styles.actions}>
         {!isListPage && (
-          <Link
-            href="/projects"
-            aria-label="프로젝트 목록 보기"
-            className="btn btn-outline px-4 py-2 rounded-md border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-bg-surface)] transition"
-          >
+          <ActionButton asLink href="/projects" ariaLabel="프로젝트 목록 보기">
             목록
-          </Link>
+          </ActionButton>
         )}
 
         {isListPage && user && (
-          <Button asChild>
-            <Link
-              href="/projects/write"
-              aria-label="프로젝트 작성 하기"
-              className="btn btn-primary px-4 py-2 rounded-md"
-            >
-              작성
-            </Link>
-          </Button>
+          <ActionButton
+            asLink
+            href="/projects/write"
+            color="primary"
+            ariaLabel="프로젝트 작성 하기"
+            isPending={isPending}
+          >
+            작성
+          </ActionButton>
         )}
 
-        {/* 작성자 또는 관리자인 경우 수정/삭제 버튼 표시 */}
         {isDetailPage && id && user && hasEditPermission && (
           <>
-            <Button asChild>
-              <Link
-                href={{ pathname: `/projects/edit/${id}` }}
-                aria-label="프로젝트 수정 하기"
-                className="btn btn-outline px-4 py-2 rounded-md border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-bg-surface)] transition"
-              >
-                수정
-              </Link>
-            </Button>
-            <Button
-              onClick={handleDelete}
-              disabled={isPending}
-              className={`btn btn-destructive px-4 py-2 rounded-md ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+            <ActionButton
+              asLink
+              href={{ pathname: `/projects/edit/${id}` }}
+              ariaLabel="프로젝트 수정 하기"
+              isPending={isPending}
             >
+              {isPending ? '수정 중...' : '수정'}
+            </ActionButton>
+            <ActionButton onClick={handleDelete} color="destructive" isPending={isPending}>
               {isPending ? '삭제 중...' : '삭제'}
-            </Button>
+            </ActionButton>
           </>
         )}
 
         {isEditPage && id && user && hasEditPermission && (
-          <>
-            <Button
-              onClick={handleDelete}
-              disabled={isPending}
-              className={`btn btn-destructive px-4 py-2 rounded-md ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {isPending ? '삭제 중...' : '삭제'}
-            </Button>
-          </>
+          <ActionButton onClick={handleDelete} color="destructive" isPending={isPending}>
+            {isPending ? '삭제 중...' : '삭제'}
+          </ActionButton>
         )}
       </div>
     </div>
