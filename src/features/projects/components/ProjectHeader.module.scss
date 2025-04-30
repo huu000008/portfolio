@@ -34,29 +34,6 @@
   }
 }
 
-.primary {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.accent {
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--accent-foreground);
-  &:hover {
-    background: var(--accent);
-    color: var(--accent-foreground);
-  }
-}
-
-.destructive {
-  background: var(--destructive);
-  color: var(--destructive-foreground);
-  &:hover {
-    background: rgba(var(--destructive), 0.9);
-  }
-}
-
 .pending {
   opacity: 0.6;
   cursor: not-allowed;

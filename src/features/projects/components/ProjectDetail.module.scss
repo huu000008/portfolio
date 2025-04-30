@@ -9,11 +9,12 @@
   column-gap: 2rem;
   column-fill: balance;
   column-count: 2;
-  @include respond(sm) {
-    column-count: 1;
-  }
+
   @include respond(md) {
     column-count: 2;
+  }
+  @include respond(sm) {
+    column-count: 1;
   }
 }
 

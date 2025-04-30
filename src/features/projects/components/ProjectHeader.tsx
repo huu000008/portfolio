@@ -20,7 +20,7 @@ function ActionButton({
   onClick,
   isPending,
   children,
-  color = 'primary',
+  color,
   ariaLabel,
   disabled,
   className = '',
@@ -30,27 +30,18 @@ function ActionButton({
   onClick?: () => void;
   isPending?: boolean;
   children: React.ReactNode;
-  color?: 'primary' | 'accent' | 'destructive';
+  color?: 'secondary' | 'destructive';
   ariaLabel?: string;
   disabled?: boolean;
   className?: string;
 }) {
-  const colorMap = {
-    primary: styles.primary,
-    accent: styles.accent,
-    destructive: styles.destructive,
-  };
   return (
     <Button
       asChild={!!asLink}
       onClick={onClick}
+      variant={color}
       disabled={isPending || disabled}
-      className={[
-        styles.actionButton,
-        colorMap[color],
-        isPending ? styles.pending : '',
-        className,
-      ].join(' ')}
+      className={[styles.actionButton, isPending ? styles.pending : '', className].join(' ')}
     >
       {asLink && href ? (
         <Link href={href} aria-label={ariaLabel}>
@@ -108,7 +99,6 @@ export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
           <ActionButton
             asLink
             href="/projects/write"
-            color="primary"
             ariaLabel="프로젝트 작성 하기"
             isPending={isPending}
           >
@@ -122,6 +112,7 @@ export const ProjectHeader = ({ id, userId, title }: ProjectHeaderProps) => {
               asLink
               href={{ pathname: `/projects/edit/${id}` }}
               ariaLabel="프로젝트 수정 하기"
+              color="secondary"
               isPending={isPending}
             >
               {isPending ? '수정 중...' : '수정'}
