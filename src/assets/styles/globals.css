@@ -1,4 +1,4 @@
-@import './_variables.scss';
+@import './abstracts/_variables.scss';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
