@@ -118,7 +118,7 @@ export async function createProjectAction(
   try {
     const userResult = await getCurrentUser();
     if (!isUser(userResult)) {
-      redirect('/auth/login');
+      redirect('/login');
     }
     const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();
@@ -175,7 +175,7 @@ export async function updateProjectAction(
   try {
     const userResult = await getCurrentUser();
     if (!isUser(userResult)) {
-      redirect('/auth/login');
+      redirect('/login');
     }
     const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();
@@ -267,7 +267,7 @@ export async function deleteProjectAction(
   try {
     const userResult = await getCurrentUser();
     if (!isUser(userResult)) {
-      redirect('/auth/login');
+      redirect('/login');
     }
     const user = userResult; // 타입이 User로 확정
     const supabase = await createServerSupabaseClient();

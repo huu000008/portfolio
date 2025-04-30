@@ -1,4 +1,4 @@
-@import '@/assets/styles/abstracts/_mixins.scss';
+@use '@/assets/styles/abstracts/_mixins.scss' as mixins;
 
 .masonry {
   width: 100%;
@@ -10,10 +10,10 @@
   column-fill: balance;
   column-count: 2;
 
-  @include respond(md) {
+  @include mixins.respond(md) {
     column-count: 2;
   }
-  @include respond(sm) {
+  @include mixins.respond(sm) {
     column-count: 1;
   }
 }

@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // 여러 줄 말줄임(line-clamp)
 @mixin line-clamp($lines: 2) {
   display: -webkit-box;
@@ -30,7 +32,7 @@ $breakpoints: (
 
 // 반응형 respond 믹스인
 @mixin respond($breakpoint) {
-  $value: map-get($breakpoints, $breakpoint);
+  $value: map.get($breakpoints, $breakpoint);
   @if $value {
     @media (max-width: $value) {
       @content;

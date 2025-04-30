@@ -1,4 +1,4 @@
-@import '@/assets/styles/abstracts/mixins.scss';
+@use '@/assets/styles/abstracts/mixins.scss' as mixins;
 
 .header {
   position: sticky;
@@ -25,7 +25,7 @@
 .actions {
   display: flex;
   gap: 1rem;
-  @include respond(md) {
+  @include mixins.respond(md) {
     position: absolute;
     top: 100%;
     right: 0;

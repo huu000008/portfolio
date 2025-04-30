@@ -1,4 +1,4 @@
-@import '@/assets/styles/abstracts/mixins.scss';
+@use '../../../assets/styles/abstracts/mixins' as mixins;
 
 .wrap {
   width: 100%;
@@ -72,7 +72,7 @@
   }
 }
 
-@include respond(md) {
+@include mixins.respond(md) {
   .wrap {
     width: 100%;
   }

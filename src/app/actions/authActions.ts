@@ -3,8 +3,8 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { User } from '@/types/user';
 import { extractErrorMessage } from '@/utils/common';
+import { isUser } from '@/utils/isUser';
 
 // 로그인 유효성 검사 스키마
 const loginSchema = z.object({
@@ -27,24 +27,6 @@ const signupSchema = z
   });
 
 type SignupFormData = z.infer<typeof signupSchema>;
-
-// User 타입 가드 함수 (모든 필수 속성 검사)
-function isUser(obj: unknown): obj is User {
-  return (
-    !!obj &&
-    typeof obj === 'object' &&
-    'id' in obj &&
-    typeof (obj as { id?: unknown }).id === 'string' &&
-    'email' in obj &&
-    typeof (obj as { email?: unknown }).email === 'string' &&
-    'app_metadata' in obj &&
-    'user_metadata' in obj &&
-    'aud' in obj &&
-    typeof (obj as { aud?: unknown }).aud === 'string' &&
-    'created_at' in obj &&
-    typeof (obj as { created_at?: unknown }).created_at === 'string'
-  );
-}
 
 /**
  * 로그인 서버 액션
@@ -156,7 +138,7 @@ export async function getCurrentUser() {
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user || (user && 'success' in user && user.success === false)) {
-    redirect('/auth/login');
+    redirect('/login');
   }
   return user;
 }
